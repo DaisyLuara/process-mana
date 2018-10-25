@@ -97,7 +97,7 @@
             v-if="!hide"
             type="danger"
             size="small"
-            @click="dialogFormVisible = true">退回</el-button>
+            @click="dialogFormVisible = true">驳回</el-button>
           <el-button 
             v-if="!hide"
             :type="(paymentForm.status === '已审批' && paymentForm.handler === id) ?'warning' : 'primary'"

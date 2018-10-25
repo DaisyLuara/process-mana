@@ -207,21 +207,21 @@
             <template 
               slot-scope="scope">
               <el-button
-                v-if="scope.row.status === '驳回' && scope.row.handler === applictant"
+                v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
                 size="mini" 
                 type="primary"
                 @click="editContract(scope.row)">编辑</el-button>
               <el-button
-                v-if="scope.row.handler === applictant && scope.row.status !== '驳回'"
+                v-if="scope.row.handler === applicant && scope.row.status !== '驳回'"
                 size="mini" 
                 @click="auditingContract(scope.row)">审批</el-button>
               <el-button
-                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applictant === applictant) || (scope.row.status === '待审批' && roles.name === 'bd-manager' && scope.row.applictant === applictant)) "
+                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applicant === applicant) || (scope.row.status === '待审批' && roles.name === 'bd-manager' && scope.row.applicant === applicant)) "
                 size="mini" 
                 type="danger"
                 @click=deleteContract(scope.row)>删除</el-button>
               <el-button 
-                v-if="scope.row.status === '待审批' && scope.row.applicant === applictant"
+                v-if="scope.row.status === '待审批' && scope.row.applicant === applicant"
                 size="mini" 
                 type="warning"
                 @click=specialAuditingContract(scope.row)>特批</el-button>
@@ -294,7 +294,7 @@ export default {
         contract_number: ''
       },
       roles: {},
-      applictant: null,
+      applicant: null,
       pickerOptions2: {
         shortcuts: [
           {
@@ -391,7 +391,7 @@ export default {
   created() {
     this.getContractList()
     let user_info = JSON.parse(localStorage.getItem('user_info'))
-    this.applictant = user_info.id
+    this.applicant = user_info.id
     this.roles = user_info.roles.data[0]
   },
   methods: {

@@ -243,16 +243,16 @@
             <template 
               slot-scope="scope">
               <el-button 
-                v-if="scope.row.status === '驳回' && scope.row.handler === applictant"
+                v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
                 size="mini" 
                 type="primary"
                 @click="editPayment(scope.row)">编辑</el-button>
               <el-button
-                v-if="scope.row.handler === applictant && (scope.row.status !== '驳回' && scope.row.status !== '已付款')"
+                v-if="scope.row.handler === applicant && (scope.row.status !== '驳回' && scope.row.status !== '已付款')"
                 size="mini" 
                 @click="auditingPayment(scope.row)">审批</el-button>
               <el-button
-                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applictant === applictant) || (scope.row.status === '待审批' && roles.name === 'bd-manager' && scope.row.applictant === applictant)) "
+                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applicant === applicant) || (scope.row.status === '待审批' && roles.name === 'bd-manager' && scope.row.applicant === applicant)) "
                 size="mini" 
                 type="danger"
                 @click="deletePayment(scope.row)">删除</el-button>
@@ -416,7 +416,7 @@ export default {
         loading: false,
         loadingText: '拼命加载中'
       },
-      applictant: null,
+      applicant: null,
       searchLoading: false,
       pagination: {
         total: 0,
@@ -438,7 +438,7 @@ export default {
   created() {
     this.getPaymentList()
     let user_info = JSON.parse(localStorage.getItem('user_info'))
-    this.applictant = user_info.id
+    this.applicant = user_info.id
     this.roles = user_info.roles.data[0]
   },
   methods: {

@@ -203,21 +203,21 @@
             <template 
               slot-scope="scope">
               <el-button 
-                v-if="scope.row.status === '驳回' && scope.row.handler === applictant"
+                v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
                 size="mini" 
                 type="primary"
                 @click="editInvoice(scope.row)">编辑</el-button>
               <el-button 
-                v-if="scope.row.handler === applictant && (scope.row.status !== '驳回' && scope.row.status !== '已开票' && scope.row.status !== '已认领')"
+                v-if="scope.row.handler === applicant && (scope.row.status !== '驳回' && scope.row.status !== '已开票' && scope.row.status !== '已认领')"
                 size="mini" 
                 @click="auditingInvoice(scope.row)">审批</el-button>
               <el-button
-                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applictant === applictant) || (scope.row.status === '待审批' && roles.name === 'bd-manager'&& scope.row.applictant === applictant)) "
+                v-if="((scope.row.status === '待审批' && scope.row.applicant === applicant) || (scope.row.status === '待审批' && scope.row.applicant === applicant)) "
                 size="mini" 
                 type="danger"
                 @click="deleteInvoice(scope.row)">删除</el-button>
               <el-button 
-                v-if="scope.row.status === '已开票' && scope.row.applicant === applictant"
+                v-if="scope.row.status === '已开票' && scope.row.applicant === applicant"
                 size="mini" 
                 type="warning"
                 @click="receiveInvoice(scope.row)">认领票据</el-button>
@@ -371,7 +371,7 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      applictant: null,
+      applicant: null,
       tableData: []
     }
   },
@@ -386,7 +386,7 @@ export default {
   },
   created() {
     let user_info = JSON.parse(localStorage.getItem('user_info'))
-    this.applictant = user_info.id
+    this.applicant = user_info.id
     this.roles = user_info.roles.data[0]
     this.getInvoiceList()
   },
