@@ -4,6 +4,7 @@ import company from 'router/process/company'
 import inform from 'router/process/inform'
 import invoice from 'router/process/invoice'
 import payment from 'router/process/payment'
+import account from 'router/process/account'
 
 export default {
   path: '/',
@@ -12,5 +13,5 @@ export default {
   meta: {
     // permission: 'main',
   },
-  children: [contract, invoice, payment, company, inform]
+  children: [contract, invoice, payment, company, inform, account]
 }

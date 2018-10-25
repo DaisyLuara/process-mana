@@ -88,7 +88,9 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col 
+             v-if="contractForm.type === 0"
+             :span="12">
             <el-form-item 
               label="收款日期" 
               prop="receive_date" >
@@ -116,8 +118,8 @@
             :file-list="fileList"
             class="upload-demo">
             <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">支持文件类型：doc(.docx)、.wps、.pdf、.txt</div>
-            <div slot="tip" style="color: #ff5722;font-size: 14px;">点击文件名称可以下载</div>
+            <div slot="tip" class="el-upload__tip" style="display:inline-block">支持文件类型：doc(.docx)、.wps、.pdf、.txt</div>
+            <div slot="tip" style="color: #ff5722;font-size: 12px;" v-if="fileList.length !==0 ">点击文件名称可以下载</div>
           </el-upload>
         </el-form-item>
         <el-form-item 
@@ -207,7 +209,7 @@ export default {
         contract_number: '',
         type: 0,
         applicant: 0,
-        receive_date: '',
+        receive_date: [],
         ids: '',
         remark: ''
       },
@@ -224,9 +226,6 @@ export default {
         ],
         contract_number: [
           { required: true, message: '请输入合同编号', trigger: 'submit' }
-        ],
-        receive_date: [
-          { required: true, message: '请选择收款时间', trigger: 'submit' }
         ]
       }
     }
@@ -347,20 +346,31 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setting.loading = true
-          let date = []
-          this.contractForm.receive_date.map(r => {
-            let dateTransform = handleDateTransform(r)
-            date.push(dateTransform)
-          })
           let args = {
             contract_number: this.contractForm.contract_number,
             name: this.contractForm.name,
             company_id: this.contractForm.company_id,
             applicant: this.contractForm.applicant,
             type: this.contractForm.type,
-            receive_date: date.join(','),
             ids: this.contractForm.ids,
             remark: this.contractForm.remark
+          }
+          if (this.contractForm.type === 0) {
+            if (this.contractForm.receive_date.length === 0) {
+              this.$message({
+                message: '请选择收款日期',
+                type: 'warning'
+              })
+              this.setting.loading = false
+              return
+            } else {
+              let date = []
+              this.contractForm.receive_date.map(r => {
+                let dateTransform = handleDateTransform(r)
+                date.push(dateTransform)
+              })
+              args.receive_date = date.join(',')
+            }
           }
           if (this.contractID) {
             modifyContract(this, this.contractID, args)

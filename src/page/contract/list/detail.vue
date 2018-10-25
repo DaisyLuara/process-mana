@@ -63,7 +63,8 @@
               {{ contractForm.type_name }}
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col
+            :span="12">
             <el-form-item 
               label="收款日期:" 
               prop="receive_date" >
@@ -355,6 +356,7 @@ export default {
       }
       modifyContract(this, this.contractID, args)
         .then(res => {
+          this.dialogFormVisible = false
           this.$message({
             message: '修改成功',
             type: 'success'
@@ -362,7 +364,6 @@ export default {
           this.$router.push({
             path: '/contract/list'
           })
-          this.dialogFormVisible = false
           this.setting.loading = false
         })
         .catch(err => {

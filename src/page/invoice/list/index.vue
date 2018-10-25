@@ -101,7 +101,7 @@
                 class="demo-table-expand">
                 <el-form-item 
                   label="合同编号:">
-                  <span>{{ scope.row.contract_id }}</span> 
+                  <span>{{ scope.row.contract_number }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="公司名称:">
@@ -136,11 +136,11 @@
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="contract_id"
+            prop="contract_number"
             label="合同编号"
             min-width="80">
             <template slot-scope="scope">
-              {{scope.row.contract_id}}
+              {{scope.row.contract_number}}
             </template>
           </el-table-column>
           <el-table-column

@@ -278,6 +278,7 @@ export default {
       }
       modifyPayment(this, this.paymentID, args)
         .then(res => {
+          this.dialogFormVisible = false
           this.$message({
             message: '修改成功',
             type: 'success'
@@ -285,7 +286,6 @@ export default {
           this.$router.push({
             path: '/payment/list'
           })
-          this.dialogFormVisible = false
           this.setting.loading = false
         })
         .catch(err => {

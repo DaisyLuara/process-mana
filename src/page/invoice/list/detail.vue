@@ -367,6 +367,7 @@ export default {
       }
       modifyInvoice(this, this.invoiceID, args)
         .then(res => {
+          this.dialogFormVisible = false
           this.$message({
             message: '修改成功',
             type: 'success'
@@ -374,7 +375,6 @@ export default {
           this.$router.push({
             path: '/invoice/list'
           })
-          this.dialogFormVisible = false
           this.setting.loading = false
         })
         .catch(err => {
