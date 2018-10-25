@@ -291,7 +291,8 @@ import {
   saveInvoice,
   formatMoneylowercase,
   getContract,
-  goodsService
+  goodsService,
+  invoiceDetail
 } from 'service'
 import {
   Form,
@@ -453,13 +454,66 @@ export default {
   },
   created() {
     this.invoiceID = this.$route.params.uid
-    let user_info = JSON.parse(localStorage.getItem('user_info'))
-    this.invoiceForm.applicant_name = user_info.name
-    this.invoiceForm.applicant = user_info.id
     this.getContract()
     this.goodsService()
+    if (this.invoiceID) {
+      this.setting.loading = true
+      this.invoiceDetail()
+    } else {
+      let user_info = JSON.parse(localStorage.getItem('user_info'))
+      this.invoiceForm.applicant_name = user_info.name
+      this.invoiceForm.applicant = user_info.id
+    }
   },
   methods: {
+    invoiceDetail() {
+      let params = {
+        include: 'invoice_content.goodsService'
+      }
+      invoiceDetail(this, this.invoiceID, params)
+        .then(res => {
+          this.invoiceForm = res
+          let invoice_content = res.invoice_content.data
+          this.invoiceForm.type = res.type === '专票' ? 0 : 1
+          this.invoiceForm.applicant_name = res.applicant_name
+          this.invoiceForm.receive_status =
+            res.receive_status === '未收款' ? 0 : 1
+          this.invoiceForm.phone = res.phone
+          this.invoiceForm.applicant = res.applicant
+          this.invoiceForm.account_bank = res.account_bank
+          this.invoiceForm.address = res.address
+          this.invoiceForm.contract_id = res.contract_id
+          this.invoiceForm.taxpayer_num = res.taxpayer_num
+          this.invoiceForm.account_number = res.account_number
+          this.invoiceForm.remark = res.remark
+          this.invoiceForm.kind = res.kind
+          invoice_content.map(r => {
+            let data = {
+              name: r.goodsService.id,
+              spec_type: r.goodsService.spec_type,
+              unit: r.goodsService.unit,
+              num: r.num,
+              price: r.price,
+              money: r.money
+            }
+            this.tableData.unshift(data)
+          })
+          let length = this.tableData.length
+          this.total_text = res.$total_text
+          this.total = res.total
+          this.tableData[length - 1].name =
+            '开票总计（大写）：' + res.$total_text
+          this.tableData[length - 1].spec_type = '(小写) ¥：' + res.total + '元'
+          this.setting.loading = false
+        })
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: 'success'
+          })
+          this.setting.loading = false
+        })
+    },
     googsServiceHandle(obj, index) {
       var goodService = this.goodsServiceList.find(r => {
         return r.id === obj
@@ -506,7 +560,7 @@ export default {
       let td = {
         name: '',
         spec_type: '',
-        unit: '1台',
+        unit: '',
         num: 0,
         price: 1,
         money: ''
@@ -523,12 +577,6 @@ export default {
             let content = {}
             if (i !== length - 1) {
               content.goods_service_id = this.tableData[i].name
-              // if (typeof this.tableData[i].num !== 'number') {
-              //   return
-              // }
-              // if (typeof this.tableData[i].price !== 'number') {
-              //   return
-              // }
               content.num = parseFloat(this.tableData[i].num)
               content.price = parseFloat(this.tableData[i].price)
               content.money = (
@@ -541,6 +589,7 @@ export default {
           args.invoice_content = invoice_content
           args.total = this.total
           args.total_text = this.total_text
+          console.log(args)
           if (this.invoiceID) {
             modifyInvoice(this, this.invoiceID, args)
               .then(res => {

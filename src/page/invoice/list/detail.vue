@@ -251,6 +251,7 @@ export default {
         remark: '',
         kind: ''
       },
+      id: '',
       tableData: [
         {
           name: '开票总计（大写）：',
@@ -269,6 +270,7 @@ export default {
     let user_info = JSON.parse(localStorage.getItem('user_info'))
     this.invoiceForm.applicant = user_info.name
     this.hide = this.$route.query.hide
+    this.id = user_info.id
     this.invoiceDetail()
   },
   methods: {

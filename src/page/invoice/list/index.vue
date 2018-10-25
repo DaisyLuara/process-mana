@@ -185,7 +185,7 @@
             label="待处理人"
             min-width="80">
             <template slot-scope="scope">
-              {{scope.row.handler_name}}
+              {{scope.row.handler_name === null ? '--' : scope.row.handler_name}}
             </template>
           </el-table-column>
           <el-table-column
@@ -212,7 +212,7 @@
                 size="mini" 
                 @click="auditingInvoice(scope.row)">审批</el-button>
               <el-button
-                v-if="((scope.row.status === '待审批' && roles.name === 'user') || (scope.row.status === '待审批' && roles.name === 'bd-manager')) "
+                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applictant === applictant) || (scope.row.status === '待审批' && roles.name === 'bd-manager'&& scope.row.applictant === applictant)) "
                 size="mini" 
                 type="danger"
                 @click="deleteInvoice(scope.row)">删除</el-button>

@@ -252,7 +252,7 @@
                 size="mini" 
                 @click="auditingPayment(scope.row)">审批</el-button>
               <el-button
-                v-if="((scope.row.status === '待审批' && roles.name === 'user') || (scope.row.status === '待审批' && roles.name === 'bd-manager')) "
+                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applictant === applictant) || (scope.row.status === '待审批' && roles.name === 'bd-manager' && scope.row.applictant === applictant)) "
                 size="mini" 
                 type="danger"
                 @click="deletePayment(scope.row)">删除</el-button>
