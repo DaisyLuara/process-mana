@@ -40,9 +40,9 @@
             </el-form-item>
             <el-form-item 
               label="" 
-              prop="contract">
+              prop="contract_number">
               <el-input 
-                v-model="searchForm.contract"
+                v-model="searchForm.contract_number"
                 clearable 
                 placeholder="合同编号"
                 class="item-input"/>
