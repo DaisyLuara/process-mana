@@ -117,9 +117,17 @@
             :before-remove="beforeRemove"
             :file-list="fileList"
             class="upload-demo">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip" style="display:inline-block">支持文件类型：doc(.docx)、.wps、.pdf、.txt</div>
-            <div slot="tip" style="color: #ff5722;font-size: 12px;" v-if="fileList.length !==0 ">点击文件名称可以下载</div>
+            <el-button 
+              size="small" 
+              type="primary">点击上传</el-button>
+            <div 
+              slot="tip" 
+              style="display:inline-block"
+              class="el-upload__tip">支持文件类型：doc(.docx)、.wps、.pdf、.txt</div>
+            <div 
+              v-if="fileList.length !==0"
+              slot="tip" 
+              style="color: #ff5722;font-size: 12px;" >点击文件名称可以下载</div>
           </el-upload>
         </el-form-item>
         <el-form-item 
