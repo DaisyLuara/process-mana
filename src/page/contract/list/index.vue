@@ -488,7 +488,7 @@ export default {
       getContractList(this, args)
         .then(res => {
           this.tableData = res.data
-          this.pagination.total = res.meta.pagination.total
+          this.pagination.total = res.total
           this.setting.loading = false
         })
         .catch(err => {

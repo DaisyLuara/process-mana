@@ -143,7 +143,11 @@ export default {
       this.active = item.id
       switch (item.id) {
         case 'zhongtai':
-          window.location.href = 'http://ad.xingstation.com/login'
+          window.location.href = 'http://devad.jingfree.top/login'
+          // let token = localStorage.getItem('jwt_token')
+          // let tokenLifeTime = localStorage.getItem('jwt_ttl')
+          // let tokenBeginTime = localStorage.getItem('jwt_begin_time')
+          // let data
           break
         case 'liucheng':
           this.$router.push({

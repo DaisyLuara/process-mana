@@ -373,7 +373,7 @@ export default {
           md5: '',
           image_url: ''
         },
-        redirect_url: '/'
+        redirect_url: '/inform/list'
       },
       rules: {
         account: [{ validator: va, trigger: 'blur' }],

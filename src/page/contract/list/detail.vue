@@ -124,7 +124,7 @@
             <div 
               slot="tip" 
               style="display:inline-block"
-              class="el-upload__tip">支持文件类型：doc(.docx)、.wps、.pdf、.txt</div>
+              class="el-upload__tip">支持文件类型：doc(.docx)、.pdf</div>
             <div 
               v-if="fileList.length !==0" 
               slot="tip" 
@@ -238,8 +238,6 @@ export default {
         return this.$confirm(`确定移除 ${file.name}？`)
       } else {
         const isFile =
-          file.raw.type === 'application/vnd.ms-works' ||
-          file.raw.type === 'text/plain' ||
           file.raw.type === 'application/pdf' ||
           file.raw.type === 'application/msword' ||
           file.raw.type ===
@@ -253,24 +251,26 @@ export default {
     },
     handlePreview(file) {
       let url = file.url
-      let a = document.createElement('a')
-      a.href = url
-      a.download = 'download'
-      a.click()
-      window.URL.revokeObjectURL(url)
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', url, true)
+      xhr.responseType = 'blob'
+      xhr.onload = () => {
+        var urlObject = window.URL || window.webkitURL || window
+        let a = document.createElement('a')
+        a.href = urlObject.createObjectURL(new Blob([xhr.response]))
+        a.download = file.name
+        a.click()
+      }
+      xhr.send()
     },
     beforeUpload(file) {
       const isFile =
-        file.type === 'application/vnd.ms-works' ||
-        file.type === 'text/plain' ||
         file.type === 'application/pdf' ||
         file.type === 'application/msword' ||
         file.type ===
           'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       if (!isFile) {
-        this.$message.error(
-          '上传文件仅支持doc(.docx)、.wps、.pdf、.txt五种格式!'
-        )
+        this.$message.error('上传文件仅支持doc(.docx)、.pdf格式!')
         return isFile
       }
     },
