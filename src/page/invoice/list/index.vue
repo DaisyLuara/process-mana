@@ -358,6 +358,10 @@ export default {
         {
           id: 5,
           name: '已认领'
+        },
+        {
+          id: 6,
+          name: '驳回'
         }
       ],
       roles: {},

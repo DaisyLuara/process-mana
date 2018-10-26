@@ -59,8 +59,10 @@
 <script>
 import { Menu, MenuItem, Button, Badge, Icon } from 'element-ui'
 import auth from 'service/auth'
+import { Cookies } from 'service'
 import notice from 'service/notice'
 const CDN_URL = process.env.CDN_URL
+const DOMAIN = process.env.DOMAIN
 
 export default {
   name: 'Home',
@@ -134,6 +136,19 @@ export default {
     }
   },
   created() {
+    if (Cookies.get('jwt_token') && !localStorage.getItem('jwt_token')) {
+      localStorage.setItem('jwt_token', Cookies.get('jwt_token'))
+      localStorage.setItem('jwt_ttl', Cookies.get('jwt_ttl'))
+      localStorage.setItem('jwt_begin_time', Cookies.get('jwt_begin_time'))
+      localStorage.setItem('user_info', Cookies.get('user_info'))
+      localStorage.setItem('permissions', Cookies.get('permissions'))
+    } else if (!Cookies.get('jwt_token')) {
+      localStorage.removeItem('jwt_token')
+      localStorage.removeItem('user_info')
+      localStorage.removeItem('jwt_ttl')
+      localStorage.removeItem('permissions')
+      localStorage.removeItem('jwt_begin_time')
+    }
     let userInfo = JSON.parse(localStorage.getItem('user_info'))
     this.$store.commit('setCurUserInfo', userInfo)
     this.notificationStats()
@@ -143,19 +158,14 @@ export default {
       this.active = item.id
       switch (item.id) {
         case 'zhongtai':
-          window.location.href = 'http://devad.jingfree.top/login'
-          // let token = localStorage.getItem('jwt_token')
-          // let tokenLifeTime = localStorage.getItem('jwt_ttl')
-          // let tokenBeginTime = localStorage.getItem('jwt_begin_time')
-          // let data
+          window.location.href = 'http://devad.' + DOMAIN + '/login'
+          // window.opne()
           break
         case 'liucheng':
-          this.$router.push({
-            path: '/contract/list'
-          })
+          window.location.href = 'http://devflow.' + DOMAIN + '/login'
           break
         default:
-          window.location.href = 'http://ad.xingstation.com/login'
+          window.location.href = 'http://flow.xingstation.com/login'
           break
       }
     },
