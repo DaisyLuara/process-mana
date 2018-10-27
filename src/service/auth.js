@@ -59,14 +59,8 @@ export default {
   },
   // 根据本地token来检测用户的登录状态
   checkLogin(context) {
+    console.log(33+'flow')
     if (this.checkTokenExpired(context)) {
-      if (Cookies.get('jwt_token')) {
-        localStorage.setItem('jwt_token', Cookies.get('jwt_token'))
-        localStorage.setItem('jwt_ttl', Cookies.get('jwt_ttl'))
-        localStorage.setItem('jwt_begin_time', Cookies.get('jwt_begin_time'))
-        localStorage.setItem('user_info', Cookies.get('user_info'))
-        localStorage.setItem('permissions', Cookies.get('permissions'))
-      }
       return false
     } else {
       return true
@@ -92,11 +86,11 @@ export default {
 
   // 清楚一切登录相关数据
   clearLoginData(context) {
-    Cookies.removeItem('jwt_token', '', DOMAIN)
-    Cookies.removeItem('user_info', '', DOMAIN)
-    Cookies.removeItem('jwt_ttl', '', DOMAIN)
-    Cookies.removeItem('jwt_begin_time', '', DOMAIN)
-    Cookies.removeItem('permissions', '', DOMAIN)
+    Cookies.removeItem('jwt_token')
+    Cookies.removeItem('user_info')
+    Cookies.removeItem('jwt_ttl')
+    Cookies.removeItem('jwt_begin_time')
+    Cookies.removeItem('permissions')
     localStorage.removeItem('jwt_token')
     localStorage.removeItem('user_info')
     localStorage.removeItem('jwt_ttl')
@@ -117,18 +111,8 @@ export default {
             'permissions',
             JSON.stringify(result.permissions)
           )
-          Cookies.set(
-            'permissions',
-            JSON.stringify(result.permissions),
-            '',
-            '',
-            DOMAIN
-          )
-
           localStorage.removeItem('user_info')
-          Cookies.removeItem('user_info', '', DOMAIN)
           localStorage.setItem('user_info', JSON.stringify(result))
-          Cookies.set('user_info', JSON.stringify(result), '', '', DOMAIN)
           //context.$store.commit('setCurUserInfo', result.data)
           resolve(result.data)
         })
@@ -139,8 +123,7 @@ export default {
   },
 
   getToken() {
-    console.log(Cookies.get('jwt_token'))
-    return localStorage.getItem('jwt_token') || Cookies.get('jwt_token')
+    return localStorage.getItem('jwt_token')
   },
 
   getTowerAccessToken() {
@@ -174,21 +157,19 @@ export default {
 
   // 获取token的时效，分钟为单位
   getTokenLifeTime() {
-    return localStorage.getItem('jwt_ttl') || Cookies.get('jwt_ttl')
+    return localStorage.getItem('jwt_ttl')
   },
 
   // 获取token生成的时间
   getTokenBeginTime() {
-    return (
-      localStorage.getItem('jwt_begin_time') || Cookies.get('jwt_begin_time')
-    )
+    return localStorage.getItem('jwt_begin_time')
   },
 
   setToken(context, tokenObj) {
     let tokenBeginTime = new Date().getTime()
-    Cookies.set('jwt_token', tokenObj.access_token, '', '', DOMAIN)
-    Cookies.set('jwt_ttl', tokenObj.expires_in, '', '', DOMAIN)
-    Cookies.set('jwt_begin_time', tokenBeginTime, '', '', DOMAIN)
+    Cookies.set('jwt_token', tokenObj.access_token, '')
+    Cookies.set('jwt_ttl', tokenObj.expires_in, '')
+    Cookies.set('jwt_begin_time', tokenBeginTime, '')
     localStorage.setItem('jwt_token', tokenObj.access_token)
     localStorage.setItem('jwt_ttl', tokenObj.expires_in)
     localStorage.setItem('jwt_begin_time', tokenBeginTime)

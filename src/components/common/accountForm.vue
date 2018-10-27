@@ -402,9 +402,29 @@ export default {
       }
     }
   },
-  created() {
-    // 从localstorage中取 记住密码的配置
+  mounted() {
+    console.log(333 + 'flow')
+    window.addEventListener(
+      'message',
+      function(event) {
+        if (event.origin == 'http://devad.jingfree.top') {
+          window.localStorage.clear()
+          let data = event.data
+          let info = JSON.parse(data)
+          localStorage.setItem('jwt_token', info.jwt_token)
+          localStorage.setItem('jwt_ttl', info.jwt_ttl)
+          localStorage.setItem('jwt_begin_time', info.jwt_begin_time)
+          localStorage.setItem('permissions', JSON.stringify(info.permissions))
+          localStorage.setItem('user_info', JSON.stringify(info.user_info))
+          console.log(event)
+        } else {
+          return
+        }
+      },
+      false
+    )
   },
+  created() {},
   methods: {
     onSubmit(type) {
       this[type]()
