@@ -198,7 +198,8 @@ import {
   checkMobile,
   invoiceDetail,
   modifyInvoice,
-  auditingInvoice
+  auditingInvoice,
+  Cookies
 } from 'service/index'
 import {
   Form,
@@ -267,7 +268,7 @@ export default {
   created() {
     this.setting.loading = true
     this.invoiceID = this.$route.params.uid
-    let user_info = JSON.parse(localStorage.getItem('user_info'))
+    let user_info = JSON.parse(Cookies.get('user_info'))
     this.invoiceForm.applicant = user_info.name
     this.hide = this.$route.query.hide
     this.id = user_info.id

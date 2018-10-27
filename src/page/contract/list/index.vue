@@ -267,7 +267,8 @@ import {
   getContractList,
   handleDateTransform,
   deleteContract,
-  specialAuditingContract
+  specialAuditingContract,
+  Cookies
 } from 'service'
 
 export default {
@@ -390,7 +391,7 @@ export default {
   },
   created() {
     this.getContractList()
-    let user_info = JSON.parse(localStorage.getItem('user_info'))
+    let user_info = JSON.parse(Cookies.get('user_info'))
     this.applicant = user_info.id
     this.roles = user_info.roles.data[0]
   },

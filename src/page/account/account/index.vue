@@ -59,6 +59,7 @@ const USERINFO_API = '/api/user?include=permissions'
 
 import auth from 'service/auth'
 import router from 'router'
+import { Cookies } from 'service'
 import {
   Row,
   Col,
@@ -148,7 +149,7 @@ export default {
       return false
     }
     this.setting.loadingText = '拼命加载中'
-    let user = JSON.parse(localStorage.getItem('user_info'))
+    let user = JSON.parse(Cookies.get('user_info'))
     this.userForm.user.name = user.name
     this.userForm.user.phone = user.phone
     this.setting.loading = false
@@ -169,12 +170,18 @@ export default {
             .modifyUser(this, this[formName].user)
             .then(result => {
               this.loading = false
-              let user_info = JSON.parse(localStorage.getItem('user_info'))
+              let user_info = JSON.parse(Cookies.get('user_info'))
               user_info.name = result.name
               user_info.phone = result.phone
               user_info.password = ''
               this.$store.commit('setCurUserInfo', user_info)
-              localStorage.setItem('user_info', JSON.stringify(user_info))
+              Cookies.set(
+                'user_info',
+                JSON.stringify(user_info),
+                '',
+                '',
+                DOMAIN
+              )
               this.$message({
                 message: '修改成功',
                 type: 'success'

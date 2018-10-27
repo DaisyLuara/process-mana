@@ -148,7 +148,13 @@
 </template>
 
 <script>
-import { getContract, savePayment, modifyPayment, paymentDetail } from 'service'
+import {
+  getContract,
+  savePayment,
+  modifyPayment,
+  paymentDetail,
+  Cookies
+} from 'service'
 
 import {
   Form,
@@ -244,7 +250,7 @@ export default {
     if (this.paymentID) {
       this.paymentDetail()
     } else {
-      let user_info = JSON.parse(localStorage.getItem('user_info'))
+      let user_info = JSON.parse(Cookies.get('user_info'))
       this.paymentForm.applicant_name = user_info.name
       this.paymentForm.applicant = user_info.id
       this.setting.loading = false

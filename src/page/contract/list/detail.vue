@@ -160,7 +160,8 @@ import {
   historyBack,
   contractDetail,
   modifyContract,
-  auditingContract
+  auditingContract,
+  Cookies
 } from 'service'
 import auth from 'service/auth'
 
@@ -222,7 +223,7 @@ export default {
   created() {
     this.contractID = this.$route.params.uid
     this.hide = this.$route.query.hide
-    let user_info = JSON.parse(localStorage.getItem('user_info'))
+    let user_info = JSON.parse(Cookies.get('user_info'))
     this.roles = user_info.roles.data[0]
     this.contractDetail()
   },

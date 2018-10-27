@@ -7,6 +7,7 @@ import logout from 'page/logout'
 import store from 'store'
 import pRouter from 'router/pRouter'
 import PageNotFound from 'page/PageNotFound'
+const LOGIN_URL = process.env.LOGIN_URL
 
 Vue.use(Router)
 
@@ -14,10 +15,10 @@ var router = new Router({
   mode: 'history',
   routes: [
     pRouter,
-    {
-      path: '/login',
-      component: login
-    },
+    // {
+    //   path: '/login',
+    //   component: login
+    // },
     {
       path: '/logout',
       component: logout
@@ -85,14 +86,15 @@ router.beforeEach((to, from, next) => {
     })
 
     if (pathWhiteList.length < 1) {
-      next({ path: '/login' })
+      // next({ path: '/login' })
+      window.location.href = LOGIN_URL
     } else {
       next()
     }
     return
   }
 
-  // // 登录黑名单（登录状态下，不可再访问的路由）
+  // // // 登录黑名单（登录状态下，不可再访问的路由）
   let unlessLogout = ['/login']
   let loginBlackList = unlessLogout.filter(unlessPath => {
     if (to.path == unlessPath) {

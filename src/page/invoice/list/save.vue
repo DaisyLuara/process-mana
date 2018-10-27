@@ -292,7 +292,8 @@ import {
   formatMoneylowercase,
   getContract,
   goodsService,
-  invoiceDetail
+  invoiceDetail,
+  Cookies
 } from 'service'
 import {
   Form,
@@ -460,7 +461,7 @@ export default {
       this.setting.loading = true
       this.invoiceDetail()
     } else {
-      let user_info = JSON.parse(localStorage.getItem('user_info'))
+      let user_info = JSON.parse(Cookies.get('user_info'))
       this.invoiceForm.applicant_name = user_info.name
       this.invoiceForm.applicant = user_info.id
     }

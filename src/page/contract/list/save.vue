@@ -160,7 +160,8 @@ import {
   handleDateTransform,
   modifyContract,
   historyBack,
-  contractDetail
+  contractDetail,
+  Cookies
 } from 'service'
 import auth from 'service/auth'
 import {
@@ -246,7 +247,7 @@ export default {
     if (this.contractID) {
       this.contractDetail()
     } else {
-      let user_info = JSON.parse(localStorage.getItem('user_info'))
+      let user_info = JSON.parse(Cookies.get('user_info'))
       this.contractForm.applicant_name = user_info.name
       this.contractForm.applicant = user_info.id
       this.setting.loading = false

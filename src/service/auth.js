@@ -2,6 +2,7 @@ import { Message, MessageBox } from 'element-ui'
 import { Cookies } from 'service'
 const HOST = process.env.SERVER_URL
 const DOMAIN = process.env.DOMAIN
+const LOGIN_URL = process.env.LOGIN_URL
 const LOGIN_API = '/api/authorizations'
 const LOGOUT_API = '/api/authorizations/current'
 const USERINFO_API = '/api/user?include=permissions,roles'
@@ -10,35 +11,35 @@ const USER_API = '/api/user'
 const SMS_CAPTCHA = '/api/verificationCodes'
 const TOWER_OUTH_TOKEN = '/api/oauth/token?include=permissions,roles'
 export default {
-  login(context, creds, redirect) {
-    context.setting.submiting = true
-    context.$http
-      .post(HOST + LOGIN_API, creds)
-      .then(response => {
-        //  将token与权限存储到cookie和localstorage中,取的时候从localstorage中取
-        let loginResult = response.data
-        this.setToken(context, loginResult)
-        context.$message({
-          message: '登录成功!',
-          type: 'success'
-        })
-        context.setting.submiting = false
-        this.refreshUserInfo(context).then(res => {
-          if (localStorage.getItem('permissions').indexOf('setting') > -1) {
-            context.$router.push({
-              path: '/'
-            })
-          } else {
-            context.$router.push({
-              path: redirect ? redirect : '/'
-            })
-          }
-        })
-      })
-      .catch(err => {
-        context.setting.submiting = false
-      })
-  },
+  // login(context, creds, redirect) {
+  //   context.setting.submiting = true
+  //   context.$http
+  //     .post(HOST + LOGIN_API, creds)
+  //     .then(response => {
+  //       //  将token与权限存储到cookie和localstorage中,取的时候从localstorage中取
+  //       let loginResult = response.data
+  //       this.setToken(context, loginResult)
+  //       context.$message({
+  //         message: '登录成功!',
+  //         type: 'success'
+  //       })
+  //       context.setting.submiting = false
+  //       this.refreshUserInfo(context).then(res => {
+  //         if (localStorage.getItem('permissions').indexOf('setting') > -1) {
+  //           context.$router.push({
+  //             path: '/'
+  //           })
+  //         } else {
+  //           context.$router.push({
+  //             path: redirect ? redirect : '/'
+  //           })
+  //         }
+  //       })
+  //     })
+  //     .catch(err => {
+  //       context.setting.submiting = false
+  //     })
+  // },
   checkFacility() {
     if (
       /AppleWebKit.*Mobile/i.test(navigator.userAgent) ||
@@ -59,7 +60,6 @@ export default {
   },
   // 根据本地token来检测用户的登录状态
   checkLogin(context) {
-    console.log(33+'flow')
     if (this.checkTokenExpired(context)) {
       return false
     } else {
@@ -75,9 +75,7 @@ export default {
         let setIntervalValue =
           context.$store.state.notificationCount.setIntervalValue
         clearInterval(setIntervalValue)
-        context.$router.push({
-          path: '/login'
-        })
+        window.location.href = LOGIN_URL
       })
       .catch(err => {
         console.log(err)
@@ -86,53 +84,52 @@ export default {
 
   // 清楚一切登录相关数据
   clearLoginData(context) {
-    Cookies.removeItem('jwt_token')
-    Cookies.removeItem('user_info')
-    Cookies.removeItem('jwt_ttl')
-    Cookies.removeItem('jwt_begin_time')
-    Cookies.removeItem('permissions')
-    localStorage.removeItem('jwt_token')
-    localStorage.removeItem('user_info')
-    localStorage.removeItem('jwt_ttl')
-    localStorage.removeItem('permissions')
-    localStorage.removeItem('jwt_begin_time')
+    Cookies.removeItem('jwt_token', '', DOMAIN)
+    Cookies.removeItem('user_info', '', DOMAIN)
+    Cookies.removeItem('jwt_ttl', '', DOMAIN)
+    Cookies.removeItem('jwt_begin_time', '', DOMAIN)
+    Cookies.removeItem('permissions', '', DOMAIN)
     let setIntervalValue =
       context.$store.state.notificationCount.setIntervalValue
     clearInterval(setIntervalValue)
   },
 
-  refreshUserInfo(context) {
-    return new Promise((resolve, reject) => {
-      context.$http
-        .get(HOST + USERINFO_API)
-        .then(response => {
-          let result = response.data
-          localStorage.setItem(
-            'permissions',
-            JSON.stringify(result.permissions)
-          )
-          localStorage.removeItem('user_info')
-          localStorage.setItem('user_info', JSON.stringify(result))
-          //context.$store.commit('setCurUserInfo', result.data)
-          resolve(result.data)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-  },
+  // refreshUserInfo(context) {
+  //   return new Promise((resolve, reject) => {
+  //     context.$http
+  //       .get(HOST + USERINFO_API)
+  //       .then(response => {
+  //         let result = response.data
+  //         Cookies.removeItem('permissions', '', DOMAIN)
+  //         Cookies.removeItem('user_info', '', DOMAIN)
+  //         Cookies.set(
+  //           'permissions',
+  //           JSON.stringify(result.permissions),
+  //           '',
+  //           '',
+  //           DOMAIN
+  //         )
+  //         Cookies.set('user_info', JSON.stringify(result), '', '', DOMAIN)
+  //         //context.$store.commit('setCurUserInfo', result.data)
+  //         resolve(result.data)
+  //       })
+  //       .catch(error => {
+  //         reject(error)
+  //       })
+  //   })
+  // },
 
   getToken() {
-    return localStorage.getItem('jwt_token')
+    return Cookies.get('jwt_token')
   },
 
   getTowerAccessToken() {
-    let user_info = JSON.parse(localStorage.getItem('user_info'))
+    let user_info = Cookies.get('jwt_token')
     return user_info.tower_access_token
   },
 
   getUserInfo() {
-    let permissions = localStorage.getItem('permissions')
+    let permissions = Cookies.get('permissions')
     if (permissions) {
       return JSON.parse(permissions)
     }
@@ -157,22 +154,19 @@ export default {
 
   // 获取token的时效，分钟为单位
   getTokenLifeTime() {
-    return localStorage.getItem('jwt_ttl')
+    return Cookies.get('jwt_ttl')
   },
 
   // 获取token生成的时间
   getTokenBeginTime() {
-    return localStorage.getItem('jwt_begin_time')
+    return Cookies.get('jwt_begin_time')
   },
 
   setToken(context, tokenObj) {
     let tokenBeginTime = new Date().getTime()
-    Cookies.set('jwt_token', tokenObj.access_token, '')
-    Cookies.set('jwt_ttl', tokenObj.expires_in, '')
-    Cookies.set('jwt_begin_time', tokenBeginTime, '')
-    localStorage.setItem('jwt_token', tokenObj.access_token)
-    localStorage.setItem('jwt_ttl', tokenObj.expires_in)
-    localStorage.setItem('jwt_begin_time', tokenBeginTime)
+    Cookies.set('jwt_token', tokenObj.access_token, '', '', DOMAIN)
+    Cookies.set('jwt_ttl', tokenObj.expires_in, '', '', DOMAIN)
+    Cookies.set('jwt_begin_time', tokenBeginTime, '', '', DOMAIN)
   },
 
   // 检测token是否过期, 过期返回true，没有过期返回false

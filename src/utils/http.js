@@ -7,7 +7,9 @@ import { Message, MessageBox } from 'element-ui'
 import store from '../store'
 import auth from '../service/auth'
 import app from '../main'
-// const REFRESH_TOKEN_API = '/api/users/refresh'
+
+const domain = process.env.DOMAIN
+const NODE_ENV = process.env.NODE_ENV
 
 function VueAxios(Vue) {
   if (VueAxios.installed) {
@@ -49,9 +51,9 @@ function VueAxios(Vue) {
           // 退出登录，清除登录信息，跳转到登录页面
           // Message.error("对不起，您未被授权")
           auth.clearLoginData(app)
-          router.push({
-            path: '/login'
-          })
+          let name = NODE_ENV === 'development' ? 'dev' : ''
+          window.location.href = 'http://' + name + 'ad.' + domain + '/login'
+          // window.location.href =
           Message.error('请求出错：代码' + error.response.status)
         } else {
           if (error.response.status == 429) {

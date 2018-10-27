@@ -263,7 +263,8 @@ import {
   deleteInvoice,
   receiveInvoice,
   handleDateTransform,
-  getInvoiceList
+  getInvoiceList,
+  Cookies
 } from 'service'
 
 export default {
@@ -389,7 +390,7 @@ export default {
     }
   },
   created() {
-    let user_info = JSON.parse(localStorage.getItem('user_info'))
+    let user_info = JSON.parse(Cookies.get('user_info'))
     this.applicant = user_info.id
     this.roles = user_info.roles.data[0]
     this.getInvoiceList()

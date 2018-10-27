@@ -136,7 +136,8 @@ import {
   historyBack,
   paymentDetail,
   modifyPayment,
-  auditingPayment
+  auditingPayment,
+  Cookies
 } from 'service'
 
 import {
@@ -193,7 +194,7 @@ export default {
   created() {
     this.paymentID = this.$route.params.uid
     this.hide = this.$route.query.hide
-    let user_info = JSON.parse(localStorage.getItem('user_info'))
+    let user_info = JSON.parse(Cookies.get('user_info'))
     this.id = user_info.id
     this.paymentDetail()
   },
