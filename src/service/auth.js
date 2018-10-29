@@ -11,35 +11,6 @@ const USER_API = '/api/user'
 const SMS_CAPTCHA = '/api/verificationCodes'
 const TOWER_OUTH_TOKEN = '/api/oauth/token?include=permissions,roles'
 export default {
-  // login(context, creds, redirect) {
-  //   context.setting.submiting = true
-  //   context.$http
-  //     .post(HOST + LOGIN_API, creds)
-  //     .then(response => {
-  //       //  将token与权限存储到cookie和localstorage中,取的时候从localstorage中取
-  //       let loginResult = response.data
-  //       this.setToken(context, loginResult)
-  //       context.$message({
-  //         message: '登录成功!',
-  //         type: 'success'
-  //       })
-  //       context.setting.submiting = false
-  //       this.refreshUserInfo(context).then(res => {
-  //         if (localStorage.getItem('permissions').indexOf('setting') > -1) {
-  //           context.$router.push({
-  //             path: '/'
-  //           })
-  //         } else {
-  //           context.$router.push({
-  //             path: redirect ? redirect : '/'
-  //           })
-  //         }
-  //       })
-  //     })
-  //     .catch(err => {
-  //       context.setting.submiting = false
-  //     })
-  // },
   checkFacility() {
     if (
       /AppleWebKit.*Mobile/i.test(navigator.userAgent) ||
@@ -84,40 +55,15 @@ export default {
 
   // 清楚一切登录相关数据
   clearLoginData(context) {
-    Cookies.removeItem('jwt_token', '', DOMAIN)
-    Cookies.removeItem('user_info', '', DOMAIN)
-    Cookies.removeItem('jwt_ttl', '', DOMAIN)
-    Cookies.removeItem('jwt_begin_time', '', DOMAIN)
-    Cookies.removeItem('permissions', '', DOMAIN)
+    Cookies.removeItem('jwt_token')
+    Cookies.removeItem('user_info')
+    Cookies.removeItem('jwt_ttl')
+    Cookies.removeItem('jwt_begin_time')
+    Cookies.removeItem('permissions')
     let setIntervalValue =
       context.$store.state.notificationCount.setIntervalValue
     clearInterval(setIntervalValue)
   },
-
-  // refreshUserInfo(context) {
-  //   return new Promise((resolve, reject) => {
-  //     context.$http
-  //       .get(HOST + USERINFO_API)
-  //       .then(response => {
-  //         let result = response.data
-  //         Cookies.removeItem('permissions', '', DOMAIN)
-  //         Cookies.removeItem('user_info', '', DOMAIN)
-  //         Cookies.set(
-  //           'permissions',
-  //           JSON.stringify(result.permissions),
-  //           '',
-  //           '',
-  //           DOMAIN
-  //         )
-  //         Cookies.set('user_info', JSON.stringify(result), '', '', DOMAIN)
-  //         //context.$store.commit('setCurUserInfo', result.data)
-  //         resolve(result.data)
-  //       })
-  //       .catch(error => {
-  //         reject(error)
-  //       })
-  //   })
-  // },
 
   getToken() {
     return Cookies.get('jwt_token')
@@ -160,13 +106,6 @@ export default {
   // 获取token生成的时间
   getTokenBeginTime() {
     return Cookies.get('jwt_begin_time')
-  },
-
-  setToken(context, tokenObj) {
-    let tokenBeginTime = new Date().getTime()
-    Cookies.set('jwt_token', tokenObj.access_token, '', '', DOMAIN)
-    Cookies.set('jwt_ttl', tokenObj.expires_in, '', '', DOMAIN)
-    Cookies.set('jwt_begin_time', tokenBeginTime, '', '', DOMAIN)
   },
 
   // 检测token是否过期, 过期返回true，没有过期返回false

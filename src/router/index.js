@@ -23,18 +23,6 @@ var router = new Router({
       path: '/logout',
       component: logout
     },
-    // {
-    //   path: '/register',
-    //   component: register,
-    // },
-    // {
-    //   path: '/findPassword',
-    //   component: findPassword,
-    // },
-    // {
-    //   path: '/setNewPassword',
-    //   component: setNewPassword,
-    // },
     { path: '*', component: PageNotFound }
   ]
 })
@@ -66,16 +54,6 @@ var router = new Router({
 // })
 
 router.beforeEach((to, from, next) => {
-  // 手机访问PC页面，导向M页
-  // let anyFacility = ['/login', '/findPassword', '/register'] //目前来说公用m和pc的页面，都不需要走m的路由！
-  // // if (
-  // //   auth.checkFacility() &&
-  // //   to.path != '/m' &&
-  // //   !anyFacility.includes(to.path)
-  // // ) {
-  // //   next({ path: '/m' })
-  // // }
-
   // 非登录白名单（非登录状态下，仍然可以访问的路由）
   let loginess = ['/login']
   if (!auth.checkLogin()) {
