@@ -223,14 +223,13 @@ export default {
       this.getCustomerList()
     },
     showContactDetail(id, name) {
-      const { href } = this.$router.resolve({
+      this.$router.push({
         path: '/company/customers/contacts',
         query: {
           id: id,
           name: name
         }
       })
-      window.open(href, '_blank')
     }
   }
 }

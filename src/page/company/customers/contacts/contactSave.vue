@@ -46,6 +46,15 @@
             :maxlength="11"
             class="customer-form-input"/>
         </el-form-item>
+        <el-form-item 
+          label="密码" 
+          prop="contact.password">
+          <el-input 
+            v-model="contactForm.contact.password" 
+            :maxlength="30"
+            type="password"
+            class="customer-form-input"/>
+        </el-form-item>
         <el-form-item>
           <el-button 
             :loading="loading"  
@@ -87,7 +96,8 @@ export default {
         contact: {
           name: '',
           phone: '',
-          position: ''
+          position: '',
+          password: ''
         }
       },
       pid: '',
@@ -138,8 +148,17 @@ export default {
           let pid = this.pid
           let name = this.contactName
           let uid = this.$route.query.uid
+          let args = {
+            name: this.contactForm.contact.name,
+            phone: this.contactForm.contact.phone,
+            position: this.contactForm.contact.position,
+            password: this.contactForm.contact.password
+          }
+          if (this.contactForm.contact.password === 0) {
+            delete args.password
+          }
           company
-            .saveContact(this, pid, this[formName].contact, uid)
+            .saveContact(this, pid, args, uid)
             .then(result => {
               this.setting.loading = false
               this.$message({
