@@ -53,7 +53,6 @@ function VueAxios(Vue) {
           auth.clearLoginData(app)
           let name = NODE_ENV === 'development' ? 'dev' : ''
           window.location.href = 'http://' + name + 'ad.' + domain + '/login'
-          // window.location.href =
           Message.error('请求出错：代码' + error.response.status)
         } else {
           if (error.response.status == 429) {
