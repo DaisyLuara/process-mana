@@ -9,7 +9,6 @@
           :to="'/contract/list'">合同管理</el-breadcrumb-item>
         <el-breadcrumb-item>{{ hide ? '详情' : '审批' }}</el-breadcrumb-item>
       </el-breadcrumb>
-      <headModule/>
     </div>
     <div 
       v-loading="setting.loading"

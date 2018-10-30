@@ -3,7 +3,6 @@
     <second-sidebar module="invoice"/>
     <div class="topbar">
       {{ this.$route.meta.title }}
-      <headModule/>
     </div>
     <router-view />
   </div>

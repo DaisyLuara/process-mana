@@ -9,7 +9,6 @@
           :to="'/contract/list'">合同管理</el-breadcrumb-item>
         <el-breadcrumb-item>{{ contractID ? '修改' : '添加' }}</el-breadcrumb-item>
       </el-breadcrumb>
-      <headModule/>
     </div>
     <div 
       v-loading="setting.loading"

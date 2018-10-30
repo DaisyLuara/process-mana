@@ -9,7 +9,6 @@
           :to="'/payment/list'">付款管理</el-breadcrumb-item>
         <el-breadcrumb-item>{{ hide ? '详情' : '审批' }}</el-breadcrumb-item>
       </el-breadcrumb>
-      <headModule/>
     </div>
     <div 
       v-loading="setting.loading"
