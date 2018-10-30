@@ -15,5 +15,3 @@ export * from './payment'
 // 付款接口
 export * from './cookies'
 
-// tab重定向
-export * from './redirect'

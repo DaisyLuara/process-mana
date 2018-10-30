@@ -130,8 +130,8 @@
           <el-input
             v-model="paymentForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
             :maxlength="180"
+            type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
         </el-form-item>

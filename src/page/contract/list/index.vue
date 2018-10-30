@@ -219,12 +219,12 @@
                 v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applicant === applicant) || (scope.row.status === '待审批' && roles.name === 'bd-manager' && scope.row.applicant === applicant)) "
                 size="mini" 
                 type="danger"
-                @click=deleteContract(scope.row)>删除</el-button>
+                @click="deleteContract(scope.row)">删除</el-button>
               <el-button 
                 v-if="scope.row.status === '待审批' && scope.row.applicant === applicant"
                 size="mini" 
                 type="warning"
-                @click=specialAuditingContract(scope.row)>特批</el-button>
+                @click="specialAuditingContract(scope.row)">特批</el-button>
               <el-button
                 size="mini" 
                 type="info"

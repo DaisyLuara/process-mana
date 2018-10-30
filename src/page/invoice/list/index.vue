@@ -140,7 +140,7 @@
             label="合同编号"
             min-width="80">
             <template slot-scope="scope">
-              {{scope.row.contract_number}}
+              {{ scope.row.contract_number }}
             </template>
           </el-table-column>
           <el-table-column
@@ -149,7 +149,7 @@
             label="公司名称"
             min-width="100">
             <template slot-scope="scope">
-              {{scope.row.company_name}}
+              {{ scope.row.company_name }}
             </template>
           </el-table-column>
           <el-table-column
@@ -158,7 +158,7 @@
             label="收款状态"
             min-width="80">
             <template slot-scope="scope">
-              {{scope.row.receive_status}}
+              {{ scope.row.receive_status }}
             </template>
           </el-table-column>
           <el-table-column
@@ -167,7 +167,7 @@
             label="申请人"
             min-width="80">
             <template slot-scope="scope">
-              {{scope.row.applicant_name}}
+              {{ scope.row.applicant_name }}
             </template>
           </el-table-column>
           <el-table-column
@@ -176,7 +176,7 @@
             label="审批状态"
             min-width="80">
             <template slot-scope="scope">
-              {{scope.row.status}}
+              {{ scope.row.status }}
             </template>
           </el-table-column>
           <el-table-column
@@ -185,7 +185,7 @@
             label="待处理人"
             min-width="80">
             <template slot-scope="scope">
-              {{scope.row.handler_name === null ? '--' : scope.row.handler_name}}
+              {{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}
             </template>
           </el-table-column>
           <el-table-column
@@ -194,7 +194,7 @@
             label="申请时间"
             min-width="80">
             <template slot-scope="scope">
-              {{scope.row.created_at}}
+              {{ scope.row.created_at }}
             </template>
           </el-table-column>
           <el-table-column 
