@@ -62,7 +62,6 @@ router.beforeEach((to, from, next) => {
         return pathness
       }
     })
-    alert(JSON.stringify(pathWhiteList))
     if (pathWhiteList.length < 1) {
       // next({ path: '/login' })
       window.location.href = LOGIN_URL
@@ -80,7 +79,6 @@ router.beforeEach((to, from, next) => {
     }
   })
   if (loginBlackList.length > 0) {
-    // alert(JSON.stringify(loginBlackList))
     next({ path: '/' })
     return
   }
