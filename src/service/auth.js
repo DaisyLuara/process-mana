@@ -55,11 +55,12 @@ export default {
 
   // 清楚一切登录相关数据
   clearLoginData(context) {
-    Cookies.removeItem('jwt_token')
-    Cookies.removeItem('user_info')
-    Cookies.removeItem('jwt_ttl')
-    Cookies.removeItem('jwt_begin_time')
-    Cookies.removeItem('permissions')
+    // Cookies.removeItem('jwt_token')
+    context.$cookie.delete('jwt_token', { domain: 'jingfree.top' })
+    context.$cookie.delete('user_info', { domain: 'jingfree.top' })
+    context.$cookie.delete('jwt_ttl', { domain: 'jingfree.top' })
+    context.$cookie.delete('jwt_begin_time', { domain: 'jingfree.top' })
+    context.$cookie.delete('permissions', { domain: 'jingfree.top' })
     let setIntervalValue =
       context.$store.state.notificationCount.setIntervalValue
     clearInterval(setIntervalValue)
