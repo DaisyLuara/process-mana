@@ -89,16 +89,15 @@
             </el-form-item>
           </el-col>
           <el-col 
-             v-if="contractForm.type === 0"
-             :span="12">
+            v-if="contractForm.type === 0"
+            :span="12">
             <el-form-item 
               label="收款日期" 
               prop="receive_date" >
               <el-date-picker
-                type="dates"
                 v-model="contractForm.receive_date"
-                placeholder="选择一个或多个日期">
-              </el-date-picker>
+                type="dates"
+                placeholder="选择一个或多个日期"/>
             </el-form-item>
           </el-col>
         </el-row>

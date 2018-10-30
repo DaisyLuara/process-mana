@@ -32,8 +32,8 @@
               prop="contract_id" >
               <el-select 
                 v-model="invoiceForm.contract_id" 
-                placeholder="请选择" 
                 :loading="searchLoading"
+                placeholder="请选择" 
                 filterable 
                 clearable>
                 <el-option
@@ -158,8 +158,8 @@
           @click="cargoAdd">新增货物或应税劳务·服务</el-button>
         <el-table 
           :data="tableData"
-          border
           :span-method="arraySpanMethod"
+          border
           style="width: 100%;margin-bottom: 20px;">
           <el-table-column
             prop="name"
@@ -172,16 +172,16 @@
               <el-select
                 v-if="scope.$index !== tableData.length-1" 
                 v-model="scope.row.name" 
-                placeholder="请选择" 
                 :loading="searchLoading"
+                placeholder="请选择" 
                 filterable 
                 clearable
                 @change="googsServiceHandle($event,scope.$index)">
-              <el-option
-                v-for="item in goodsServiceList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"/>
+                <el-option
+                  v-for="item in goodsServiceList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
               </el-select>
               <span v-if="scope.$index === tableData.length-1">¥：{{ scope.row.name }}</span>
             </template>
@@ -218,8 +218,8 @@
             <template 
               slot-scope="scope">
               <el-input
-                type="tel" 
                 v-model="scope.row.num"
+                type="tel" 
                 placeholder="请输入数量"/>
             </template>
           </el-table-column>
@@ -244,7 +244,7 @@
             header-align="center">
             <template 
               slot-scope="scope">
-              {{ scope.row.num  *  scope.row.price}}
+              {{ scope.row.num * scope.row.price }}
             </template>
           </el-table-column>
           <el-table-column
@@ -266,8 +266,8 @@
           <el-input
             v-model="invoiceForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
             :maxlength="180"
+            type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
         </el-form-item>

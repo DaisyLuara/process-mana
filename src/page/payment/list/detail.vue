@@ -7,7 +7,7 @@
         separator="/">
         <el-breadcrumb-item 
           :to="'/payment/list'">付款管理</el-breadcrumb-item>
-        <el-breadcrumb-item>{{hide ? '详情' : '审批' }}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ hide ? '详情' : '审批' }}</el-breadcrumb-item>
       </el-breadcrumb>
       <headModule/>
     </div>
@@ -17,7 +17,7 @@
       class="pane">
       <div 
         class="pane-title">
-        付款{{hide ? '详情' : '审批' }}
+        付款{{ hide ? '详情' : '审批' }}
       </div>
       <el-form
         ref="paymentForm"
@@ -109,7 +109,9 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog title="驳回理由" :visible.sync="dialogFormVisible">
+    <el-dialog 
+      :visible.sync="dialogFormVisible"
+      title="驳回理由">
       <el-form>
         <el-form-item
           label="备注:" 
@@ -117,15 +119,19 @@
           <el-input
             v-model="paymentForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
             :maxlength="180"
+            type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="rejected">确 定</el-button>
+        <el-button 
+          type="primary" 
+          @click="rejected">确 定</el-button>
       </div>
     </el-dialog>
   </div>

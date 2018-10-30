@@ -7,7 +7,7 @@
         separator="/">
         <el-breadcrumb-item 
           :to="'/invoice/list'">开票管理</el-breadcrumb-item>
-        <el-breadcrumb-item>{{hide ? '详情' : '审批' }}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ hide ? '详情' : '审批' }}</el-breadcrumb-item>
       </el-breadcrumb>
       <headModule/>
     </div>
@@ -114,38 +114,32 @@
             align="center"
             header-align="center"
             label="货物或应税劳务·服务名称"
-            width="250">
-          </el-table-column>
+            width="250"/>
           <el-table-column
             align="center"
             header-align="center"
             prop="spec_type"
-            label="规格型号">
-          </el-table-column>
+            label="规格型号"/>
           <el-table-column
             align="center"
             header-align="center"
             prop="unit"
-            label="单位">
-          </el-table-column>
+            label="单位"/>
           <el-table-column
             align="center"
             prop="num"
             header-align="center"
-            label="数量">
-          </el-table-column>
+            label="数量"/>
           <el-table-column
             prop="price"
             align="center"
             header-align="center"
-            label="单价(含税)">
-          </el-table-column>
+            label="单价(含税)"/>
           <el-table-column
             prop="money"
             align="center"
             header-align="center"
-            label="金额(含税)">
-          </el-table-column>
+            label="金额(含税)"/>
         </el-table>
         <el-form-item
           v-if="hide"
@@ -170,7 +164,9 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog title="驳回理由" :visible.sync="dialogFormVisible">
+    <el-dialog 
+      :visible.sync="dialogFormVisible"
+      title="驳回理由">
       <el-form>
         <el-form-item
           label="备注:" 
@@ -178,15 +174,19 @@
           <el-input
             v-model="invoiceForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
             :maxlength="180"
+            type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="rejected">确 定</el-button>
+        <el-button 
+          type="primary" 
+          @click="rejected">确 定</el-button>
       </div>
     </el-dialog>
   </div>

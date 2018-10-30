@@ -7,7 +7,7 @@
         separator="/">
         <el-breadcrumb-item 
           :to="'/contract/list'">合同管理</el-breadcrumb-item>
-        <el-breadcrumb-item>{{hide ? '详情' : '审批' }}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ hide ? '详情' : '审批' }}</el-breadcrumb-item>
       </el-breadcrumb>
       <headModule/>
     </div>
@@ -17,7 +17,7 @@
       class="pane">
       <div 
         class="pane-title">
-        合同{{hide ? '详情' : '审批' }}
+        合同{{ hide ? '详情' : '审批' }}
       </div>
       <el-form
         ref="contractForm"
@@ -75,7 +75,12 @@
         <el-form-item
           label="合同内容:" 
           prop="content" >
-          <div v-for="item in fileList" :key="item.id">{{ item.name }}<span class="download" @click="handlePreview(item)">下载</span></div>
+          <div 
+            v-for="item in fileList" 
+            :key="item.id">{{ item.name }}
+            <span 
+              class="download" 
+              @click="handlePreview(item)">下载</span></div>
         </el-form-item>
         <el-form-item
           label="备注:" 
@@ -99,13 +104,15 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog title="驳回理由" :visible.sync="dialogFormVisible">
+    <el-dialog  
+      :visible.sync="dialogFormVisible"
+      title="驳回理由">
       <el-form >
         <el-form-item
           v-if="!hide && roles.name === 'legal-affairs'"
+          :rules="[{ required: true, message: '请上传文件', trigger: 'submit' }]"
           label="合同内容" 
-          prop="ids" 
-          :rules="[{ required: true, message: '请上传文件', trigger: 'submit' }]">
+          prop="ids">
           <el-upload
             ref="upload"
             :action="SERVER_URL + '/api/media'" 
@@ -137,8 +144,8 @@
           <el-input
             v-model="contractForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
             :maxlength="180"
+            type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
         </el-form-item>
