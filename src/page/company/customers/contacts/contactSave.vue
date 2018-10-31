@@ -154,7 +154,7 @@ export default {
             position: this.contactForm.contact.position,
             password: this.contactForm.contact.password
           }
-          if (this.contactForm.contact.password === 0) {
+          if (this.contactForm.contact.password === '') {
             delete args.password
           }
           company

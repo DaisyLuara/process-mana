@@ -37,7 +37,7 @@
                 <el-option
                   v-for="item in contractList"
                   :key="item.id"
-                  :label="item.name"
+                  :label="item.contract_number"
                   :value="item.id"/>
               </el-select>
             </el-form-item>
@@ -45,9 +45,9 @@
           <el-col :span="12">
             <el-form-item 
               label="申请人" 
-              prop="applicant" >
+              prop="applicant_name" >
               <el-input 
-                v-model="paymentForm.applicant" 
+                v-model="paymentForm.applicant_name" 
                 :disabled="true"
                 :maxlength="50"
                 class="item-input"/>
