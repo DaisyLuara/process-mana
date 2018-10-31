@@ -3,9 +3,7 @@ import { Cookies } from 'service'
 const HOST = process.env.SERVER_URL
 const DOMAIN = process.env.DOMAIN
 const LOGIN_URL = process.env.LOGIN_URL
-const LOGIN_API = '/api/authorizations'
 const LOGOUT_API = '/api/authorizations/current'
-const USERINFO_API = '/api/user?include=permissions,roles'
 const IMAGE_CAPTCHA = '/api/captchas'
 const USER_API = '/api/user'
 const SMS_CAPTCHA = '/api/verificationCodes'
@@ -41,7 +39,7 @@ export default {
   logout(context) {
     context.$http
       .delete(HOST + LOGOUT_API)
-      .then(data => {
+      .then(() => {
         this.clearLoginData(context)
         let setIntervalValue =
           context.$store.state.notificationCount.setIntervalValue
@@ -55,12 +53,11 @@ export default {
 
   // 清楚一切登录相关数据
   clearLoginData(context) {
-    // Cookies.removeItem('jwt_token')
-    context.$cookie.delete('jwt_token', { domain: 'jingfree.top' })
-    context.$cookie.delete('user_info', { domain: 'jingfree.top' })
-    context.$cookie.delete('jwt_ttl', { domain: 'jingfree.top' })
-    context.$cookie.delete('jwt_begin_time', { domain: 'jingfree.top' })
-    context.$cookie.delete('permissions', { domain: 'jingfree.top' })
+    context.$cookie.delete('jwt_token', { domain: DOMAIN })
+    context.$cookie.delete('user_info', { domain: DOMAIN })
+    context.$cookie.delete('jwt_ttl', { domain: DOMAIN })
+    context.$cookie.delete('jwt_begin_time', { domain: DOMAIN })
+    context.$cookie.delete('permissions', { domain: DOMAIN })
     let setIntervalValue =
       context.$store.state.notificationCount.setIntervalValue
     clearInterval(setIntervalValue)
