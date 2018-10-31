@@ -152,7 +152,8 @@ import {
   savePayment,
   modifyPayment,
   paymentDetail,
-  Cookies
+  Cookies,
+  historyBack
 } from 'service'
 
 import {
@@ -259,7 +260,7 @@ export default {
     paymentDetail() {
       paymentDetail(this, this.paymentID)
         .then(res => {
-          this.paymentForm.contract_id = res.contract_number
+          this.paymentForm.contract_id = res.contract_id
           this.paymentForm.payee = res.payee
           this.paymentForm.type =
             res.type === '支票' ? 1 : res.type === '电汇单' ? 2 : 3
@@ -288,7 +289,7 @@ export default {
         })
     },
     historyBack() {
-      router.back()
+      historyBack()
     },
     submit(formName) {
       this.setting.loading = true

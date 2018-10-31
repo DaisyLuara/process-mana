@@ -26,8 +26,8 @@
           <el-col :span="12">
             <el-form-item 
               label="合同编号:" 
-              prop="contract_name" >
-              {{ paymentForm.contract_name }}
+              prop="contract_number" >
+              {{ paymentForm.contract_number }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -182,7 +182,7 @@ export default {
         type_name: '',
         account_bank: '',
         contract_id: '',
-        contract_name: '',
+        contract_number: '',
         reason: '',
         amount: '',
         account_number: '',
@@ -213,7 +213,7 @@ export default {
         .then(res => {
           this.paymentForm.contract_id = res.contract_number
           this.paymentForm.payee = res.payee
-          this.paymentForm.contract_name = res.contract.name
+          this.paymentForm.contract_number = res.contract_number
           this.paymentForm.type =
             res.type === '支票' ? 1 : res.type === '电汇单' ? 2 : 3
           this.paymentForm.type_name = res.type
