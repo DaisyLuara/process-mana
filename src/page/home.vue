@@ -194,20 +194,20 @@ export default {
 
 .system-menu {
   position: fixed;
-  top: 80px;
+  top: 60px;
   left: 0;
   right: 0;
   width: 100%;
   text-align: center;
   padding-left: 90px;
-  height: 50px;
+  height: 60px;
   background: #fff;
-  border-bottom: 1px solid #ccc8c8;
+  box-shadow: 0 2px 0 #ccc8c8;
   z-index: 300;
   .system-menu-item {
     margin-right: 35px;
-    height: 50px;
-    line-height: 50px;
+    height: 60px;
+    line-height: 60px;
     display: inline-block;
     cursor: pointer;
     &.active {
