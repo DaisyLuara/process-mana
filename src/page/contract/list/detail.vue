@@ -63,6 +63,7 @@
             </el-form-item>
           </el-col>
           <el-col
+            v-if="contractForm.receive_date"
             :span="12">
             <el-form-item 
               label="收款日期:" 
