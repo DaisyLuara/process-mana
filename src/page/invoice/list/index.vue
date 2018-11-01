@@ -31,6 +31,21 @@
             </el-form-item>
             <el-form-item 
               label="" 
+              prop="receive_status">
+              <el-select 
+                v-model="searchForm.receive_status" 
+                placeholder="请选择收款状态" 
+                filterable 
+                clearable>
+                <el-option
+                  v-for="item in receiveStatusList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item 
+              label="" 
               prop="name">
               <el-input 
                 v-model="searchForm.name"
@@ -113,7 +128,7 @@
                 </el-form-item>
                 <el-form-item 
                   label="申请人:">
-                  <span>{{ scope.row.applicant }}</span> 
+                  <span>{{ scope.row.applicant_name }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="审批状态:">
@@ -221,6 +236,11 @@
                 size="mini" 
                 type="warning"
                 @click="receiveInvoice(scope.row)">认领票据</el-button>
+              <el-button 
+                v-if="scope.row.status === '未收款' && roles.name==='finance'"
+                size="mini" 
+                type="warning"
+                @click="receiptInvoice(scope.row)">确认收款</el-button>
               <el-button
                 size="mini" 
                 type="info"
@@ -264,7 +284,8 @@ import {
   receiveInvoice,
   handleDateTransform,
   getInvoiceList,
-  Cookies
+  Cookies,
+  receiptInvoice
 } from 'service'
 
 export default {
@@ -288,7 +309,8 @@ export default {
         dataValue: [],
         name: '',
         status: '',
-        contract_number: ''
+        contract_number: '',
+        receive_status: ''
       },
       pickerOptions2: {
         shortcuts: [
@@ -339,6 +361,16 @@ export default {
           }
         ]
       },
+      receiveStatusList: [
+        {
+          id: 1,
+          name: '已收款'
+        },
+        {
+          id: 0,
+          name: '未收款'
+        }
+      ],
       statusList: [
         {
           id: 1,
@@ -428,6 +460,38 @@ export default {
           console.log(e)
         })
     },
+    receiptInvoice(data) {
+      let id = data.id
+      this.$confirm('确认收款?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          this.setting.loadingText = '确认收款中'
+          this.setting.loading = true
+          receiptInvoice(this, id)
+            .then(response => {
+              this.setting.loading = false
+              this.$message({
+                type: 'success',
+                message: '收款成功！'
+              })
+              this.pagination.currentPage = 1
+              this.getInvoiceList()
+            })
+            .catch(error => {
+              this.$message({
+                message: error.response.data.message,
+                type: 'warning'
+              })
+              this.setting.loading = false
+            })
+        })
+        .catch(e => {
+          console.log(e)
+        })
+    },
     deleteInvoice(data) {
       let id = data.id
       this.$confirm('确认删除此票据?', '提示', {
@@ -468,7 +532,8 @@ export default {
         status: this.searchForm.status,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        end_date: handleDateTransform(this.searchForm.dataValue[1])
+        end_date: handleDateTransform(this.searchForm.dataValue[1]),
+        receive_status: this.searchForm.receive_status
       }
       if (!this.searchForm.name) {
         delete args.name
@@ -478,6 +543,9 @@ export default {
       }
       if (this.searchForm.contract_number === '') {
         delete args.contract_number
+      }
+      if (this.searchForm.receive_status === '') {
+        delete args.receive_status
       }
       if (!this.searchForm.dataValue[0]) {
         delete args.start_date

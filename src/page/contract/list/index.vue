@@ -144,7 +144,7 @@
             label="合同编号"
             min-width="80">
             <template slot-scope="scope">
-              <span :class="{'highlighted': scope.row.top === 1}">{{ scope.row.contract_number }}</span>
+              <span>{{ scope.row.contract_number }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -153,7 +153,7 @@
             label="公司名称"
             min-width="100">
             <template slot-scope="scope">
-              <span :class="{'highlighted': scope.row.top === 1}">{{ scope.row.company_name }}</span>
+              <span>{{ scope.row.company_name }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -162,7 +162,7 @@
             label="合同名称"
             min-width="80">
             <template slot-scope="scope">
-              <span :class="{'highlighted': scope.row.top === 1}">{{ scope.row.name }}</span>
+              <span>{{ scope.row.name }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -171,7 +171,7 @@
             label="申请人"
             min-width="80">
             <template slot-scope="scope">
-              <span :class="{'highlighted': scope.row.top === 1}">{{ scope.row.applicant_name }}</span>
+              <span>{{ scope.row.applicant_name }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -180,7 +180,7 @@
             label="审批状态"
             min-width="80">
             <template slot-scope="scope">
-              <span :class="{'highlighted': scope.row.top === 1}">{{ scope.row.status }}</span>
+              <span>{{ scope.row.status }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -189,7 +189,7 @@
             label="待处理人"
             min-width="80">
             <template slot-scope="scope">
-              <span :class="{'highlighted': scope.row.top === 1}">{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
+              <span>{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -198,7 +198,7 @@
             label="申请时间"
             min-width="80">
             <template slot-scope="scope">
-              <span :class="{'highlighted': scope.row.top === 1}">{{ scope.row.created_at }}</span>
+              <span>{{ scope.row.created_at }}</span>
             </template>
           </el-table-column>
           <el-table-column 
@@ -489,7 +489,7 @@ export default {
       getContractList(this, args)
         .then(res => {
           this.tableData = res.data
-          this.pagination.total = res.total
+          this.pagination.total = res.meta.pagination.total
           this.setting.loading = false
         })
         .catch(err => {

@@ -46,6 +46,24 @@ export default {
           meta: {}
         }
       ]
+    },
+    {
+      path: 'collection',
+      component: () =>
+        import(/* webpackChunkName: "page/contract/collection/routerView" */ 'page/contract/collection/routerView'),
+      meta: {
+        title: '收款提示'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/collection/index" */ 'page/contract/collection/index'),
+          name: '收款提示列表',
+          meta: {}
+        },
+        
+      ]
     }
   ]
 }

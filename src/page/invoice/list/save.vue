@@ -127,8 +127,8 @@
               label="收款状态" 
               prop="receive_status" >
               <el-radio-group v-model="invoiceForm.receive_status">
-                <el-radio :label="0">已收款</el-radio>
-                <el-radio :label="1">未收款</el-radio>
+                <el-radio :label="1">已收款</el-radio>
+                <el-radio :label="0">未收款</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>

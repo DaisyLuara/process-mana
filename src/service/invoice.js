@@ -92,6 +92,20 @@ const receiveInvoice = (context, invoiceId) => {
   })
 }
 
+// 确认收款
+const receiptInvoice = (context, invoiceId) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + INVOICE_API + '/receipt/' + invoiceId)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getInvoiceList,
   saveInvoice,
@@ -99,5 +113,6 @@ export {
   modifyInvoice,
   deleteInvoice,
   auditingInvoice,
-  receiveInvoice
+  receiveInvoice,
+  receiptInvoice
 }

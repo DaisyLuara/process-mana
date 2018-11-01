@@ -1,10 +1,24 @@
 const CONTRACT_API = '/api/contract'
+const CONTRACT_REMIND_API = '/api/remind_contract'
 const HOST = process.env.SERVER_URL
 
 const getContractList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + CONTRACT_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const getRemindContractList = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + CONTRACT_REMIND_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -98,5 +112,6 @@ export {
   modifyContract,
   deleteContract,
   auditingContract,
-  specialAuditingContract
+  specialAuditingContract,
+  getRemindContractList
 }
