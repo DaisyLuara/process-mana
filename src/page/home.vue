@@ -231,12 +231,6 @@ export default {
   right: 45px;
 }
 
-.logo-wrap {
-  .logo {
-    margin-top: 15px;
-  }
-}
-
 .modules-top {
   padding-top: 0;
 }

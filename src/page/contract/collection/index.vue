@@ -81,6 +81,10 @@
                   <span>{{ scope.row.applicant_name }}</span> 
                 </el-form-item>
                 <el-form-item 
+                  label="待处理人:">
+                  <span>{{ scope.row.handler_name }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="收款日期:">
                   <span style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
                 </el-form-item>
@@ -111,11 +115,14 @@
             label="申请人"
             min-width="80">
           </el-table-column>
-          <el-table-column
+            <el-table-column
             :show-overflow-tooltip="true"
-            prop="receive_date"
-            label="收款日期"
+            prop="handler_name"
+            label="待处理人"
             min-width="80">
+            <template slot-scope="scope">
+              <span>{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
+            </template>
           </el-table-column>
           <el-table-column 
             label="操作" 
