@@ -237,7 +237,7 @@
                 type="warning"
                 @click="receiveInvoice(scope.row)">认领票据</el-button>
               <el-button 
-                v-if="scope.row.status === '未收款' && roles.name==='finance'"
+                v-if="scope.row.receive_status === '未收款' && roles.name === 'finance'"
                 size="mini" 
                 type="warning"
                 @click="receiptInvoice(scope.row)">确认收款</el-button>
