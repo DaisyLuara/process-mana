@@ -538,7 +538,7 @@ export default {
         // 0 收款
         type: 0
       }
-      getContract(this,args)
+      getContract(this, args)
         .then(res => {
           this.contractList = res.data
           this.searchLoading = false
