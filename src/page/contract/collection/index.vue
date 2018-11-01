@@ -85,6 +85,14 @@
                   <span>{{ scope.row.handler_name }}</span> 
                 </el-form-item>
                 <el-form-item 
+                  label="审批状态:">
+                  <span>{{ scope.row.status }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="申请时间:">
+                  <span>{{ scope.row.created_at }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="收款日期:">
                   <span style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
                 </el-form-item>
@@ -122,6 +130,24 @@
             min-width="80">
             <template slot-scope="scope">
               <span>{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="status"
+            label="审批状态"
+            min-width="80">
+            <template slot-scope="scope">
+              <span>{{ scope.row.status }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="apply_time"
+            label="申请时间"
+            min-width="80">
+            <template slot-scope="scope">
+              <span>{{ scope.row.created_at }}</span>
             </template>
           </el-table-column>
           <el-table-column 
