@@ -119,8 +119,7 @@ export default {
       margin-left: 10px;
     }
     .avatar {
-      height: 70%;
-      margin: 15%;
+      height: 50%;
       border-radius: 50%;
     }
   }
