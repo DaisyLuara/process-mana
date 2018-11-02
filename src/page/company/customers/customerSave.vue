@@ -70,7 +70,7 @@
 
 <script>
 import company from 'service/company'
-import router from 'router'
+import { historyBack } from 'service'
 import { Select, Option, Button, Input, Form, FormItem } from 'element-ui'
 
 export default {
@@ -153,7 +153,10 @@ export default {
             })
             .catch(error => {
               this.setting.loading = false
-              console.log(error)
+              this.$message({
+                message: error.response.message.data,
+                type: 'error'
+              })
             })
         } else {
           return
@@ -181,7 +184,7 @@ export default {
     },
     resetForm(formName) {},
     historyBack() {
-      router.back()
+      historyBack()
     }
   }
 }
