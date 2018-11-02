@@ -53,6 +53,7 @@
             v-model="contactForm.contact.telephone" 
             :maxlength="20"
             class="customer-form-input"/>
+            <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
         </el-form-item>
         <el-form-item 
           label="密码" 
@@ -125,6 +126,22 @@ export default {
             },
             trigger: 'blur',
             required: true
+          }
+        ],
+        'contact.telephone': [
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback()
+                return
+              }
+              if (!/^0\d{2,3}-\d{7,8}|0\d{2,3}-\d{7,8}-\d{1,4}$/.test(value)) {
+                callback('座机电话格式不正确,请重新输入')
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
           }
         ],
         'contact.name': [
