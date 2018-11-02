@@ -39,7 +39,11 @@
           />
           <el-table-column
             prop="phone"
-            label="联系人电话"
+            label="联系人手机号"
+          />
+          <el-table-column
+            prop="telephone"
+            label="联系人座机号"
           />
           <el-table-column
             prop="created_at"
