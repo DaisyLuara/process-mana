@@ -39,11 +39,19 @@
             class="customer-form-input"/>
         </el-form-item>
         <el-form-item 
-          label="联系电话" 
+          label="手机号码" 
           prop="contact.phone">
           <el-input 
             v-model="contactForm.contact.phone" 
             :maxlength="11"
+            class="customer-form-input"/>
+        </el-form-item>
+        <el-form-item 
+          label="座机电话" 
+          prop="contact.telephone">
+          <el-input 
+            v-model="contactForm.contact.telephone" 
+            :maxlength="20"
             class="customer-form-input"/>
         </el-form-item>
         <el-form-item 
@@ -97,7 +105,8 @@ export default {
           name: '',
           phone: '',
           position: '',
-          password: ''
+          password: '',
+          telephone: ''
         }
       },
       pid: '',
@@ -107,7 +116,7 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (/^\s*$/.test(value)) {
-                callback('请输入手机')
+                callback('请输入手机号')
               } else if (!/^1[3456789]\d{9}$/.test(value)) {
                 callback('手机格式不正确,请重新输入')
               } else {
@@ -152,10 +161,14 @@ export default {
             name: this.contactForm.contact.name,
             phone: this.contactForm.contact.phone,
             position: this.contactForm.contact.position,
-            password: this.contactForm.contact.password
+            password: this.contactForm.contact.password,
+            telephone: this.contactForm.contact.telephone
           }
           if (this.contactForm.contact.password === '') {
             delete args.password
+          }
+          if (this.contactForm.contact.telephone === '') {
+            delete args.telephone
           }
           company
             .saveContact(this, pid, args, uid)

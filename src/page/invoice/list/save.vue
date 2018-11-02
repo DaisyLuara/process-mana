@@ -393,7 +393,7 @@ export default {
         receive_status: 1,
         phone: null,
         applicant: '',
-        type: 1,
+        type: 0,
         account_bank: '',
         address: '',
         contract_id: '',
