@@ -55,7 +55,7 @@
           />
           <el-table-column 
             label="操作" 
-            width="280">
+            width="130">
             <template 
               slot-scope="scope">
               <el-button 
