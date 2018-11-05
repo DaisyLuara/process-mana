@@ -296,9 +296,9 @@ export default {
       historyBack()
     },
     submit(formName) {
-      this.setting.loading = true
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.setting.loading = true
           delete this.paymentForm.applicant_name
           let args = this.paymentForm
           if (this.paymentID) {
