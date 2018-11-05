@@ -1,0 +1,127 @@
+<template>
+  <div class="logout">
+    <div
+      class="logo-wrap">
+      <div
+        class="logo">
+        <img
+          :src="CDN_URL+'logo.png'">
+      </div>
+    </div>
+    <el-popover
+      ref="popover"
+      v-model="visible"
+      placement="left"
+      width="80"
+      trigger="hover"
+      popper-class="popper-logout">
+      <span 
+        class="logout-btn"
+        @click="logout">登出</span>
+    </el-popover>
+    <div 
+      v-popover:popover
+      class="avatar-wrap" 
+      @click="handleUser">
+      <span>{{ name }}</span>
+      <div class="avatar-block">
+        <img 
+          src="~assets/images/user-default-icon.png" 
+          alt="" 
+          class="avatar">
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import { Popover } from 'element-ui'
+import auth from 'service/auth'
+const CDN_URL = process.env.CDN_URL
+
+export default {
+  components: {
+    'el-popover': Popover
+  },
+  data() {
+    return {
+      visible: false,
+      name: null,
+      CDN_URL: CDN_URL + 'process/img/'
+    }
+  },
+  created() {
+    let user_info = JSON.parse(this.$cookie.get('user_info'))
+    this.name = user_info.name
+  },
+  methods: {
+    logout() {
+      this.visible = false
+      auth.logout(this)
+    },
+    handleUser() {
+      this.$router.push({
+        path: '/account/account'
+      })
+    }
+  }
+}
+</script>
+
+<style lang="less" scoped>
+.logout {
+  height: 60px;
+  position: fixed;
+  top: 0;
+  background: #222830;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 130;
+  .logo-wrap {
+    position: relative;
+    display: flex;
+    margin-left: 20px;
+    width: 100%;
+    height: 60px;
+    .logo {
+      width: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        width: 100%;
+      }
+    }
+  }
+  .logout-btn {
+    display: block;
+    width: 100%;
+    height: 35px;
+    line-height: 35px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .avatar-wrap {
+    position: absolute;
+    top: 0;
+    right: 30px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    cursor: pointer;
+    .avatar-block {
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 10px;
+    }
+    .avatar {
+      height: 50%;
+      border-radius: 50%;
+    }
+  }
+}
+</style>
