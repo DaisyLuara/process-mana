@@ -1,9 +1,6 @@
 <template>
   <div class="company-root">
     <second-sidebar module="company"/>
-    <div class="topbar">
-      {{ this.$route.meta.title }}
-    </div>
     <router-view/>
   </div>
 </template>

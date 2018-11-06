@@ -1,15 +1,6 @@
 <template>
   <div 
     class="add-customer-wrap">
-    <div 
-      class="topbar">
-      <el-breadcrumb 
-        separator="/">
-        <el-breadcrumb-item 
-          :to="{ path: '/company/customers/contacts?id=' + pid +'&name=' + contactName }">联系人管理</el-breadcrumb-item>
-        <el-breadcrumb-item>{{ contactID ? '修改' : '添加' }}</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
     <div
       v-loading="setting.loading" 
       :element-loading-text="setting.loadingText">

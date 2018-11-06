@@ -2,15 +2,6 @@
   <div 
     class="item-wrap-template">
     <div 
-      class="topbar">
-      <el-breadcrumb 
-        separator="/">
-        <el-breadcrumb-item 
-          :to="'/invoice/list'">开票管理</el-breadcrumb-item>
-        <el-breadcrumb-item>{{ hide ? '详情' : '审批' }}</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-    <div 
       v-loading="setting.loading"
       :element-loading-text="setting.loadingText" 
       class="pane">
