@@ -4,14 +4,6 @@
     :element-loading-text="setting.loadingText" 
     class="root">
     <div 
-      class="topbar">
-      <el-breadcrumb 
-        separator="/">
-        <el-breadcrumb-item 
-          :to="{ path: '/company/customers'}">联系人列表</el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
-    <div 
       class="item-list-wrap">
       <div 
         class="item-content-wrap">

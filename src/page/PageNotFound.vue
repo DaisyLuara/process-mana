@@ -4,7 +4,7 @@
     <div>页面不存在</div>
     <div>
       <router-link 
-        :to="{ path: '/' }">返回首页</router-link>
+        :to="{ path: '/inform/list' }">返回通知</router-link>
     </div>
   </div>
 </template>
