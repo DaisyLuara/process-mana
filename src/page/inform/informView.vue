@@ -1,9 +1,6 @@
 <template>
   <div class="inform-root">
     <second-sidebar module="inform"/>
-    <div class="topbar">
-      {{ this.$route.meta.title }}
-    </div>
     <router-view/>
   </div>
 </template>
