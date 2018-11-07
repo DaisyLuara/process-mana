@@ -65,6 +65,7 @@
                 v-model="invoiceForm.telephone" 
                 :maxlength="20"
                 class="item-input"/>
+              <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -347,6 +348,10 @@ export default {
       }
     }
     let checkPhone = (rule, value, callback) => {
+      if (!value) {
+        callback()
+        return
+      }
       if (!checkMobile(value)) {
         callback(new Error('手机号格式不正确'))
       } else {
