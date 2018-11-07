@@ -39,6 +39,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item
+              label="座机电话:" 
+              prop="telephone">
+              {{ invoiceForm.telephone }}
+            </el-form-item>
+            
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item 
+              label="公司名称:" 
+              prop="company_name" >
+              {{ invoiceForm.company_name }}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item 
               label="纳税人识别号:" 
               prop="taxpayer_num" >
@@ -131,25 +148,12 @@
             header-align="center"
             label="金额(含税)"/>
         </el-table>
-        <el-row>
-          <el-col 
+        <el-form-item
           v-if="hide"
-          :span="12">
-            <el-form-item
-              label="备注:" 
-              prop="remark">
-              {{ invoiceForm.remark }}
-            </el-form-item>
-          </el-col>
-          <el-col 
-            :span="12">
-            <el-form-item
-              label="座机电话:" 
-              prop="telephone">
-              {{ invoiceForm.telephone }}
-            </el-form-item>
-          </el-col>
-        </el-row>
+          label="备注:" 
+          prop="remark">
+          {{ invoiceForm.remark }}
+        </el-form-item>
         <el-form-item>
           <el-button
             v-if="!hide"
@@ -253,7 +257,7 @@ export default {
         taxpayer_num: '',
         account_number: '',
         remark: '',
-        kind: ''
+        kind: '',
       },
       id: '',
       tableData: [

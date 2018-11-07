@@ -4,7 +4,8 @@
     <headModule/>
     <div
       class="first-sidebar"
-      v-show="!iconMenuShow">
+      v-show="!iconMenuShow"
+      @mouseleave="leave">
       <el-menu
         :default-active="'/' + currModule"
         router>
@@ -44,7 +45,8 @@
     </div>
     <div
       v-show="iconMenuShow"
-      class="first-icon-sidebar">
+      class="first-icon-sidebar"
+      @mouseenter="enter">
       <el-menu
         :default-active="'/' + currModule"
         router>
@@ -181,6 +183,12 @@ export default {
     this.notificationStats()
   },
   methods: {
+    leave(){
+      this.iconMenuShow = false
+    },
+    enter() {
+      this.iconMenuShow = true
+    },
     handleMenuShow() {
       this.iconMenuShow = false
     },
@@ -189,7 +197,6 @@ export default {
     },
     systemMenu(item) {
       this.active = item.id
-
       switch (item.id) {
         case 'zhongtai':
           this.linkRedirect('ad')

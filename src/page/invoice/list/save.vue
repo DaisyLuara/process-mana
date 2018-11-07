@@ -59,6 +59,28 @@
           </el-col>
           <el-col :span="12">
             <el-form-item 
+              label="座机电话" 
+              prop="telephone">
+              <el-input 
+                v-model="invoiceForm.telephone" 
+                :maxlength="20"
+                class="item-input"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item 
+              label="公司名称" 
+              prop="company_name" >
+              <el-input 
+                v-model="invoiceForm.company_name" 
+                :maxlength="50"
+                class="item-input"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item 
               label="纳税人识别号" 
               prop="taxpayer_num" >
               <el-input 
@@ -250,32 +272,17 @@
             </template>
           </el-table-column>
         </el-table> 
-        <el-row>
-          <el-col :span="12">
-            <el-form-item 
-              label="备注" 
-              prop="remark">
-              <el-input
-                v-model="invoiceForm.remark"
-                :autosize="{ minRows: 2, maxRows: 4}"
-                :maxlength="180"
-                type="textarea"
-                placeholder="请输入内容"
-                class="text-input"/>
-            </el-form-item>
-         </el-col>
-         <el-col :span="12">
-            <el-form-item 
-              label="座机电话" 
-              prop="telephone">
-              <el-input 
-                v-model="invoiceForm.telephone" 
-                :maxlength="20"
-                class="item-input"/>
-                <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
-            </el-form-item>
-         </el-col>
-        </el-row>
+        <el-form-item 
+          label="备注" 
+          prop="remark">
+          <el-input
+            v-model="invoiceForm.remark"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="180"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
         <el-form-item>
           <el-button 
             type="primary"
@@ -406,12 +413,16 @@ export default {
         taxpayer_num: '',
         account_number: '',
         remark: '',
+        company_name:'',
         kind: ''
       },
       rules: {
         account_number: [
           { required: true, message: '请输入开户行账号', trigger: 'submit' },
           { validator: checkNumber, trigger: 'submit' }
+        ],
+        company_name: [
+          { required: true, message: '请输入公司名称', trigger: 'submit' },
         ],
         phone: [
           { message: '请输入手机号', trigger: 'submit' },
