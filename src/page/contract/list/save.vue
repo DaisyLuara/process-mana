@@ -412,7 +412,7 @@ export default {
       font-size: 18px;
       display: flex;
       flex-direction: row;
-      justify-ids: space-between;
+      justify-content: space-between;
     }
   }
 }

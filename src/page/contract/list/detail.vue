@@ -88,7 +88,7 @@
             v-if="!hide"
             type="primary"
             size="small"
-            @click="auditing">审核通过</el-button>
+            @click="auditingHandle">审核通过</el-button>
           <el-button
             size="small"
             @click="historyBack">返回</el-button>
@@ -312,7 +312,7 @@ export default {
           })
         })
     },
-    auditing() {
+    auditingHandle() {
       this.setting.loading = true
       this.$confirm('确定审核通过吗?', '提示', {
         confirmButtonText: '确定',
@@ -320,7 +320,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          if (this.contractForm.contract_number === '') {
+          if (!this.contractForm.contract_number) {
             this.setting.loading = true
             MessageBox.prompt('请输入合同编号', '填写合同编号', {
               confirmButtonText: '确定',

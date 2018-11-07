@@ -413,7 +413,7 @@ export default {
         taxpayer_num: '',
         account_number: '',
         remark: '',
-        invoice_company:'',
+        invoice_company: '',
         kind: ''
       },
       rules: {
@@ -422,7 +422,7 @@ export default {
           { validator: checkNumber, trigger: 'submit' }
         ],
         invoice_company: [
-          { required: true, message: '请输入开票名称', trigger: 'submit' },
+          { required: true, message: '请输入开票名称', trigger: 'submit' }
         ],
         phone: [
           { message: '请输入手机号', trigger: 'submit' },
@@ -608,6 +608,7 @@ export default {
     submit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.setting.loading = true
           delete this.invoiceForm.applicant_name
           let length = this.tableData.length
           let invoice_content = []
