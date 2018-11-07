@@ -131,12 +131,25 @@
             header-align="center"
             label="金额(含税)"/>
         </el-table>
-        <el-form-item
+        <el-row>
+          <el-col 
           v-if="hide"
-          label="备注:" 
-          prop="remark">
-          {{ invoiceForm.remark }}
-        </el-form-item>
+          :span="12">
+            <el-form-item
+              label="备注:" 
+              prop="remark">
+              {{ invoiceForm.remark }}
+            </el-form-item>
+          </el-col>
+          <el-col 
+            :span="12">
+            <el-form-item
+              label="座机电话:" 
+              prop="telephone">
+              {{ invoiceForm.telephone }}
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item>
           <el-button
             v-if="!hide"
