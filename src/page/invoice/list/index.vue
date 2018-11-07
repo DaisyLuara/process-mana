@@ -123,6 +123,10 @@
                   <span>{{ scope.row.company_name }}</span> 
                 </el-form-item>
                 <el-form-item 
+                  label="开票公司:">
+                  <span>{{ scope.row.invoice_company }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="收款状态:">
                   <span>{{ scope.row.receive_status }}</span> 
                 </el-form-item>
@@ -167,6 +171,11 @@
               {{ scope.row.company_name }}
             </template>
           </el-table-column>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="invoice_company"
+            label="开票公司"
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="receive_status"

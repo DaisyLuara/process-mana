@@ -50,9 +50,9 @@
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="公司名称:" 
-              prop="company_name" >
-              {{ invoiceForm.company_name }}
+              label="开票公司:" 
+              prop="invoice_company" >
+              {{ invoiceForm.invoice_company }}
             </el-form-item>
           </el-col>
           <el-col :span="12">

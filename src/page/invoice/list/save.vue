@@ -71,10 +71,10 @@
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="公司名称" 
-              prop="company_name" >
+              label="开票公司" 
+              prop="invoice_company" >
               <el-input 
-                v-model="invoiceForm.company_name" 
+                v-model="invoiceForm.invoice_company" 
                 :maxlength="50"
                 class="item-input"/>
             </el-form-item>
@@ -413,7 +413,7 @@ export default {
         taxpayer_num: '',
         account_number: '',
         remark: '',
-        company_name:'',
+        invoice_company:'',
         kind: ''
       },
       rules: {
@@ -421,8 +421,8 @@ export default {
           { required: true, message: '请输入开户行账号', trigger: 'submit' },
           { validator: checkNumber, trigger: 'submit' }
         ],
-        company_name: [
-          { required: true, message: '请输入公司名称', trigger: 'submit' },
+        invoice_company: [
+          { required: true, message: '请输入开票名称', trigger: 'submit' },
         ],
         phone: [
           { message: '请输入手机号', trigger: 'submit' },

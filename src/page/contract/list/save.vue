@@ -58,18 +58,6 @@
           </el-col>
           <el-col :span="12">
             <el-form-item 
-              label="合同编号" 
-              prop="contract_number" >
-              <el-input 
-                v-model="contractForm.contract_number"
-                :maxlength="50"
-                class="item-input"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item 
               label="合同类型" 
               prop="type" >
               <el-radio-group v-model="contractForm.type">
@@ -78,6 +66,8 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col 
             v-if="contractForm.type === 0"
             :span="12">
@@ -204,7 +194,6 @@ export default {
         company_id: '',
         applicant_name: '',
         name: '',
-        contract_number: '',
         type: 0,
         applicant: 0,
         receive_date: [],
@@ -219,12 +208,7 @@ export default {
         company_id: [
           { required: true, message: '请选择公司', trigger: 'submit' }
         ],
-        name: [
-          { required: true, message: '请输入合同名称', trigger: 'submit' }
-        ],
-        contract_number: [
-          { required: true, message: '请输入合同编号', trigger: 'submit' }
-        ]
+        name: [{ required: true, message: '请输入合同名称', trigger: 'submit' }]
       }
     }
   },
@@ -255,7 +239,6 @@ export default {
           this.contractForm.type = res.type === '收款合同' ? 0 : 1
           this.contractForm.applicant = res.applicant
           this.contractForm.name = res.name
-          this.contractForm.contract_number = res.contract_number
           this.contractForm.company_id = res.company_id
           this.contractForm.receive_date = res.receive_date.split(',')
           this.contractForm.remark = res.remark
@@ -345,7 +328,6 @@ export default {
         if (valid) {
           this.setting.loading = true
           let args = {
-            contract_number: this.contractForm.contract_number,
             name: this.contractForm.name,
             company_id: this.contractForm.company_id,
             applicant: this.contractForm.applicant,
@@ -354,14 +336,7 @@ export default {
             remark: this.contractForm.remark
           }
           if (this.contractForm.type === 0) {
-            if (this.contractForm.receive_date.length === 0) {
-              this.$message({
-                message: '请选择收款日期',
-                type: 'warning'
-              })
-              this.setting.loading = false
-              return
-            } else {
+            if (this.contractForm.receive_date.length !== 0) {
               let date = []
               this.contractForm.receive_date.map(r => {
                 let dateTransform = handleDateTransform(r)
