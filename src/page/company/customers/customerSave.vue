@@ -15,7 +15,7 @@
         :rules="rules" 
         label-width="100px">
         <el-form-item 
-          label="公司名称" 
+          label="商户名称" 
           prop="customer.name">
           <el-input 
             v-model="customerForm.customer.name" 
@@ -23,11 +23,20 @@
             class="customer-form-input"/>
         </el-form-item>
         <el-form-item 
-          label="公司地址" 
+          label="商户地址" 
           prop="customer.address">
           <el-input 
             v-model="customerForm.customer.address" 
             :maxlength="60"
+            class="customer-form-input" />
+        </el-form-item>
+        <el-form-item 
+          label="商户详情" 
+          prop="customer.description">
+          <el-input 
+            type="textarea"
+            v-model="customerForm.customer.description" 
+            :maxlength="1000"
             class="customer-form-input" />
         </el-form-item>
         <el-form-item 
@@ -84,7 +93,8 @@ export default {
       customerForm: {
         customer: {
           name: '',
-          address: ''
+          address: '',
+          description:''
         },
         selectedStatus: ''
       },
@@ -106,10 +116,13 @@ export default {
       customerID: '',
       rules: {
         'customer.name': [
-          { message: '请输入公司名称', trigger: 'blur', required: true }
+          { message: '请输入商户名称', trigger: 'blur', required: true }
         ],
         'customer.address': [
-          { message: '请输入公司地址', trigger: 'blur', required: true }
+          { message: '请输入商户地址', trigger: 'blur', required: true }
+        ],
+        'customer.description': [
+          { message: '请输入商户详情', trigger: 'blur', required: true }
         ]
       },
       loading: false
@@ -162,6 +175,7 @@ export default {
             this.statusFlag = true
             this.customerForm.customer.name = result.name
             this.customerForm.customer.address = result.address
+            this.customerForm.customer.description = result.description
             this.customerForm.selectedStatus = result.status
             this.setting.loading = false
           })
