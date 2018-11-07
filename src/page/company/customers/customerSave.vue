@@ -40,6 +40,14 @@
             class="customer-form-input" />
         </el-form-item>
         <el-form-item 
+          label="商户logo" 
+          prop="customer.logo">
+          <el-input 
+            v-model="customerForm.customer.logo" 
+            :maxlength="150"
+            class="customer-form-input" />
+        </el-form-item>
+        <el-form-item 
           v-if="statusFlag"
           label="状态" 
           prop="selectedStatus">
@@ -94,7 +102,8 @@ export default {
         customer: {
           name: '',
           address: '',
-          description:''
+          description: '',
+          logo: ''
         },
         selectedStatus: ''
       },
@@ -139,8 +148,17 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setting.loading = true
+          let args = {
+            name: this.customerForm.customer.name,
+            address: this.customerForm.customer.address,
+            description: this.customerForm.customer.description,
+            logo: this.customerForm.customer.logo
+          }
           if (this.customerID) {
             this[formName].customer.status = this[formName].selectedStatus
+          }
+          if (this.customerForm.customer.logo === '') {
+            delete args.logo
           }
           company
             .saveCustomer(this, this[formName].customer, this.customerID)
@@ -177,6 +195,7 @@ export default {
             this.customerForm.customer.address = result.address
             this.customerForm.customer.description = result.description
             this.customerForm.selectedStatus = result.status
+            this.customerForm.customer.logo = result.logo
             this.setting.loading = false
           })
           .catch(err => {
