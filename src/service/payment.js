@@ -1,4 +1,5 @@
 const PAYMENT_API = '/api/payment'
+const PAYMENT_PAYEE_API = '/api/payment_payee'
 const HOST = process.env.SERVER_URL
 
 const getPaymentList = (context, params) => {
@@ -91,6 +92,58 @@ const receivePayment = (context, paymentId) => {
       })
   })
 }
+
+const getPayeeList = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PAYMENT_PAYEE_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const savePayee = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + PAYMENT_PAYEE_API, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const payeeDetail = (context, payeeId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PAYMENT_PAYEE_API + '/' + payeeId, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const modifyPayee = (context, payeeId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .patch(HOST + PAYMENT_PAYEE_API + '/' + payeeId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   getPaymentList,
   savePayment,
@@ -98,5 +151,9 @@ export {
   modifyPayment,
   deletePayment,
   auditingPayment,
-  receivePayment
+  receivePayment,
+  getPayeeList,
+  savePayee,
+  payeeDetail,
+  modifyPayee
 }

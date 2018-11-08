@@ -124,7 +124,7 @@
                 </el-form-item>
                 <el-form-item 
                   label="开票公司:">
-                  <span>{{ scope.row.invoice_company }}</span> 
+                  <span>{{ scope.row.invoice_company_name }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="收款状态:">
@@ -173,7 +173,7 @@
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="invoice_company"
+            prop="invoice_company_name"
             label="开票公司"
             min-width="100"/>
           <el-table-column

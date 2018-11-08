@@ -42,7 +42,7 @@
             <el-form-item
               label="座机电话:" 
               prop="telephone">
-              {{ invoiceForm.telephone }}
+              {{ invoiceCompany.telephone }}
             </el-form-item>
             
           </el-col>
@@ -52,14 +52,14 @@
             <el-form-item 
               label="开票公司:" 
               prop="invoice_company" >
-              {{ invoiceForm.invoice_company }}
+              {{ invoiceCompany.name }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item 
               label="纳税人识别号:" 
               prop="taxpayer_num" >
-              {{ invoiceForm.taxpayer_num }}
+              {{ invoiceCompany.taxpayer_num }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -68,14 +68,14 @@
             <el-form-item 
               label="电话:" 
               prop="phone" >
-              {{ invoiceForm.phone }}
+              {{ invoiceCompany.phone }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item 
               label="地址:" 
               prop="address" >
-              {{ invoiceForm.address }}
+              {{ invoiceCompany.address }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -84,14 +84,14 @@
             <el-form-item 
               label="开户银行:" 
               prop="account_bank" >
-              {{ invoiceForm.account_bank }}
+              {{ invoiceCompany.account_bank }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item 
               label="开户行账号:" 
               prop="account_number" >
-              {{ invoiceForm.account_number }}
+              {{ invoiceCompany.account_number }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -242,20 +242,23 @@ export default {
         loading: false,
         loadingText: '拼命加载中'
       },
+      invoiceCompany: {
+        phone: '',
+        telephone: '',
+        account_bank: '',
+        account_number: '',
+        taxpayer_num: '',
+        address: ''
+      },
       invoiceForm: {
         applicant_name: '',
         applicant: '',
         receive_status: null,
-        phone: null,
         applicant: '',
         type: null,
         type_name: '',
-        account_bank: '',
-        address: '',
         contract_number: '',
         contract_number: null,
-        taxpayer_num: '',
-        account_number: '',
         remark: '',
         kind: '',
       },
@@ -284,13 +287,14 @@ export default {
   methods: {
     invoiceDetail() {
       let params = {
-        include: 'invoice_content.goodsService'
+        include: 'invoice_content.goodsService,invoice_company'
       }
       invoiceDetail(this, this.invoiceID, params)
         .then(res => {
           this.invoiceForm = res
           let invoice_content = res.invoice_content.data
           this.invoiceForm.type_name = res.type
+          this.invoiceCompany = res.invoice_company
           invoice_content.map(r => {
             let data = {
               name: r.goodsService.name,

@@ -46,6 +46,37 @@ export default {
           meta: {}
         }
       ]
+    },
+    {
+      path: 'payee',
+      component: () =>
+        import(/* webpackChunkName: "page/payment/payee/routerView" */ 'page/payment/payee/routerView'),
+      meta: {
+        title: '收款人管理'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/payment/payee/index" */ 'page/payment/payee/index'),
+          name: '收款人列表',
+          meta: {}
+        },
+        {
+          path: 'add',
+          component: () =>
+            import(/* webpackChunkName: "page/payment/payee/save" */ 'page/payment/payee/save'),
+          name: '新增收款人',
+          meta: {}
+        },
+        {
+          path: 'edit/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/payment/payee/save" */ 'page/payment/payee/save'),
+          name: '修改收款人',
+          meta: {}
+        }
+      ]
     }
   ]
 }

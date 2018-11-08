@@ -57,9 +57,9 @@
                 :span="6">
                 <el-form-item 
                   label="" 
-                  prop="payee">
+                  prop="payment_payee_name">
                   <el-input 
-                    v-model="searchForm.payee"
+                    v-model="searchForm.payment_payee_name"
                     clearable 
                     placeholder="收款人"
                     class="item-input"/>
@@ -145,7 +145,7 @@
                 </el-form-item>
                 <el-form-item 
                   label="收款人:">
-                  <span>{{ scope.row.payee }}</span> 
+                  <span>{{ scope.row.payment_payee_name }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="收票状态:">
@@ -185,11 +185,11 @@
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="payee"
+            prop="payment_payee_name"
             label="收款人"
             min-width="100">
             <template slot-scope="scope">
-              {{ scope.row.payee }}
+              {{ scope.row.payment_payee_name }}
             </template>
           </el-table-column>
           <el-table-column
@@ -327,7 +327,7 @@ export default {
       searchForm: {
         dataValue: [],
         receive_status: '',
-        payee: '',
+        payment_payee_name: '',
         status: '',
         contract_number: ''
       },
@@ -509,15 +509,15 @@ export default {
       this.setting.loading = true
       let args = {
         page: this.pagination.currentPage,
-        payee: this.searchForm.payee,
+        payment_payee_name: this.searchForm.payment_payee_name,
         status: this.searchForm.status,
         receive_status: this.searchForm.receive_status,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
         end_date: handleDateTransform(this.searchForm.dataValue[1])
       }
-      if (!this.searchForm.payee) {
-        delete args.payee
+      if (!this.searchForm.payment_payee_name) {
+        delete args.payment_payee_name
       }
       if (!this.searchForm.status) {
         delete args.status

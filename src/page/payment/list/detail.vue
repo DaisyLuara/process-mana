@@ -56,8 +56,8 @@
           <el-col :span="12">
             <el-form-item 
               label="收款人:" 
-              prop="payee" >
-              {{ paymentForm.payee }}
+              prop="name" >
+              {{ paymentPayee.name }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -66,14 +66,14 @@
             <el-form-item 
               label="收款人开户行:" 
               prop="account_bank" >
-              {{ paymentForm.account_bank }}
+              {{ paymentPayee.account_bank }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item 
               label="收款人账号:" 
               prop="account_number" >
-              {{ paymentForm.account_number }}
+              {{ paymentPayee.account_number }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -166,17 +166,19 @@ export default {
         loading: false,
         loadingText: '拼命加载中'
       },
+      paymentPayee: {
+        account_number: '',
+        account_bank: '',
+        name: ''
+      },
       paymentForm: {
-        payee: '',
         applicant: '',
         type: 1,
         type_name: '',
-        account_bank: '',
         contract_id: '',
         contract_number: '',
         reason: '',
         amount: '',
-        account_number: '',
         remark: '',
         applicant_name: '',
         handler: '',
@@ -198,12 +200,12 @@ export default {
     paymentDetail() {
       this.setting.loading = true
       let args = {
-        include: 'contract'
+        include: 'contract,payment_payee'
       }
       paymentDetail(this, this.paymentID, args)
         .then(res => {
           this.paymentForm.contract_id = res.contract_number
-          this.paymentForm.payee = res.payee
+          this.paymentPayee.name = res.payment_payee.name
           this.paymentForm.contract_number = res.contract_number
           this.paymentForm.type =
             res.type === '支票' ? 1 : res.type === '电汇单' ? 2 : 3
@@ -212,8 +214,8 @@ export default {
           this.paymentForm.applicant_name = res.applicant_name
           this.paymentForm.amount = res.amount
           this.paymentForm.remark = res.remark
-          this.paymentForm.account_bank = res.account_bank
-          this.paymentForm.account_number = res.account_number
+          this.paymentPayee.account_bank = res.payment_payee.account_bank
+          this.paymentPayee.account_number = res.payment_payee.account_number
           this.paymentForm.reason = res.reason
           this.paymentForm.handler = res.handler
           this.paymentForm.status = res.status

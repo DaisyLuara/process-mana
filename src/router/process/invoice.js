@@ -46,6 +46,68 @@ export default {
           meta: {}
         }
       ]
+    },
+    {
+      path: 'invoice_company',
+      component: () =>
+        import(/* webpackChunkName: "page/invoice/invoiceCompany/routerView" */ 'page/invoice/invoiceCompany/routerView'),
+      meta: {
+        title: '开票公司'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/invoice/invoiceCompany/index" */ 'page/invoice/invoiceCompany/index'),
+          name: '开票公司列表',
+          meta: {}
+        },
+        {
+          path: 'add',
+          component: () =>
+            import(/* webpackChunkName: "page/invoice/invoiceCompany/save" */ 'page/invoice/invoiceCompany/save'),
+          name: '新增开票公司',
+          meta: {}
+        },
+        {
+          path: 'edit/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/invoice/invoiceCompany/save" */ 'page/invoice/invoiceCompany/save'),
+          name: '修改开票公司',
+          meta: {}
+        }
+      ]
+    },
+    {
+      path: 'receipt',
+      component: () =>
+        import(/* webpackChunkName: "page/invoice/receipt/routerView" */ 'page/invoice/receipt/routerView'),
+      meta: {
+        title: '收款管理'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/invoice/receipt/index" */ 'page/invoice/receipt/index'),
+          name: '收款列表',
+          meta: {}
+        },
+        {
+          path: 'add',
+          component: () =>
+            import(/* webpackChunkName: "page/invoice/receipt/save" */ 'page/invoice/receipt/save'),
+          name: '新增收款',
+          meta: {}
+        },
+        {
+          path: 'edit/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/invoice/receipt/save" */ 'page/invoice/receipt/save'),
+          name: '修改收款',
+          meta: {}
+        }
+      ]
     }
   ]
 }
