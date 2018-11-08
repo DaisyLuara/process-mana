@@ -59,6 +59,29 @@
           </el-col>
           <el-col :span="12">
             <el-form-item 
+              label="座机电话" 
+              prop="telephone">
+              <el-input 
+                v-model="invoiceForm.telephone" 
+                :maxlength="20"
+                class="item-input"/>
+              <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item 
+              label="开票公司" 
+              prop="invoice_company" >
+              <el-input 
+                v-model="invoiceForm.invoice_company" 
+                :maxlength="50"
+                class="item-input"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item 
               label="纳税人识别号" 
               prop="taxpayer_num" >
               <el-input 
@@ -71,7 +94,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="电话" 
+              label="手机号" 
               prop="phone" >
               <el-input 
                 v-model="invoiceForm.phone" 
@@ -325,6 +348,10 @@ export default {
       }
     }
     let checkPhone = (rule, value, callback) => {
+      if (!value) {
+        callback()
+        return
+      }
       if (!checkMobile(value)) {
         callback(new Error('手机号格式不正确'))
       } else {
@@ -391,6 +418,7 @@ export default {
         taxpayer_num: '',
         account_number: '',
         remark: '',
+        invoice_company: '',
         kind: ''
       },
       rules: {
@@ -398,9 +426,28 @@ export default {
           { required: true, message: '请输入开户行账号', trigger: 'submit' },
           { validator: checkNumber, trigger: 'submit' }
         ],
+        invoice_company: [
+          { required: true, message: '请输入开票名称', trigger: 'submit' }
+        ],
         phone: [
-          { required: true, message: '请输入开户行账号', trigger: 'submit' },
+          { message: '请输入手机号', trigger: 'submit' },
           { validator: checkPhone, trigger: 'submit' }
+        ],
+        telephone: [
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback()
+                return
+              }
+              if (!/^0\d{2,3}-\d{7,8}|0\d{2,3}-\d{7,8}-\d{1,4}$/.test(value)) {
+                callback('座机电话格式不正确,请重新输入')
+              } else {
+                callback()
+              }
+            },
+            trigger: 'submit'
+          }
         ],
         taxpayer_num: [
           { required: true, message: '请输入纳税人识别号', trigger: 'submit' }
@@ -478,6 +525,7 @@ export default {
           this.invoiceForm.account_number = res.account_number
           this.invoiceForm.remark = res.remark
           this.invoiceForm.kind = res.kind
+          this.invoiceForm.telephone = res.telephone
           invoice_content.map(r => {
             let data = {
               name: r.goodsService.id,
@@ -565,6 +613,7 @@ export default {
     submit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.setting.loading = true
           delete this.invoiceForm.applicant_name
           let length = this.tableData.length
           let invoice_content = []
@@ -584,7 +633,6 @@ export default {
           args.invoice_content = invoice_content
           args.total = this.total
           args.total_text = this.total_text
-          console.log(args)
           if (this.invoiceID) {
             modifyInvoice(this, this.invoiceID, args)
               .then(res => {

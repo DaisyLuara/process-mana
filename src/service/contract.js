@@ -80,10 +80,10 @@ const deleteContract = (context, contractId) => {
   })
 }
 // 审批合同
-const auditingContract = (context, contractId) => {
+const auditingContract = (context, contractId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + CONTRACT_API + '/auditing/' + contractId)
+      .post(HOST + CONTRACT_API + '/auditing/' + contractId, params)
       .then(response => {
         resolve(response.data)
       })

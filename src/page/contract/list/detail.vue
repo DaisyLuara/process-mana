@@ -88,7 +88,7 @@
             v-if="!hide"
             type="primary"
             size="small"
-            @click="auditing">审核通过</el-button>
+            @click="auditingHandle">审核通过</el-button>
           <el-button
             size="small"
             @click="historyBack">返回</el-button>
@@ -312,7 +312,7 @@ export default {
           })
         })
     },
-    auditing() {
+    auditingHandle() {
       this.setting.loading = true
       this.$confirm('确定审核通过吗?', '提示', {
         confirmButtonText: '确定',
@@ -320,28 +320,52 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          this.setting.loadingText = '审核通过中'
-          this.setting.loading = true
-          auditingContract(this, this.contractID)
-            .then(res => {
-              this.$message({
-                message: '审批通过',
-                type: 'success'
-              })
-              this.$router.push({
-                path: '/contract/list'
-              })
-              this.setting.loading = false
+          if (!this.contractForm.contract_number) {
+            this.setting.loading = true
+            MessageBox.prompt('请输入合同编号', '填写合同编号', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消'
             })
-            .catch(err => {
-              this.$message({
-                message: err.response.data.message,
-                type: 'warning'
+              .then(({ value }) => {
+                let args = {
+                  contract_number: value
+                }
+                this.auditing(this, this.contractID, args)
               })
-              this.setting.loading = false
-            })
+              .catch(() => {
+                this.setting.loading = false
+                this.$message({
+                  type: 'info',
+                  message: '审批合同编号必填'
+                })
+              })
+          } else {
+            this.setting.loadingText = '审核通过中'
+            this.setting.loading = true
+            this.auditing(this, this.contractID)
+          }
         })
         .catch(e => {
+          this.setting.loading = false
+        })
+    },
+    auditing(obj, contractID, args) {
+      auditingContract(obj, contractID, args)
+        .then(res => {
+          this.$message({
+            message: '审批通过',
+            type: 'success'
+          })
+          this.$router.push({
+            path: '/contract/list'
+          })
+          this.setting.loading = false
+        })
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: 'warning'
+          })
           this.setting.loading = false
         })
     },
