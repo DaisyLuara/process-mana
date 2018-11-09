@@ -109,6 +109,7 @@ export default {
         loading: false,
         loadingText: '拼命加载中'
       },
+      fileList: [],
       contractForm: {
         company_name: '',
         company_id: '',
