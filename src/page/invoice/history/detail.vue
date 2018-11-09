@@ -7,7 +7,7 @@
       class="pane">
       <div 
         class="pane-title">
-        开票{{ hide ? '详情' : '审批' }}
+        开票详情
       </div>
       <el-form
         ref="invoiceForm"
@@ -154,59 +154,17 @@
           {{ invoiceForm.remark }}
         </el-form-item>
         <el-form-item>
-          <el-button
-            v-if="!hide"
-            type="danger"
-            size="small"
-            @click="dialogFormVisible = true">驳回</el-button>
-          <el-button
-            v-if="!hide"
-            :type="(invoiceForm.status === '已审批' && invoiceForm.handler === id) ? 'warning' : 'primary'"
-            size="small"
-            @click="auditing">{{ (invoiceForm.status === '已审批' && invoiceForm.handler === id) ?'确认开票' : '审核通过' }}</el-button>
           <el-button 
             size="small"
             @click="back" >返回</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog 
-      :visible.sync="dialogFormVisible"
-      title="驳回理由">
-      <el-form>
-        <el-form-item
-          label="备注:" 
-          prop="remark">
-          <el-input
-            v-model="invoiceForm.remark"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
-            type="textarea"
-            placeholder="请输入内容"
-            class="text-input"/>
-        </el-form-item>
-      </el-form>
-      <div 
-        slot="footer" 
-        class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button 
-          type="primary" 
-          @click="rejected">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  historyBack,
-  checkMobile,
-  invoiceDetail,
-  modifyInvoice,
-  auditingInvoice,
-  Cookies
-} from 'service/index'
+import { historyBack, invoiceDetail } from 'service/index'
 import {
   Form,
   FormItem,
@@ -216,8 +174,7 @@ import {
   Col,
   Table,
   TableColumn,
-  Input,
-  Dialog
+  Input
 } from 'element-ui'
 
 export default {
@@ -229,13 +186,10 @@ export default {
     ElButton: Button,
     ElTable: Table,
     ElInput: Input,
-    ElDialog: Dialog,
     ElTableColumn: TableColumn
   },
   data() {
     return {
-      dialogFormVisible: false,
-      hide: null,
       setting: {
         isOpenSelectAll: true,
         loading: false,
@@ -251,8 +205,8 @@ export default {
       },
       invoiceForm: {
         applicant_name: '',
-        applicant: '',
         receive_status: null,
+        applicant: '',
         type: null,
         type_name: '',
         contract_number: '',
@@ -260,7 +214,6 @@ export default {
         remark: '',
         kind: ''
       },
-      id: '',
       tableData: [
         {
           name: '开票总计（大写）：',
@@ -276,9 +229,6 @@ export default {
   created() {
     this.setting.loading = true
     this.invoiceID = this.$route.params.uid
-    let user_info = JSON.parse(Cookies.get('user_info'))
-    this.hide = this.$route.query.hide
-    this.id = user_info.id
     this.invoiceDetail()
   },
   methods: {
@@ -326,74 +276,6 @@ export default {
     },
     back() {
       historyBack()
-    },
-    auditing() {
-      this.$confirm(
-        this.invoiceForm.status === '已审批' &&
-        this.invoiceForm.handler === this.id
-          ? '确定确认开票吗?'
-          : '确定审核通过吗?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      )
-        .then(() => {
-          this.setting.loading = true
-          auditingInvoice(this, this.invoiceID)
-            .then(res => {
-              this.$message({
-                message:
-                  this.invoiceForm.status === '已审批' &&
-                  this.invoiceForm.handler === this.id
-                    ? '开票成功'
-                    : '审批通过',
-                type: 'success'
-              })
-              this.$router.push({
-                path: '/invoice/list'
-              })
-              this.setting.loading = false
-            })
-            .catch(err => {
-              this.$message({
-                message: err.response.data.message,
-                type: 'warning'
-              })
-              this.setting.loading = false
-            })
-        })
-        .catch(e => {
-          this.setting.loading = false
-        })
-    },
-    rejected() {
-      this.setting.loading = true
-      let args = {
-        remark: this.invoiceForm.remark
-      }
-      modifyInvoice(this, this.invoiceID, args)
-        .then(res => {
-          this.dialogFormVisible = false
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          this.$router.push({
-            path: '/invoice/list'
-          })
-          this.setting.loading = false
-        })
-        .catch(err => {
-          this.dialogFormVisible = false
-          this.setting.loading = false
-          this.$message({
-            message: err.response.data.message,
-            type: 'warning'
-          })
-        })
     }
   }
 }

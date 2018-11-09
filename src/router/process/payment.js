@@ -77,6 +77,30 @@ export default {
           meta: {}
         }
       ]
+    },
+    {
+      path: 'history',
+      component: () =>
+        import(/* webpackChunkName: "page/payment/history/routerView" */ 'page/payment/history/routerView'),
+      meta: {
+        title: '审批历史'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/payment/history/index" */ 'page/payment/history/index'),
+          name: '付款审批历史',
+          meta: {}
+        },
+        {
+          path: 'detail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/payment/history/detail" */ 'page/payment/history/detail'),
+          name: '付款审批详情',
+          meta: {}
+        }
+      ]
     }
   ]
 }

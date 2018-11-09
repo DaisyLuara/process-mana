@@ -429,7 +429,12 @@ export default {
   },
   computed: {
     addButtonShow: function() {
-      if (this.roles.name == 'user' || this.roles.name === 'bd-manager') {
+      if (
+        this.roles.name == 'user' ||
+        this.roles.name === 'bd-manager' ||
+        this.roles.name == 'legal-affairs' ||
+        this.roles.name == 'legal-affairs-manager'
+      ) {
         return true
       } else {
         return false

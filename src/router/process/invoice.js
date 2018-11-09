@@ -108,6 +108,30 @@ export default {
           meta: {}
         }
       ]
+    },
+    {
+      path: 'history',
+      component: () =>
+        import(/* webpackChunkName: "page/invoice/history/routerView" */ 'page/invoice/history/routerView'),
+      meta: {
+        title: '审批历史'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/invoice/history/index" */ 'page/invoice/history/index'),
+          name: '票据审批历史',
+          meta: {}
+        },
+        {
+          path: 'detail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/invoice/history/detail" */ 'page/invoice/history/detail'),
+          name: '票据审批详情',
+          meta: {}
+        }
+      ]
     }
   ]
 }

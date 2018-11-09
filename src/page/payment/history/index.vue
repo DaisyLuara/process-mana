@@ -11,66 +11,106 @@
         <div 
           class="search-wrap">
           <el-form 
-            ref="searchForm"
+            ref="searchForm" 
             :model="searchForm" 
-            :inline="true">
-            <el-form-item 
-              label="" 
-              prop="status">
-              <el-select 
-                v-model="searchForm.status" 
-                placeholder="请选择审批状态" 
-                filterable 
-                clearable>
-                <el-option
-                  v-for="item in statusList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item 
-              label="" 
-              prop="name">
-              <el-input 
-                v-model="searchForm.name" 
-                clearable
-                placeholder="公司名称"
-                class="item-input"/>
-            </el-form-item>
-            <el-form-item 
-              label="" 
-              prop="contract_number">
-              <el-input 
-                v-model="searchForm.contract_number" 
-                clearable
-                placeholder="合同编号"
-                class="item-input"/>
-            </el-form-item>
-            <el-form-item 
-              label="" 
-              prop="dataValue">
-              <el-date-picker
-                v-model="searchForm.dataValue"
-                :clearable="false"
-                :picker-options="pickerOptions2"
-                type="daterange"
-                align="right"
-                unlink-panels
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"/>
-            </el-form-item>
-            <el-form-item 
-              label="">
-              <el-button 
-                type="primary" 
-                size="small"
-                @click="search('searchForm')">搜索</el-button>
-              <el-button
-                type="default" 
-                size="small"
-                @click="resetSearch('searchForm')">重置</el-button>
-            </el-form-item>
+            :inline="true"
+            class="search-content">
+            <el-row 
+              :gutter="20">
+              <el-col
+                :span="6">
+                <el-form-item 
+                  label="" 
+                  prop="status">
+                  <el-select 
+                    v-model="searchForm.status" 
+                    placeholder="请选择审批状态" 
+                    filterable 
+                    clearable>
+                    <el-option
+                      v-for="item in statusList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"/>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="6">
+                <el-form-item 
+                  label="" 
+                  prop="receive_status">
+                  <el-select 
+                    v-model="searchForm.receive_status" 
+                    placeholder="请选择收票状态" 
+                    filterable 
+                    clearable>
+                    <el-option
+                      v-for="item in receiveList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"/>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="6">
+                <el-form-item 
+                  label="" 
+                  prop="payment_payee_name">
+                  <el-input 
+                    v-model="searchForm.payment_payee_name"
+                    clearable 
+                    placeholder="收款人"
+                    class="item-input"/>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row 
+              :gutter="20">
+              <el-col
+                :span="6">
+                <el-form-item 
+                  label="" 
+                  prop="contract_number">
+                  <el-input 
+                    v-model="searchForm.contract_number"
+                    clearable 
+                    placeholder="合同编号"
+                    class="item-input"/>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="11">
+                <el-form-item 
+                  label="" 
+                  prop="dataValue">
+                  <el-date-picker
+                    v-model="searchForm.dataValue"
+                    :clearable="false"
+                    :picker-options="pickerOptions2"
+                    type="daterange"
+                    align="right"
+                    unlink-panels
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"/>
+                </el-form-item>
+              </el-col>
+              <el-col
+                :span="6">
+                <el-form-item 
+                  label="">
+                  <el-button 
+                    type="primary" 
+                    size="small"
+                    @click="search('searchForm')">搜索</el-button>
+                  <el-button
+                    type="default" 
+                    size="small"
+                    @click="resetSearch('searchForm')">重置</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </div>
         <!-- 合同列表 -->
@@ -80,13 +120,6 @@
             class="label">
             总数:{{ pagination.total }} 
           </span>
-          <div>
-            <el-button
-              v-if="addButtonShow" 
-              size="small" 
-              type="success"
-              @click="addContract">新建合同</el-button>
-          </div>
         </div>
         <el-table 
           :data="tableData" 
@@ -104,12 +137,12 @@
                   <span>{{ scope.row.contract_number }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="公司名称:">
-                  <span>{{ scope.row.company_name }}</span> 
+                  label="收款人:">
+                  <span>{{ scope.row.payment_payee_name }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="合同名称:">
-                  <span>{{ scope.row.name }}</span> 
+                  label="收票状态:">
+                  <span>{{ scope.row.receive_status }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="申请人:">
@@ -131,38 +164,34 @@
                   label="最后操作时间:">
                   <span>{{ scope.row.updated_at }}</span> 
                 </el-form-item>
-                <el-form-item 
-                  label="收款日期:">
-                  <span style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
-                </el-form-item>
               </el-form>
             </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="contract_number"
+            prop="contract_id"
             label="合同编号"
             min-width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.contract_number }}</span>
+              {{ scope.row.contract_number }}
             </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="company_name"
-            label="公司名称"
+            prop="payment_payee_name"
+            label="收款人"
             min-width="100">
             <template slot-scope="scope">
-              <span>{{ scope.row.company_name }}</span>
+              {{ scope.row.payment_payee_name }}
             </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="name"
-            label="合同名称"
+            prop="receive_status"
+            label="收票状态"
             min-width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.name }}</span>
+              {{ scope.row.receive_status }}
             </template>
           </el-table-column>
           <el-table-column
@@ -171,7 +200,7 @@
             label="申请人"
             min-width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.applicant_name }}</span>
+              {{ scope.row.applicant_name }}
             </template>
           </el-table-column>
           <el-table-column
@@ -180,7 +209,7 @@
             label="审批状态"
             min-width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.status }}</span>
+              {{ scope.row.status }}
             </template>
           </el-table-column>
           <el-table-column
@@ -189,46 +218,27 @@
             label="待处理人"
             min-width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
+              {{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}
             </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="apply_time"
+            prop="created_at"
             label="申请时间"
             min-width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.created_at }}</span>
+              {{ scope.row.created_at }}
             </template>
           </el-table-column>
           <el-table-column 
             label="操作" 
-            min-width="180">
+            min-width="200">
             <template 
               slot-scope="scope">
               <el-button
-                v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
-                size="mini" 
-                type="primary"
-                @click="editContract(scope.row)">编辑</el-button>
-              <el-button
-                v-if="scope.row.handler === applicant && scope.row.status !== '驳回'"
-                size="mini" 
-                @click="auditingContract(scope.row)">审批</el-button>
-              <el-button
-                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applicant === applicant) || (scope.row.status === '待审批' && roles.name === 'bd-manager' && scope.row.applicant === applicant)) "
-                size="mini" 
-                type="danger"
-                @click="deleteContract(scope.row)">删除</el-button>
-              <el-button 
-                v-if="scope.row.status === '待审批' && scope.row.applicant === applicant"
-                size="mini" 
-                type="warning"
-                @click="specialAuditingContract(scope.row)">特批</el-button>
-              <el-button
                 size="mini" 
                 type="info"
-                @click="detailContract(scope.row)">详情</el-button>
+                @click="detailPayment(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -263,13 +273,7 @@ import {
   Col,
   DatePicker
 } from 'element-ui'
-import {
-  getContractList,
-  handleDateTransform,
-  deleteContract,
-  specialAuditingContract,
-  Cookies
-} from 'service'
+import { getPaymentList, handleDateTransform } from 'service'
 
 export default {
   components: {
@@ -290,12 +294,11 @@ export default {
     return {
       searchForm: {
         dataValue: [],
-        name: '',
+        receive_status: '',
+        payment_payee_name: '',
         status: '',
         contract_number: ''
       },
-      roles: {},
-      applicant: null,
       pickerOptions2: {
         shortcuts: [
           {
@@ -345,6 +348,16 @@ export default {
           }
         ]
       },
+      receiveList: [
+        {
+          id: 1,
+          name: '已收票'
+        },
+        {
+          id: 0,
+          name: '未收票'
+        }
+      ],
       statusList: [
         {
           id: 1,
@@ -360,7 +373,7 @@ export default {
         },
         {
           id: 4,
-          name: '特批'
+          name: '已付款'
         },
         {
           id: 5,
@@ -380,110 +393,32 @@ export default {
       tableData: []
     }
   },
-  computed: {
-    addButtonShow: function() {
-      if (
-        this.roles.name == 'user' ||
-        this.roles.name === 'bd-manager' ||
-        this.roles.name == 'legal-affairs' ||
-        this.roles.name == 'legal-affairs-manager'
-      ) {
-        return true
-      } else {
-        return false
-      }
-    }
-  },
   created() {
-    this.getContractList()
-    let user_info = JSON.parse(Cookies.get('user_info'))
-    this.applicant = user_info.id
-    this.roles = user_info.roles.data[0]
+    this.getPaymentList()
   },
   methods: {
-    specialAuditingContract(data) {
-      let id = data.id
-      this.$confirm('确认特批此合同?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '特批申请中'
-          this.setting.loading = true
-          specialAuditingContract(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '申请成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getContractList()
-            })
-            .catch(error => {
-              this.setting.loading = false
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-            })
-        })
-        .catch(e => {
-          this.setting.loading = false
-        })
-    },
-    deleteContract(data) {
-      let id = data.id
-      this.$confirm('确认删除此合同?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '删除中'
-          this.setting.loading = true
-          deleteContract(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '删除成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getContractList()
-            })
-            .catch(error => {
-              this.setting.loading = false
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-            })
-        })
-        .catch(e => {
-          this.setting.loading = false
-        })
-    },
-    getContractList() {
+    getPaymentList() {
       this.setting.loading = true
       let args = {
-        include: 'company',
         page: this.pagination.currentPage,
-        name: this.searchForm.name,
+        payment_payee_name: this.searchForm.payment_payee_name,
         status: this.searchForm.status,
+        receive_status: this.searchForm.receive_status,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
         end_date: handleDateTransform(this.searchForm.dataValue[1])
       }
-      if (!this.searchForm.name) {
-        delete args.name
-      }
-      if (this.searchForm.contract_number === '') {
-        delete args.contract_number
+      if (!this.searchForm.payment_payee_name) {
+        delete args.payment_payee_name
       }
       if (!this.searchForm.status) {
         delete args.status
+      }
+      if (this.searchForm.receive_status === '') {
+        delete args.receive_status
+      }
+      if (this.searchForm.contract_number === '') {
+        delete args.contract_number
       }
       if (!this.searchForm.dataValue[0]) {
         delete args.start_date
@@ -491,7 +426,7 @@ export default {
       if (!this.searchForm.dataValue[1]) {
         delete args.end_date
       }
-      getContractList(this, args)
+      getPaymentList(this, args)
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
@@ -501,41 +436,23 @@ export default {
           this.setting.loading = false
         })
     },
-    addContract() {
+    detailPayment(data) {
       this.$router.push({
-        path: '/contract/list/add'
-      })
-    },
-    editContract(data) {
-      this.$router.push({
-        path: '/contract/list/edit/' + data.id
-      })
-    },
-    auditingContract(data) {
-      this.$router.push({
-        path: '/contract/list/detail/' + data.id
-      })
-    },
-    detailContract(data) {
-      this.$router.push({
-        path: '/contract/list/detail/' + data.id,
-        query: {
-          hide: 'none'
-        }
+        path: '/payment/history/detail/' + data.id
       })
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
-      this.getContractList()
+      this.getPaymentList()
     },
     search() {
       this.pagination.currentPage = 1
-      this.getContractList()
+      this.getPaymentList()
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields()
       this.pagination.currentPage = 1
-      this.getContractList()
+      this.getPaymentList()
     }
   }
 }
@@ -577,6 +494,9 @@ export default {
         font-size: 16px;
         align-items: center;
         margin-bottom: 10px;
+        .search-content {
+          width: 800px;
+        }
         .el-form-item {
           margin-bottom: 10px;
         }
