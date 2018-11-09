@@ -520,8 +520,8 @@ export default {
               res.invoice_company.account_number
             this.invoiceCompany.taxpayer_num = res.invoice_company.taxpayer_num
             this.invoiceCompany.address = res.invoice_company.address
+            this.invoiceForm.invoice_company_id = res.invoice_company.id
           }
-          this.invoiceForm.invoice_company_id = res.invoice_company.id
           this.invoiceForm.type = res.type === '专票' ? 0 : 1
           this.invoiceForm.applicant_name = res.applicant_name
           this.invoiceForm.receive_status =
