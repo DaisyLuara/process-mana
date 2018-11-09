@@ -512,13 +512,15 @@ export default {
       invoiceDetail(this, this.invoiceID, params)
         .then(res => {
           let invoice_content = res.invoice_content.data
-          this.invoiceCompany.phone = res.invoice_company.phone
-          this.invoiceCompany.telephone = res.invoice_company.telephone
-          this.invoiceCompany.account_bank = res.invoice_company.account_bank
-          this.invoiceCompany.account_number =
-            res.invoice_company.account_number
-          this.invoiceCompany.taxpayer_num = res.invoice_company.taxpayer_num
-          this.invoiceCompany.address = res.invoice_company.address
+          if (res.invoice_company) {
+            this.invoiceCompany.phone = res.invoice_company.phone
+            this.invoiceCompany.telephone = res.invoice_company.telephone
+            this.invoiceCompany.account_bank = res.invoice_company.account_bank
+            this.invoiceCompany.account_number =
+              res.invoice_company.account_number
+            this.invoiceCompany.taxpayer_num = res.invoice_company.taxpayer_num
+            this.invoiceCompany.address = res.invoice_company.address
+          }
           this.invoiceForm.invoice_company_id = res.invoice_company.id
           this.invoiceForm.type = res.type === '专票' ? 0 : 1
           this.invoiceForm.applicant_name = res.applicant_name

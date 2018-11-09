@@ -290,8 +290,10 @@ export default {
           this.paymentForm.remark = res.remark
           this.paymentForm.reason = res.reason
           this.paymentForm.payment_payee_id = res.payment_payee.id
-          this.paymentPayee.account_bank = res.payment_payee.account_bank
-          this.paymentPayee.account_number = res.payment_payee.account_number
+          if (res.payment_payee) {
+            this.paymentPayee.account_bank = res.payment_payee.account_bank
+            this.paymentPayee.account_number = res.payment_payee.account_number
+          }
           this.setting.loading = false
         })
         .catch(err => {

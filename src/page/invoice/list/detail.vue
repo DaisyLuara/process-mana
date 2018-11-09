@@ -290,14 +290,16 @@ export default {
           this.invoiceForm = res
           let invoice_content = res.invoice_content.data
           this.invoiceForm.type_name = res.type
-          this.invoiceCompany.telephone = res.invoice_company.telephone
-          this.invoiceCompany.taxpayer_num = res.invoice_company.taxpayer_num
-          this.invoiceCompany.phone = res.invoice_company.phone
-          this.invoiceCompany.account_bank = res.invoice_company.account_bank
-          this.invoiceCompany.account_number =
-            res.invoice_company.account_number
-          this.invoiceCompany.address = res.invoice_company.address
-          this.invoiceCompany.name = res.invoice_company.name
+          if (res.invoice_company) {
+            this.invoiceCompany.telephone = res.invoice_company.telephone
+            this.invoiceCompany.taxpayer_num = res.invoice_company.taxpayer_num
+            this.invoiceCompany.phone = res.invoice_company.phone
+            this.invoiceCompany.account_bank = res.invoice_company.account_bank
+            this.invoiceCompany.account_number =
+              res.invoice_company.account_number
+            this.invoiceCompany.address = res.invoice_company.address
+            this.invoiceCompany.name = res.invoice_company.name
+          }
           invoice_content.map(r => {
             let data = {
               name: r.goodsService.name,

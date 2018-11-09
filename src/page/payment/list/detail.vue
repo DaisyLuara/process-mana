@@ -205,7 +205,6 @@ export default {
       paymentDetail(this, this.paymentID, args)
         .then(res => {
           this.paymentForm.contract_id = res.contract_number
-          this.paymentPayee.name = res.payment_payee.name
           this.paymentForm.contract_number = res.contract_number
           this.paymentForm.type =
             res.type === '支票' ? 1 : res.type === '电汇单' ? 2 : 3
@@ -214,8 +213,11 @@ export default {
           this.paymentForm.applicant_name = res.applicant_name
           this.paymentForm.amount = res.amount
           this.paymentForm.remark = res.remark
-          this.paymentPayee.account_bank = res.payment_payee.account_bank
-          this.paymentPayee.account_number = res.payment_payee.account_number
+          if (res.payment_payee) {
+            this.paymentPayee.name = res.payment_payee.name
+            this.paymentPayee.account_bank = res.payment_payee.account_bank
+            this.paymentPayee.account_number = res.payment_payee.account_number
+          }
           this.paymentForm.reason = res.reason
           this.paymentForm.handler = res.handler
           this.paymentForm.status = res.status
