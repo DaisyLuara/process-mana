@@ -1,6 +1,6 @@
 const PAYMENT_API = '/api/payment'
 const PAYMENT_PAYEE_API = '/api/payment_payee'
-const PAYMENT_HISTORY_API = 'api/payment_history'
+const PAYMENT_HISTORY_API = '/api/payment_history'
 const HOST = process.env.SERVER_URL
 
 const getPaymentList = (context, params) => {

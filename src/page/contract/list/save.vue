@@ -80,6 +80,19 @@
                 placeholder="选择一个或多个日期"/>
             </el-form-item>
           </el-col>
+          <el-col 
+            :span="12">
+            <el-form-item 
+              v-if="this.roles.name == 'legal-affairs' || this.roles.name == 'legal-affairs-manager'"
+              label="合同编号" 
+              prop="contract_number" >
+              <el-input 
+                v-model="contractForm.contract_number" 
+                :maxlength="50"
+                placeholder="请输入合同编号"
+                class="item-input"/>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-form-item 
           label="合同内容" 
@@ -189,10 +202,12 @@ export default {
         loading: false,
         loadingText: '拼命加载中'
       },
+      roles: [],
       contractID: '',
       contractForm: {
         company_id: '',
         applicant_name: '',
+        contract_number: '',
         name: '',
         type: 0,
         applicant: 0,
@@ -223,6 +238,7 @@ export default {
       let user_info = JSON.parse(Cookies.get('user_info'))
       this.contractForm.applicant_name = user_info.name
       this.contractForm.applicant = user_info.id
+      this.roles = user_info.roles.data[0]
       this.setting.loading = false
     }
   },
@@ -242,6 +258,7 @@ export default {
           this.contractForm.company_id = res.company_id
           this.contractForm.receive_date = res.receive_date.split(',')
           this.contractForm.remark = res.remark
+          this.contractForm.contract_number = res.contract_number
           mediaData.map(r => {
             mediaIds.push(r.id)
           })
@@ -336,7 +353,7 @@ export default {
             remark: this.contractForm.remark
           }
           if (this.contractForm.type === 0) {
-            if (this.contractForm.receive_date.length !== 0) {
+            if (this.contractForm.receive_date) {
               let date = []
               this.contractForm.receive_date.map(r => {
                 let dateTransform = handleDateTransform(r)
@@ -344,6 +361,20 @@ export default {
               })
               args.receive_date = date.join(',')
             }
+          }
+          if (
+            this.roles.name === 'legal-affairs' ||
+            this.roles.name === 'legal-affairs-manager'
+          ) {
+            if (this.contractForm.contract_number === '') {
+              this.$message({
+                message: '请填写合同编号',
+                type: 'warning'
+              })
+              this.setting.loading = false
+              return
+            }
+            args.contract_number = this.contractForm.contract_number
           }
           if (this.contractID) {
             modifyContract(this, this.contractID, args)
