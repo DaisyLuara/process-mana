@@ -237,7 +237,7 @@ import {
   Col,
   DatePicker
 } from 'element-ui'
-import { getContractList, handleDateTransform } from 'service'
+import { contractHistory, handleDateTransform } from 'service'
 
 export default {
   components: {
@@ -347,10 +347,10 @@ export default {
     }
   },
   created() {
-    this.getContractList()
+    this.contractHistory()
   },
   methods: {
-    getContractList() {
+    contractHistory() {
       this.setting.loading = true
       let args = {
         include: 'company',
@@ -376,7 +376,7 @@ export default {
       if (!this.searchForm.dataValue[1]) {
         delete args.end_date
       }
-      getContractList(this, args)
+      contractHistory(this, args)
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
@@ -393,16 +393,16 @@ export default {
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
-      this.getContractList()
+      this.contractHistory()
     },
     search() {
       this.pagination.currentPage = 1
-      this.getContractList()
+      this.contractHistory()
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields()
       this.pagination.currentPage = 1
-      this.getContractList()
+      this.contractHistory()
     }
   }
 }

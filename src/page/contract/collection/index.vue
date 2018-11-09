@@ -279,7 +279,6 @@ export default {
     getRemindContractList() {
       this.setting.loading = true
       let args = {
-        include: 'company',
         page: this.pagination.currentPage,
         name: this.searchForm.name,
         contract_number: this.searchForm.contract_number
