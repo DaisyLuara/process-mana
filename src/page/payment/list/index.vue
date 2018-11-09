@@ -256,6 +256,7 @@
                 size="mini" 
                 type="danger"
                 @click="deletePayment(scope.row)">删除</el-button>
+                <!-- finance代表财务 -->
               <el-button 
                 v-if="scope.row.receive_status === '未收票' && roles.name === 'finance'"
                 size="mini" 
@@ -429,6 +430,7 @@ export default {
   },
   computed: {
     addButtonShow: function() {
+      // BD BD主管，法务，法务主管
       if (
         this.roles.name == 'user' ||
         this.roles.name === 'bd-manager' ||

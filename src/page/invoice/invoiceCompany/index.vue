@@ -165,12 +165,9 @@ import {
   Pagination,
   Form,
   FormItem,
-  MessageBox,
+  MessageBox
 } from 'element-ui'
-import {
-  getInvoiceCompanyList,
-  Cookies,
-} from 'service'
+import { getInvoiceCompanyList, Cookies } from 'service'
 
 export default {
   components: {
@@ -180,7 +177,7 @@ export default {
     'el-input': Input,
     'el-pagination': Pagination,
     'el-form': Form,
-    'el-form-item': FormItem,
+    'el-form-item': FormItem
   },
   data() {
     return {
@@ -203,7 +200,12 @@ export default {
   },
   computed: {
     buttonShow: function() {
-      if (this.roles.name == 'user' || this.roles.name === 'bd-manager') {
+      if (
+        this.roles.name == 'user' ||
+        this.roles.name === 'bd-manager' ||
+        this.roles.name == 'legal-affairs' ||
+        this.roles.name == 'legal-affairs-manager'
+      ) {
         return true
       } else {
         return false

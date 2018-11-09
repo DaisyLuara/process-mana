@@ -382,6 +382,7 @@ export default {
   },
   computed: {
     addButtonShow: function() {
+      // BD BD主管，法务，法务主管
       if (
         this.roles.name == 'user' ||
         this.roles.name === 'bd-manager' ||
