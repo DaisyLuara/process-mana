@@ -11,25 +11,16 @@
         <div 
           class="search-wrap">
           <el-form 
-            ref="searchForm"
+            ref="searchForm" 
             :model="searchForm" 
             :inline="true">
             <el-form-item 
               label="" 
               prop="name">
               <el-input 
-                v-model="searchForm.name" 
-                clearable
-                placeholder="公司名称"
-                class="item-input"/>
-            </el-form-item>
-            <el-form-item 
-              label="" 
-              prop="contract_number">
-              <el-input 
-                v-model="searchForm.contract_number" 
-                clearable
-                placeholder="合同编号"
+                v-model="searchForm.name"
+                clearable 
+                placeholder="开票公司"
                 class="item-input"/>
             </el-form-item>
             <el-form-item 
@@ -45,13 +36,20 @@
             </el-form-item>
           </el-form>
         </div>
-        <!-- 合同列表 -->
+        <!-- 开票列表 -->
         <div 
           class="total-wrap">
           <span 
             class="label">
             总数:{{ pagination.total }} 
           </span>
+          <div>
+            <el-button
+              v-if="buttonShow" 
+              size="small" 
+              type="success"
+              @click="addInvoiceCompany">新增开票公司</el-button>
+          </div>
         </div>
         <el-table 
           :data="tableData" 
@@ -65,105 +63,81 @@
                 inline 
                 class="demo-table-expand">
                 <el-form-item 
-                  label="合同编号:">
-                  <span>{{ scope.row.contract_number }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="公司名称:">
-                  <span>{{ scope.row.company_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="合同名称:">
+                  label="开票公司:">
                   <span>{{ scope.row.name }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="申请人:">
-                  <span>{{ scope.row.applicant_name }}</span> 
+                  label="地址:">
+                  <span>{{ scope.row.address }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="待处理人:">
-                  <span>{{ scope.row.handler_name }}</span> 
+                  label="纳税人识别号:">
+                  <span>{{ scope.row.taxpayer_num }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="审批状态:">
-                  <span>{{ scope.row.status }}</span> 
+                  label="手机号:">
+                  <span>{{ scope.row.phone }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="申请时间:">
-                  <span>{{ scope.row.created_at }}</span> 
+                  label="座机电话:">
+                  <span>{{ scope.row.telephone }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="收款日期:">
-                  <span style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
+                  label="开户银行:">
+                  <span>{{ scope.row.account_bank }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="开户行账号:">
+                  <span>{{ scope.row.account_number }}</span> 
                 </el-form-item>
               </el-form>
             </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="contract_number"
-            label="合同编号"
-            min-width="80">
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="company_name"
-            label="公司名称"
-            min-width="100">
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
             prop="name"
-            label="合同名称"
-            min-width="80">
-          </el-table-column>
+            label="开票公司"
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="applicant_name"
-            label="申请人"
-            min-width="80">
-          </el-table-column>
-            <el-table-column
-            :show-overflow-tooltip="true"
-            prop="handler_name"
-            label="待处理人"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
-            </template>
-          </el-table-column>
+            prop="address"
+            label="地址"
+            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="status"
-            label="审批状态"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.status }}</span>
-            </template>
-          </el-table-column>
+            prop="taxpayer_num"
+            label="纳税人识别号"
+            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="apply_time"
-            label="申请时间"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.created_at }}</span>
-            </template>
-          </el-table-column>
+            prop="phone"
+            label="手机号"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="telephone"
+            label="座机电话"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="account_bank"
+            label="开户银行"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="account_number"
+            label="开户行账号"
+            min-width="80"/>
           <el-table-column 
             label="操作" 
-            min-width="180">
+            min-width="200">
             <template 
               slot-scope="scope">
               <el-button
+                v-if="buttonShow" 
                 size="mini" 
-                type="info"
-                @click="detailContract(scope.row)">详情</el-button>
-              <el-button
-                v-if="buttonShow"
-                size="mini" 
-                type="warning"
-                @click="receiptInvoice(scope.row)">确认收款</el-button>
+                type="primary"
+                @click="editInvoiceCompany(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -191,11 +165,9 @@ import {
   Pagination,
   Form,
   FormItem,
-  MessageBox,
-  Select,
-  Option
+  MessageBox
 } from 'element-ui'
-import { getRemindContractList, receiptInvoice, Cookies } from 'service'
+import { getInvoiceCompanyList, Cookies } from 'service'
 
 export default {
   components: {
@@ -205,17 +177,14 @@ export default {
     'el-input': Input,
     'el-pagination': Pagination,
     'el-form': Form,
-    'el-form-item': FormItem,
-    'el-select': Select,
-    'el-option': Option
+    'el-form-item': FormItem
   },
   data() {
     return {
       searchForm: {
-        name: '',
-        contract_number: ''
+        name: ''
       },
-      roles: [],
+      roles: {},
       setting: {
         loading: false,
         loadingText: '拼命加载中'
@@ -231,7 +200,12 @@ export default {
   },
   computed: {
     buttonShow: function() {
-      if (this.roles.name == 'user' || this.roles.name === 'bd-manager') {
+      if (
+        this.roles.name == 'user' ||
+        this.roles.name === 'bd-manager' ||
+        this.roles.name == 'legal-affairs' ||
+        this.roles.name == 'legal-affairs-manager'
+      ) {
         return true
       } else {
         return false
@@ -241,55 +215,18 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get('user_info'))
     this.roles = user_info.roles.data[0]
-    this.getRemindContractList()
+    this.getInvoiceCompanyList()
   },
   methods: {
-    receiptInvoice(data) {
-      let id = data.id
-      this.$confirm('确认收款?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '确认收款中'
-          this.setting.loading = true
-          receiptInvoice(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '收款成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getRemindContractList()
-            })
-            .catch(error => {
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-              this.setting.loading = false
-            })
-        })
-        .catch(e => {
-          console.log(e)
-        })
-    },
-    getRemindContractList() {
+    getInvoiceCompanyList() {
       this.setting.loading = true
       let args = {
-        page: this.pagination.currentPage,
-        name: this.searchForm.name,
-        contract_number: this.searchForm.contract_number
+        name: this.searchForm.name
       }
       if (!this.searchForm.name) {
         delete args.name
       }
-      if (this.searchForm.contract_number === '') {
-        delete args.contract_number
-      }
-      getRemindContractList(this, args)
+      getInvoiceCompanyList(this, args)
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
@@ -299,26 +236,28 @@ export default {
           this.setting.loading = false
         })
     },
-    detailContract(data) {
+    addInvoiceCompany() {
       this.$router.push({
-        path: '/contract/list/detail/' + data.id,
-        query: {
-          hide: 'none'
-        }
+        path: '/invoice/invoice_company/add'
+      })
+    },
+    editInvoiceCompany(data) {
+      this.$router.push({
+        path: '/invoice/invoice_company/edit/' + data.id
       })
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
-      this.getRemindContractList()
+      this.getInvoiceCompanyList()
     },
     search() {
       this.pagination.currentPage = 1
-      this.getRemindContractList()
+      this.getInvoiceCompanyList()
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields()
       this.pagination.currentPage = 1
-      this.getRemindContractList()
+      this.getInvoiceCompanyList()
     }
   }
 }
@@ -331,7 +270,6 @@ export default {
   .item-list-wrap {
     background: #fff;
     padding: 30px;
-
     .el-form-item {
       margin-bottom: 0;
     }
@@ -380,9 +318,6 @@ export default {
             margin-right: 5px;
           }
         }
-      }
-      .highlighted {
-        color: red;
       }
       .total-wrap {
         margin-top: 5px;

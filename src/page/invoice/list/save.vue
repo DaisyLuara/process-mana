@@ -59,25 +59,35 @@
           </el-col>
           <el-col :span="12">
             <el-form-item 
-              label="座机电话" 
-              prop="telephone">
-              <el-input 
-                v-model="invoiceForm.telephone" 
-                :maxlength="20"
-                class="item-input"/>
-              <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
+              label="开票公司" 
+              prop="invoice_company_id" >
+              <el-select 
+                v-model="invoiceForm.invoice_company_id" 
+                :loading="searchLoading"
+                placeholder="请选择" 
+                filterable 
+                clearable
+                @change="invoiceCompanyHandle">
+                <el-option
+                  v-for="item in invoiceCompanyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="开票公司" 
-              prop="invoice_company" >
+              label="座机电话" 
+              prop="telephone">
               <el-input 
-                v-model="invoiceForm.invoice_company" 
-                :maxlength="50"
+                v-model="invoiceCompany.telephone" 
+                :maxlength="20"
+                :disabled="true"
                 class="item-input"/>
+              <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -85,7 +95,8 @@
               label="纳税人识别号" 
               prop="taxpayer_num" >
               <el-input 
-                v-model="invoiceForm.taxpayer_num" 
+                v-model="invoiceCompany.taxpayer_num" 
+                :disabled="true"
                 :maxlength="50"
                 class="item-input"/>
             </el-form-item>
@@ -97,8 +108,9 @@
               label="手机号" 
               prop="phone" >
               <el-input 
-                v-model="invoiceForm.phone" 
+                v-model="invoiceCompany.phone" 
                 :maxlength="11"
+                :disabled="true"
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -107,8 +119,9 @@
               label="地址" 
               prop="address" >
               <el-input 
-                v-model="invoiceForm.address"
-                :maxlength="50"
+                v-model="invoiceCompany.address"
+                :disabled="true"
+                :maxlength="11"
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -119,7 +132,8 @@
               label="开户银行" 
               prop="account_bank" >
               <el-input 
-                v-model="invoiceForm.account_bank"
+                v-model="invoiceCompany.account_bank"
+                :disabled="true"
                 :maxlength="50"
                 class="item-input"/>
             </el-form-item>
@@ -129,7 +143,8 @@
               label="开户行账号" 
               prop="account_number" >
               <el-input 
-                v-model="invoiceForm.account_number"
+                v-model="invoiceCompany.account_number"
+                :disabled="true"
                 :maxlength="20"
                 class="item-input"/>
             </el-form-item>
@@ -306,6 +321,7 @@ import {
   getContract,
   goodsService,
   invoiceDetail,
+  getInvoiceCompany,
   Cookies
 } from 'service'
 import {
@@ -368,6 +384,7 @@ export default {
       },
       total: 0,
       total_text: '零',
+      invoiceCompanyList: [],
       tableData: [
         {
           name: '开票总计（大写）：',
@@ -406,51 +423,27 @@ export default {
         }
       ],
       invoiceID: '',
+      invoiceCompany: {
+        phone: '',
+        telephone: '',
+        account_bank: '',
+        account_number: '',
+        taxpayer_num: '',
+        address: ''
+      },
       invoiceForm: {
         applicant_name: '',
         receive_status: 1,
-        phone: null,
         applicant: '',
         type: 0,
-        account_bank: '',
-        address: '',
         contract_id: '',
-        taxpayer_num: '',
-        account_number: '',
         remark: '',
-        invoice_company: '',
+        invoice_company_id: '',
         kind: ''
       },
       rules: {
-        account_number: [
-          { required: true, message: '请输入开户行账号', trigger: 'submit' },
-          { validator: checkNumber, trigger: 'submit' }
-        ],
-        invoice_company: [
+        invoice_company_id: [
           { required: true, message: '请输入开票名称', trigger: 'submit' }
-        ],
-        phone: [
-          { message: '请输入手机号', trigger: 'submit' },
-          { validator: checkPhone, trigger: 'submit' }
-        ],
-        telephone: [
-          {
-            validator: (rule, value, callback) => {
-              if (!value) {
-                callback()
-                return
-              }
-              if (!/^0\d{2,3}-\d{7,8}|0\d{2,3}-\d{7,8}-\d{1,4}$/.test(value)) {
-                callback('座机电话格式不正确,请重新输入')
-              } else {
-                callback()
-              }
-            },
-            trigger: 'submit'
-          }
-        ],
-        taxpayer_num: [
-          { required: true, message: '请输入纳税人识别号', trigger: 'submit' }
         ],
         type: [
           { required: true, message: '请选择开票类型', trigger: 'submit' }
@@ -461,10 +454,6 @@ export default {
         kind: [
           { required: true, message: '请选择开票种类', trigger: 'submit' }
         ],
-        account_bank: [
-          { required: true, message: '请输入开户银行', trigger: 'submit' }
-        ],
-        address: [{ required: true, message: '请输入地址', trigger: 'submit' }],
         contract_id: [
           { required: true, message: '请选择合同编号', trigger: 'submit' }
         ]
@@ -494,6 +483,7 @@ export default {
     this.invoiceID = this.$route.params.uid
     this.getContract()
     this.goodsService()
+    this.getInvoiceCompany()
     if (this.invoiceID) {
       this.setting.loading = true
       this.invoiceDetail()
@@ -504,28 +494,42 @@ export default {
     }
   },
   methods: {
+    invoiceCompanyHandle(obj) {
+      let invoiceCompany = this.invoiceCompanyList.find(r => {
+        return r.id === obj
+      })
+      this.invoiceCompany.phone = invoiceCompany.phone
+      this.invoiceCompany.telephone = invoiceCompany.telephone
+      this.invoiceCompany.account_bank = invoiceCompany.account_bank
+      this.invoiceCompany.account_number = invoiceCompany.account_number
+      this.invoiceCompany.taxpayer_num = invoiceCompany.taxpayer_num
+      this.invoiceCompany.address = invoiceCompany.address
+    },
     invoiceDetail() {
       let params = {
-        include: 'invoice_content.goodsService'
+        include: 'invoice_content.goodsService,invoice_company'
       }
       invoiceDetail(this, this.invoiceID, params)
         .then(res => {
-          this.invoiceForm = res
           let invoice_content = res.invoice_content.data
+          if (res.invoice_company) {
+            this.invoiceCompany.phone = res.invoice_company.phone
+            this.invoiceCompany.telephone = res.invoice_company.telephone
+            this.invoiceCompany.account_bank = res.invoice_company.account_bank
+            this.invoiceCompany.account_number =
+              res.invoice_company.account_number
+            this.invoiceCompany.taxpayer_num = res.invoice_company.taxpayer_num
+            this.invoiceCompany.address = res.invoice_company.address
+          }
+          this.invoiceForm.invoice_company_id = res.invoice_company.id
           this.invoiceForm.type = res.type === '专票' ? 0 : 1
           this.invoiceForm.applicant_name = res.applicant_name
           this.invoiceForm.receive_status =
             res.receive_status === '未收款' ? 0 : 1
-          this.invoiceForm.phone = res.phone
           this.invoiceForm.applicant = res.applicant
-          this.invoiceForm.account_bank = res.account_bank
-          this.invoiceForm.address = res.address
           this.invoiceForm.contract_id = res.contract_id
-          this.invoiceForm.taxpayer_num = res.taxpayer_num
-          this.invoiceForm.account_number = res.account_number
           this.invoiceForm.remark = res.remark
           this.invoiceForm.kind = res.kind
-          this.invoiceForm.telephone = res.telephone
           invoice_content.map(r => {
             let data = {
               name: r.goodsService.id,
@@ -551,6 +555,20 @@ export default {
             type: 'success'
           })
           this.setting.loading = false
+        })
+    },
+    getInvoiceCompany() {
+      this.searchLoading = true
+      getInvoiceCompany(this)
+        .then(res => {
+          this.invoiceCompanyList = res.data
+        })
+        .catch(err => {
+          this.searchLoading = false
+          this.$message({
+            message: err.response.data.message,
+            type: 'warning'
+          })
         })
     },
     googsServiceHandle(obj, index) {

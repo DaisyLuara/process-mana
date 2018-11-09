@@ -1,4 +1,6 @@
 const INVOICE_API = '/api/invoice'
+const INVOICE_COMPANY_API = '/api/invoice_company'
+const INVOICE_HISTORY_API = '/api/invoice_history'
 const HOST = process.env.SERVER_URL
 
 const getInvoiceList = (context, params) => {
@@ -106,6 +108,125 @@ const receiptInvoice = (context, invoiceId) => {
   })
 }
 
+const getInvoiceCompanyList = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + INVOICE_COMPANY_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const saveInvoiceCompany = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + INVOICE_COMPANY_API, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const invoiceCompanyDetail = (context, invoiceCompanyId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + INVOICE_COMPANY_API + '/' + invoiceCompanyId, {
+        params: params
+      })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const modifyInvoiceCompany = (context, invoiceCompanyId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .patch(HOST + INVOICE_COMPANY_API + '/' + invoiceCompanyId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const getReceiptList = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + INVOICE_COMPANY_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const saveReceipt = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + INVOICE_COMPANY_API, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const ReceiptDetail = (context, receiptId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + INVOICE_COMPANY_API + '/' + receiptId, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const modifyReceipt = (context, receiptId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .patch(HOST + INVOICE_COMPANY_API + '/' + receiptId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const invoicetHistory = context => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + INVOICE_HISTORY_API)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getInvoiceList,
   saveInvoice,
@@ -114,5 +235,14 @@ export {
   deleteInvoice,
   auditingInvoice,
   receiveInvoice,
-  receiptInvoice
+  receiptInvoice,
+  getInvoiceCompanyList,
+  saveInvoiceCompany,
+  invoiceCompanyDetail,
+  modifyInvoiceCompany,
+  getReceiptList,
+  saveReceipt,
+  ReceiptDetail,
+  modifyReceipt,
+  invoicetHistory
 }

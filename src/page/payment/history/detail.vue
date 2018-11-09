@@ -7,7 +7,7 @@
       class="pane">
       <div 
         class="pane-title">
-        付款{{ hide ? '详情' : '审批' }}
+        付款详情
       </div>
       <el-form
         ref="paymentForm"
@@ -84,68 +84,18 @@
         </el-form-item>
         <el-form-item>
           <el-button 
-            v-if="!hide"
-            type="danger"
-            size="small"
-            @click="dialogFormVisible = true">驳回</el-button>
-          <el-button 
-            v-if="!hide"
-            :type="(paymentForm.status === '已审批' && paymentForm.handler === id) ?'warning' : 'primary'"
-            size="small"
-            @click="auditing">{{ (paymentForm.status === '已审批' && paymentForm.handler === id) ?'确认付款' : '审核通过' }}</el-button>
-          <el-button 
             size="small"
             @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog 
-      :visible.sync="dialogFormVisible"
-      title="驳回理由">
-      <el-form>
-        <el-form-item
-          label="备注:" 
-          prop="remark">
-          <el-input
-            v-model="paymentForm.remark"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
-            type="textarea"
-            placeholder="请输入内容"
-            class="text-input"/>
-        </el-form-item>
-      </el-form>
-      <div 
-        slot="footer" 
-        class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button 
-          type="primary" 
-          @click="rejected">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  historyBack,
-  paymentDetail,
-  modifyPayment,
-  auditingPayment,
-  Cookies
-} from 'service'
+import { historyBack, paymentDetail } from 'service'
 
-import {
-  Form,
-  FormItem,
-  Button,
-  Row,
-  MessageBox,
-  Col,
-  Dialog,
-  Input
-} from 'element-ui'
+import { Form, FormItem, Button, Row, MessageBox, Col, Input } from 'element-ui'
 
 export default {
   components: {
@@ -154,13 +104,10 @@ export default {
     ElForm: Form,
     ElFormItem: FormItem,
     ElButton: Button,
-    ElDialog: Dialog,
     ElInput: Input
   },
   data() {
     return {
-      hide: null,
-      dialogFormVisible: false,
       setting: {
         isOpenSelectAll: true,
         loading: false,
@@ -184,16 +131,11 @@ export default {
         handler: '',
         status: ''
       },
-      id: '',
-
       paymentID: ''
     }
   },
   created() {
     this.paymentID = this.$route.params.uid
-    this.hide = this.$route.query.hide
-    let user_info = JSON.parse(Cookies.get('user_info'))
-    this.id = user_info.id
     this.paymentDetail()
   },
   methods: {
@@ -229,74 +171,6 @@ export default {
     },
     historyBack() {
       historyBack()
-    },
-    auditing() {
-      this.$confirm(
-        this.paymentForm.status === '已审批' &&
-        this.paymentForm.handler === this.id
-          ? '确定确认付款吗?'
-          : '确定审核通过吗?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      )
-        .then(() => {
-          this.setting.loading = true
-          auditingPayment(this, this.paymentID)
-            .then(res => {
-              this.$message({
-                message:
-                  this.paymentForm.status === '已审批' &&
-                  this.paymentForm.handler === this.id
-                    ? '付款成功'
-                    : '审批通过',
-                type: 'success'
-              })
-              this.$router.push({
-                path: '/payment/list'
-              })
-              this.setting.loading = false
-            })
-            .catch(err => {
-              this.$message({
-                message: err.response.data.message,
-                type: 'warning'
-              })
-              this.setting.loading = false
-            })
-        })
-        .catch(e => {
-          this.setting.loading = false
-        })
-    },
-    rejected() {
-      this.setting.loading = true
-      let args = {
-        remark: this.paymentForm.remark
-      }
-      modifyPayment(this, this.paymentID, args)
-        .then(res => {
-          this.dialogFormVisible = false
-          this.$message({
-            message: '修改成功',
-            type: 'success'
-          })
-          this.$router.push({
-            path: '/payment/list'
-          })
-          this.setting.loading = false
-        })
-        .catch(err => {
-          this.dialogFormVisible = false
-          this.setting.loading = false
-          this.$message({
-            message: err.response.data.message,
-            type: 'warning'
-          })
-        })
     }
   }
 }

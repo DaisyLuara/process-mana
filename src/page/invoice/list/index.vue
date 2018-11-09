@@ -124,7 +124,7 @@
                 </el-form-item>
                 <el-form-item 
                   label="开票公司:">
-                  <span>{{ scope.row.invoice_company }}</span> 
+                  <span>{{ scope.row.invoice_company_name }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="收款状态:">
@@ -173,7 +173,7 @@
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="invoice_company"
+            prop="invoice_company_name"
             label="开票公司"
             min-width="100"/>
           <el-table-column
@@ -223,7 +223,7 @@
           </el-table-column>
           <el-table-column 
             label="操作" 
-            min-width="200">
+            min-width="280">
             <template 
               slot-scope="scope">
               <el-button 
@@ -245,6 +245,7 @@
                 size="mini" 
                 type="warning"
                 @click="receiveInvoice(scope.row)">认领票据</el-button>
+                <!-- finance代表财务 -->
               <el-button 
                 v-if="scope.row.receive_status === '未收款' && roles.name === 'finance'"
                 size="mini" 
@@ -423,7 +424,14 @@ export default {
   },
   computed: {
     addButtonShow: function() {
-      if (this.roles.name == 'user' || this.roles.name === 'bd-manager') {
+      // BD BD主管，法务，法务主管
+
+      if (
+        this.roles.name == 'user' ||
+        this.roles.name === 'bd-manager' ||
+        this.roles.name == 'legal-affairs' ||
+        this.roles.name == 'legal-affairs-manager'
+      ) {
         return true
       } else {
         return false
