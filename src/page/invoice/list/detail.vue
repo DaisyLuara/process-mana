@@ -44,14 +44,13 @@
               prop="telephone">
               {{ invoiceCompany.telephone }}
             </el-form-item>
-            
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item 
               label="开票公司:" 
-              prop="invoice_company" >
+              prop="name" >
               {{ invoiceCompany.name }}
             </el-form-item>
           </el-col>
@@ -247,7 +246,8 @@ export default {
         account_bank: '',
         account_number: '',
         taxpayer_num: '',
-        address: ''
+        address: '',
+        name: ''
       },
       invoiceForm: {
         applicant_name: '',
@@ -255,7 +255,6 @@ export default {
         receive_status: null,
         type: null,
         type_name: '',
-        contract_number: '',
         contract_number: null,
         remark: '',
         kind: ''
@@ -291,7 +290,14 @@ export default {
           this.invoiceForm = res
           let invoice_content = res.invoice_content.data
           this.invoiceForm.type_name = res.type
-          this.invoiceCompany = res.invoice_company
+          this.invoiceCompany.telephone = res.invoice_company.telephone
+          this.invoiceCompany.taxpayer_num = res.invoice_company.taxpayer_num
+          this.invoiceCompany.phone = res.invoice_company.phone
+          this.invoiceCompany.account_bank = res.invoice_company.account_bank
+          this.invoiceCompany.account_number =
+            res.invoice_company.account_number
+          this.invoiceCompany.address = res.invoice_company.address
+          this.invoiceCompany.name = res.invoice_company.name
           invoice_content.map(r => {
             let data = {
               name: r.goodsService.name,
