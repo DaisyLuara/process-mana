@@ -1,5 +1,6 @@
 const PAYMENT_API = '/api/payment'
 const PAYMENT_PAYEE_API = '/api/payment_payee'
+const PAYMENT_HISTORY_API = 'api/payment_history'
 const HOST = process.env.SERVER_URL
 
 const getPaymentList = (context, params) => {
@@ -144,6 +145,19 @@ const modifyPayee = (context, payeeId, params) => {
       })
   })
 }
+
+const paymentHistory = context => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PAYMENT_HISTORY_API)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   getPaymentList,
   savePayment,
@@ -155,5 +169,6 @@ export {
   getPayeeList,
   savePayee,
   payeeDetail,
-  modifyPayee
+  modifyPayee,
+  paymentHistory
 }

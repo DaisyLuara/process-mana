@@ -1,5 +1,6 @@
 const INVOICE_API = '/api/invoice'
 const INVOICE_COMPANY_API = '/api/invoice_company'
+const INVOICE_HISTORY_API = '/api/invoice_history'
 const HOST = process.env.SERVER_URL
 
 const getInvoiceList = (context, params) => {
@@ -213,6 +214,19 @@ const modifyReceipt = (context, receiptId, params) => {
   })
 }
 
+const invoicetHistory = context => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + INVOICE_HISTORY_API)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getInvoiceList,
   saveInvoice,
@@ -229,5 +243,6 @@ export {
   getReceiptList,
   saveReceipt,
   ReceiptDetail,
-  modifyReceipt
+  modifyReceipt,
+  invoicetHistory
 }

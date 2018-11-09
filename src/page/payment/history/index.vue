@@ -273,7 +273,7 @@ import {
   Col,
   DatePicker
 } from 'element-ui'
-import { getPaymentList, handleDateTransform } from 'service'
+import { paymentHistory, handleDateTransform } from 'service'
 
 export default {
   components: {
@@ -394,10 +394,10 @@ export default {
     }
   },
   created() {
-    this.getPaymentList()
+    this.paymentHistory()
   },
   methods: {
-    getPaymentList() {
+    paymentHistory() {
       this.setting.loading = true
       let args = {
         page: this.pagination.currentPage,
@@ -426,7 +426,7 @@ export default {
       if (!this.searchForm.dataValue[1]) {
         delete args.end_date
       }
-      getPaymentList(this, args)
+      paymentHistory(this, args)
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
@@ -443,16 +443,16 @@ export default {
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
-      this.getPaymentList()
+      this.paymentHistory()
     },
     search() {
       this.pagination.currentPage = 1
-      this.getPaymentList()
+      this.paymentHistory()
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields()
       this.pagination.currentPage = 1
-      this.getPaymentList()
+      this.paymentHistory()
     }
   }
 }

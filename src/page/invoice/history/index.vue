@@ -257,7 +257,7 @@ import {
   Col,
   DatePicker
 } from 'element-ui'
-import { handleDateTransform, getInvoiceList } from 'service'
+import { handleDateTransform, invoicetHistory } from 'service'
 
 export default {
   components: {
@@ -384,10 +384,10 @@ export default {
   },
 
   created() {
-    this.getInvoiceList()
+    this.invoicetHistory()
   },
   methods: {
-    getInvoiceList() {
+    invoicetHistory() {
       this.setting.loading = true
       let args = {
         page: this.pagination.currentPage,
@@ -416,7 +416,7 @@ export default {
       if (!this.searchForm.dataValue[1]) {
         delete args.end_date
       }
-      getInvoiceList(this, args)
+      invoicetHistory(this, args)
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
@@ -433,16 +433,16 @@ export default {
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
-      this.getInvoiceList()
+      this.invoicetHistory()
     },
     search() {
       this.pagination.currentPage = 1
-      this.getInvoiceList()
+      this.invoicetHistory()
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields()
       this.pagination.currentPage = 1
-      this.getInvoiceList()
+      this.invoicetHistory()
     }
   }
 }
