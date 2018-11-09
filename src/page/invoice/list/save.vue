@@ -651,7 +651,6 @@ export default {
           args.invoice_content = invoice_content
           args.total = this.total
           args.total_text = this.total_text
-          console.log(args)
           if (this.invoiceID) {
             modifyInvoice(this, this.invoiceID, args)
               .then(res => {

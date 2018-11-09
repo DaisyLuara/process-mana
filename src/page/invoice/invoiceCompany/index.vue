@@ -242,7 +242,6 @@ export default {
       })
     },
     editInvoiceCompany(data) {
-      console.log(data)
       this.$router.push({
         path: '/invoice/invoice_company/edit/' + data.id
       })

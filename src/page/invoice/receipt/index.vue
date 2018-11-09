@@ -276,7 +276,6 @@ export default {
       })
     },
     editReceipt(data) {
-      console.log(data)
       this.$router.push({
         path: '/invoice/receipt/edit/' + data.id
       })
