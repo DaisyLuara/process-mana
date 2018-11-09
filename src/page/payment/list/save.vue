@@ -289,8 +289,8 @@ export default {
           this.paymentForm.amount = res.amount
           this.paymentForm.remark = res.remark
           this.paymentForm.reason = res.reason
-          this.paymentForm.payment_payee_id = res.payment_payee.id
           if (res.payment_payee) {
+            this.paymentForm.payment_payee_id = res.payment_payee.id
             this.paymentPayee.account_bank = res.payment_payee.account_bank
             this.paymentPayee.account_number = res.payment_payee.account_number
           }
