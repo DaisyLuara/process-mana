@@ -157,9 +157,9 @@
 import {
   historyBack,
   contractDetail,
-  modifyContract,
   auditingContract,
-  Cookies
+  Cookies,
+  rejectContract
 } from 'service'
 import auth from 'service/auth'
 
@@ -389,7 +389,7 @@ export default {
           remark: this.contractForm.remark
         }
       }
-      modifyContract(this, this.contractID, args)
+      rejectContract(this, this.contractID, args)
         .then(res => {
           this.dialogFormVisible = false
           this.$message({

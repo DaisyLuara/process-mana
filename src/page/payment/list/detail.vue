@@ -131,7 +131,7 @@
 import {
   historyBack,
   paymentDetail,
-  modifyPayment,
+  paymentReject,
   auditingPayment,
   Cookies
 } from 'service'
@@ -277,7 +277,7 @@ export default {
       let args = {
         remark: this.paymentForm.remark
       }
-      modifyPayment(this, this.paymentID, args)
+      paymentReject(this, this.paymentID, args)
         .then(res => {
           this.dialogFormVisible = false
           this.$message({
