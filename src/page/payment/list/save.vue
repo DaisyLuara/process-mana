@@ -261,8 +261,10 @@ export default {
       let paymentPayee = this.paymentPayeeList.find(r => {
         return r.id === obj
       })
-      this.paymentPayee.account_bank = paymentPayee.account_bank
-      this.paymentPayee.account_number = paymentPayee.account_number
+      if (paymentPayee) {
+        this.paymentPayee.account_bank = paymentPayee.account_bank
+        this.paymentPayee.account_number = paymentPayee.account_number
+      }
     },
     getPaymentPayee() {
       this.searchLoading = true

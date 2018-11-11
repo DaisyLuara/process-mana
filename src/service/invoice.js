@@ -1,6 +1,8 @@
 const INVOICE_API = '/api/invoice'
 const INVOICE_COMPANY_API = '/api/invoice_company'
 const INVOICE_HISTORY_API = '/api/invoice_history'
+const INVOICE_REJECT_API = '/api/invoice/reject'
+
 const HOST = process.env.SERVER_URL
 
 const getInvoiceList = (context, params) => {
@@ -227,6 +229,19 @@ const invoicetHistory = context => {
   })
 }
 
+const rejectInvoice = (context, invoiceId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + INVOICE_REJECT_API + '/' + invoiceId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getInvoiceList,
   saveInvoice,
@@ -244,5 +259,6 @@ export {
   saveReceipt,
   ReceiptDetail,
   modifyReceipt,
-  invoicetHistory
+  invoicetHistory,
+  rejectInvoice
 }

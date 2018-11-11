@@ -1,6 +1,8 @@
 const PAYMENT_API = '/api/payment'
 const PAYMENT_PAYEE_API = '/api/payment_payee'
 const PAYMENT_HISTORY_API = '/api/payment_history'
+const PAYMENT_REJECT_API = '/api/payment/reject'
+
 const HOST = process.env.SERVER_URL
 
 const getPaymentList = (context, params) => {
@@ -158,6 +160,19 @@ const paymentHistory = context => {
       })
   })
 }
+
+const paymentReject = (context, paymentId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + PAYMENT_REJECT_API + '/' + paymentId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   getPaymentList,
   savePayment,
@@ -170,5 +185,6 @@ export {
   savePayee,
   payeeDetail,
   modifyPayee,
-  paymentHistory
+  paymentHistory,
+  paymentReject
 }

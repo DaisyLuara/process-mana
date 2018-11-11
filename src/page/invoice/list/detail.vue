@@ -202,9 +202,9 @@ import {
   historyBack,
   checkMobile,
   invoiceDetail,
-  modifyInvoice,
   auditingInvoice,
-  Cookies
+  Cookies,
+  rejectInvoice
 } from 'service/index'
 import {
   Form,
@@ -382,7 +382,7 @@ export default {
       let args = {
         remark: this.invoiceForm.remark
       }
-      modifyInvoice(this, this.invoiceID, args)
+      rejectInvoice(this, this.invoiceID, args)
         .then(res => {
           this.dialogFormVisible = false
           this.$message({

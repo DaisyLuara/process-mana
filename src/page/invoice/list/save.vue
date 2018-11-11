@@ -498,12 +498,14 @@ export default {
       let invoiceCompany = this.invoiceCompanyList.find(r => {
         return r.id === obj
       })
-      this.invoiceCompany.phone = invoiceCompany.phone
-      this.invoiceCompany.telephone = invoiceCompany.telephone
-      this.invoiceCompany.account_bank = invoiceCompany.account_bank
-      this.invoiceCompany.account_number = invoiceCompany.account_number
-      this.invoiceCompany.taxpayer_num = invoiceCompany.taxpayer_num
-      this.invoiceCompany.address = invoiceCompany.address
+      if (invoiceCompany) {
+        this.invoiceCompany.phone = invoiceCompany.phone
+        this.invoiceCompany.telephone = invoiceCompany.telephone
+        this.invoiceCompany.account_bank = invoiceCompany.account_bank
+        this.invoiceCompany.account_number = invoiceCompany.account_number
+        this.invoiceCompany.taxpayer_num = invoiceCompany.taxpayer_num
+        this.invoiceCompany.address = invoiceCompany.address
+      }
     },
     invoiceDetail() {
       let params = {
