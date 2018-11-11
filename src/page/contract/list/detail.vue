@@ -330,7 +330,26 @@ export default {
                 let args = {
                   contract_number: value
                 }
-                this.auditing(this, this.contractID, args)
+                if (!value && this.roles.name === 'legal-affairs') {
+                  this.$message({
+                    type: 'info',
+                    message: '审批合同编号必填'
+                  })
+                  this.setting.loading = false
+                  return
+                }
+
+                if (!value && this.roles.name === 'legal-affairs-manager') {
+                  this.$message({
+                    type: 'info',
+                    message: '审批合同编号必填'
+                  })
+                  this.setting.loading = false
+                  return
+                }
+                if (value) {
+                  this.auditing(this, this.contractID, args)
+                }
               })
               .catch(() => {
                 this.setting.loading = false
