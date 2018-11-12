@@ -52,30 +52,40 @@
             <template 
               slot-scope="scope">
                <el-table
-                :data="tableDataTwo"
+                :data="scope.row.receiveDate.data"
                 style="width: 100%">
                 <el-table-column
-                  prop="date"
+                  prop="receive_date"
                   label="收款日期"
-                  width="180">
+                  min-width="120">
                 </el-table-column>
                 <el-table-column
-                  prop="name"
+                  prop="receive_status"
+                  label="收款状态"
+                  min-width="120">
+                </el-table-column>
+                <el-table-column
+                  prop="invoiceReceipt"
                   label="收款金额"
-                  width="180">
+                  min-width="120">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.invoiceReceipt !== undefined ? scope.row.invoiceReceipt.receipt_money:'' }}</span>
+                  </template>
                 </el-table-column>
                 <el-table-column
-                  prop="address"
-                  label="收款状态">
+                  prop="receipt_company"
+                  label="付款公司"
+                  min-width="120">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.invoiceReceipt !== undefined  ? scope.row.invoiceReceipt.receipt_company : ''}}</span>
+                  </template>
                 </el-table-column>
-                <el-table-column 
-                  min-width="180">
-                  <template 
-                    slot-scope="scope">
-                    <el-button
-                      size="mini" 
-                      type="info"
-                      @click="detailContract(scope.row)">详情</el-button>
+                <el-table-column
+                  prop="receipt_date"
+                  label="到账时间"
+                  min-width="120">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.invoiceReceipt !== undefined ? scope.row.invoiceReceipt.receipt_date : '' }}</span>
                   </template>
                 </el-table-column>
               </el-table>

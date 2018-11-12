@@ -145,6 +145,18 @@
           prop="remark">
           {{ invoiceForm.remark }}
         </el-form-item>
+        <el-form-item
+          v-if="invoiceForm.bd_ma_message"
+          label="bd主管意见:"
+          prop="bd_ma_message">
+          {{ invoiceForm.bd_ma_message }}
+        </el-form-item>
+        <el-form-item
+          v-if="invoiceForm.legal_ma_message"
+          label="法务主管意见:" 
+          prop="legal_ma_message">
+          {{ invoiceForm.legal_ma_message }}
+        </el-form-item>
         <el-form-item>
           <el-button
             v-if="!hide"
@@ -185,6 +197,46 @@
         <el-button 
           type="primary" 
           @click="rejected">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog  
+      :visible.sync="auditingDialog"
+      title="审批">
+      <el-form >
+        <el-form-item
+          v-if="roles.name === 'legal-affairs-manager'"
+          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
+          label="意见" 
+          prop="legal_ma_message">
+          <el-input
+            v-model="invoiceForm.legal_ma_message"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="180"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
+        <el-form-item
+          v-if="roles.name === 'bd-manager'"
+          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
+          label="意见" 
+          prop="bd_ma_message">
+          <el-input
+            v-model="invoiceForm.bd_ma_message"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="180"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
+      </el-form>
+      <div 
+        slot="footer" 
+        class="dialog-footer">
+        <el-button @click="auditingDialog = false">取 消</el-button>
+        <el-button 
+          type="primary" 
+          @click="auditingHandle">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -233,6 +285,7 @@ export default {
         loading: false,
         loadingText: '拼命加载中'
       },
+      auditingDialog: false,
       invoiceCompany: {
         phone: '',
         telephone: '',
@@ -249,9 +302,12 @@ export default {
         type_name: '',
         contract_number: null,
         remark: '',
-        kind: ''
+        kind: '',
+        bd_ma_message: '',
+        legal_ma_message: ''
       },
       id: '',
+      roles: [],
       tableData: [
         {
           name: '开票总计（大写）：',
@@ -270,6 +326,7 @@ export default {
     let user_info = JSON.parse(Cookies.get('user_info'))
     this.hide = this.$route.query.hide
     this.id = user_info.id
+    this.roles = user_info.roles.data[0]
     this.invoiceDetail()
   },
   methods: {
@@ -291,6 +348,8 @@ export default {
               res.invoice_company.account_number
             this.invoiceCompany.address = res.invoice_company.address
             this.invoiceCompany.name = res.invoice_company.name
+            this.invoiceForm.bd_ma_message = res.bd_ma_message
+            this.invoiceForm.legal_ma_message = res.legal_ma_message
           }
           invoice_content.map(r => {
             let data = {
@@ -328,46 +387,84 @@ export default {
       historyBack()
     },
     auditing() {
-      this.$confirm(
+      if (
         this.invoiceForm.status === '已审批' &&
         this.invoiceForm.handler === this.id
-          ? '确定确认开票吗?'
-          : '确定审核通过吗?',
-        '提示',
-        {
+      ) {
+        this.$confirm('确定确认开票吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }
-      )
-        .then(() => {
-          this.setting.loading = true
-          auditingInvoice(this, this.invoiceID)
-            .then(res => {
-              this.$message({
-                message:
-                  this.invoiceForm.status === '已审批' &&
-                  this.invoiceForm.handler === this.id
-                    ? '开票成功'
-                    : '审批通过',
-                type: 'success'
-              })
-              this.$router.push({
-                path: '/invoice/list'
-              })
-              this.setting.loading = false
-            })
-            .catch(err => {
-              this.$message({
-                message: err.response.data.message,
-                type: 'warning'
-              })
-              this.setting.loading = false
-            })
         })
-        .catch(e => {
+          .then(() => {
+            this.auditingInvoice(this, this.invoiceID)
+          })
+          .catch(e => {
+            this.setting.loading = false
+          })
+      } else {
+        this.auditingDialog = true
+      }
+    },
+    auditingInvoice(obj, invoiceID, args) {
+      this.setting.loading = true
+      auditingInvoice(obj, invoiceID, args)
+        .then(res => {
+          this.$message({
+            message:
+              this.invoiceForm.status === '已审批' &&
+              this.invoiceForm.handler === this.id
+                ? '开票成功'
+                : '审批通过',
+            type: 'success'
+          })
+          this.$router.push({
+            path: '/invoice/list'
+          })
           this.setting.loading = false
         })
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: 'warning'
+          })
+          this.setting.loading = false
+        })
+    },
+    auditingHandle() {
+      let args = {}
+      this.setting.loading = true
+
+      if (
+        this.roles.name === 'legal-affairs-manager' &&
+        !this.invoiceForm.legal_ma_message
+      ) {
+        this.$message({
+          type: 'info',
+          message: '审批意见必填'
+        })
+        this.setting.loading = false
+        return
+      } else {
+        if (this.invoiceForm.legal_ma_message) {
+          args.legal_ma_message = this.invoiceForm.legal_ma_message
+        }
+      }
+
+      if (this.roles.name === 'bd-manager' && !this.invoiceForm.bd_ma_message) {
+        this.$message({
+          type: 'info',
+          message: '审批意见必填'
+        })
+        this.setting.loading = false
+        return
+      } else {
+        if (this.invoiceForm.bd_ma_message) {
+          args.bd_ma_message = this.invoiceForm.bd_ma_message
+        }
+      }
+      console.log(args)
+      this.auditingInvoice(this, this.invoiceID, args)
     },
     rejected() {
       this.setting.loading = true

@@ -70,10 +70,10 @@ const deletePayment = (context, paymentId) => {
   })
 }
 // 审批付款
-const auditingPayment = (context, paymentId) => {
+const auditingPayment = (context, paymentId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + PAYMENT_API + '/auditing/' + paymentId)
+      .post(HOST + PAYMENT_API + '/auditing/' + paymentId, params)
       .then(response => {
         resolve(response.data)
       })

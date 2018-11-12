@@ -112,6 +112,10 @@
                   <span>{{ scope.row.name }}</span> 
                 </el-form-item>
                 <el-form-item 
+                  label="收款总额:">
+                  <span>{{ scope.row.amount }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="申请人:">
                   <span>{{ scope.row.applicant_name }}</span> 
                 </el-form-item>

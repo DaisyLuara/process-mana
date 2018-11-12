@@ -71,10 +71,10 @@ const deleteInvoice = (context, invoiceId) => {
   })
 }
 // 审批票据
-const auditingInvoice = (context, invoiceId) => {
+const auditingInvoice = (context, invoiceId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVOICE_API + '/auditing/' + invoiceId)
+      .post(HOST + INVOICE_API + '/auditing/' + invoiceId, params)
       .then(response => {
         resolve(response.data)
       })
@@ -216,8 +216,6 @@ const modifyReceipt = (context, receiptId, params) => {
       })
   })
 }
-
-
 
 const invoicetHistory = context => {
   return new Promise(function(resolve, reject) {

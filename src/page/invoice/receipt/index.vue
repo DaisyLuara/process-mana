@@ -105,11 +105,15 @@
                 </el-form-item>
                 <el-form-item 
                   label="合同编号:">
-                  <span>{{ scope.row.contract_number }}</span> 
+                  <span>
+                    {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : ''}}
+                  </span> 
                 </el-form-item>
                 <el-form-item 
-                  label="所属BD:">
-                  <span>{{ scope.row.bd }}</span> 
+                  label="所属人:">
+                  <span>
+                    {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.applicant_name : ''}}
+                  </span> 
                 </el-form-item>
               </el-form>
             </template>
@@ -138,15 +142,24 @@
             :show-overflow-tooltip="true"
             prop="contract_number"
             label="合同编号"
-            min-width="80"/>
+            min-width="80">
+            <template slot-scope="scope">
+              {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : ''}}
+            </template>
+          </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="BD"
-            label="所属BD"
-            min-width="80"/>
+            label="所属人"
+            min-width="80">
+            <template slot-scope="scope">
+              {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.applicant_name : ''}}
+            </template>
+          </el-table-column>
           <el-table-column 
             label="操作" 
-            min-width="200">
+            min-width="200"
+            v-if="roles.name === 'finance' || roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'">
             <template 
               slot-scope="scope">
               <el-button
@@ -159,10 +172,6 @@
                 size="mini" 
                 type="warning"
                 @click="handleReceipt(scope.row)">认领收款</el-button>
-              <el-button
-                v-if="roles.name === 'finance' && scope.row.claim_status === '已认领'"
-                size="mini" 
-                type="danger">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
