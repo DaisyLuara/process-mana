@@ -288,8 +288,7 @@ import {
   receiveInvoice,
   handleDateTransform,
   getInvoiceList,
-  Cookies,
-  receiptInvoice
+  Cookies
 } from 'service'
 
 export default {
@@ -455,38 +454,6 @@ export default {
               this.$message({
                 type: 'success',
                 message: '认领成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getInvoiceList()
-            })
-            .catch(error => {
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-              this.setting.loading = false
-            })
-        })
-        .catch(e => {
-          console.log(e)
-        })
-    },
-    receiptInvoice(data) {
-      let id = data.id
-      this.$confirm('确认收款?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '确认收款中'
-          this.setting.loading = true
-          receiptInvoice(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '收款成功！'
               })
               this.pagination.currentPage = 1
               this.getInvoiceList()

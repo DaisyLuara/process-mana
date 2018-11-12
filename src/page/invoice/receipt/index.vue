@@ -24,9 +24,9 @@
             </el-form-item>
             <el-form-item
               label=""
-              prop="status">
+              prop="claim_status">
               <el-select
-                v-model="searchForm.status" 
+                v-model="searchForm.claim_status" 
                 placeholder="认领状态" >
                 <el-option
                   v-for="item in statusReceiptList"
@@ -195,7 +195,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="receiptInvoice">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -216,7 +216,12 @@ import {
   DatePicker,
   Dialog
 } from 'element-ui'
-import { getReceiptList, Cookies, handleDateTransform } from 'service'
+import {
+  getReceiptList,
+  Cookies,
+  handleDateTransform,
+  receiptInvoice
+} from 'service'
 
 export default {
   components: {
@@ -241,7 +246,7 @@ export default {
       dialogFormVisible: false,
       searchForm: {
         name: '',
-        status: '',
+        claim_status: '',
         dataValue: []
       },
       pickerOptions2: {
@@ -326,12 +331,17 @@ export default {
     getReceiptList() {
       this.setting.loading = true
       let args = {
+        include: 'receiveDate.contract',
         name: this.searchForm.name,
+        claim_status: this.searchForm.claim_status,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
         end_date: handleDateTransform(this.searchForm.dataValue[1])
       }
       if (!this.searchForm.name) {
         delete args.name
+      }
+      if (this.searchForm.claim_status === '') {
+        delete args.claim_status
       }
       if (!this.searchForm.dataValue[0]) {
         delete args.start_date
@@ -358,6 +368,25 @@ export default {
       this.$router.push({
         path: '/invoice/receipt/edit/' + data.id
       })
+    },
+    receiptInvoice(data) {
+      this.setting.loading = true
+      let id = data.id
+      let args = {
+        receive_date_id: ''
+      }
+      receiptInvoice(this, id, args)
+        .then(res => {
+          this.setting.loading = false
+        })
+        .catch(err => {
+          this.setting.loading = false
+
+          this.$message({
+            message: err.response.data.message,
+            type: 'warning'
+          })
+        })
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
