@@ -24,15 +24,6 @@
                 class="item-input"/>
             </el-form-item>
             <el-form-item 
-              label="" 
-              prop="contract_number">
-              <el-input 
-                v-model="searchForm.contract_number" 
-                clearable
-                placeholder="合同编号"
-                class="item-input"/>
-            </el-form-item>
-            <el-form-item 
               label="">
               <el-button 
                 type="primary" 
@@ -114,27 +105,11 @@
             label="申请人"
             min-width="80">
           </el-table-column>
-            <el-table-column
-            :show-overflow-tooltip="true"
-            prop="handler_name"
-            label="收款状态"
-            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="status"
+            prop="amount"
             label="收款总额"
             min-width="80"/>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="apply_time"
-            label="已收款金额"
-            min-width="80"/>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="apply_time"
-            label="未收款金额"
-            min-width="80"/>
-          
         </el-table>
         <div 
           class="pagination-wrap">
@@ -260,6 +235,7 @@ export default {
     getRemindContractList() {
       this.setting.loading = true
       let args = {
+        include: 'receive_date',
         page: this.pagination.currentPage,
         name: this.searchForm.name,
         contract_number: this.searchForm.contract_number

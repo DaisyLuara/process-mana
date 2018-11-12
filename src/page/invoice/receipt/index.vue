@@ -69,8 +69,8 @@
             总数:{{ pagination.total }} 
           </span>
           <div>
-              <!-- v-if="roles.name === 'finance'" -->
             <el-button
+              v-if="roles.name === 'finance'"
               size="small" 
               type="success"
               @click="addReceipt">新增收款</el-button>
@@ -158,7 +158,7 @@
                 v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'"
                 size="mini" 
                 type="warning"
-                @click="dialogFormVisible = true">认领收款</el-button>
+                @click="handleReceipt(scope.row)">认领收款</el-button>
               <el-button
                 v-if="roles.name === 'finance' && status === '已认领'"
                 size="mini" 
@@ -319,7 +319,8 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: []
+      tableData: [],
+      id: ''
     }
   },
   created() {
@@ -328,6 +329,9 @@ export default {
     this.getReceiptList()
   },
   methods: {
+    handleReceipt(obj) {
+      this.id = obj.id
+    },
     getReceiptList() {
       this.setting.loading = true
       let args = {
@@ -369,19 +373,17 @@ export default {
         path: '/invoice/receipt/edit/' + data.id
       })
     },
-    receiptInvoice(data) {
+    receiptInvoice() {
       this.setting.loading = true
-      let id = data.id
       let args = {
         receive_date_id: ''
       }
-      receiptInvoice(this, id, args)
+      receiptInvoice(this, this.id, args)
         .then(res => {
-          this.setting.loading = false
+          this.getReceiptList()
         })
         .catch(err => {
           this.setting.loading = false
-
           this.$message({
             message: err.response.data.message,
             type: 'warning'
