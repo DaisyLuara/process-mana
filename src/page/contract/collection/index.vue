@@ -139,7 +139,7 @@ import {
   Select,
   Option
 } from 'element-ui'
-import { getRemindContractList, receiptInvoice, Cookies } from 'service'
+import { getRemindContractList, Cookies } from 'service'
 
 export default {
   components: {
@@ -200,42 +200,10 @@ export default {
     this.getRemindContractList()
   },
   methods: {
-    receiptInvoice(data) {
-      let id = data.id
-      this.$confirm('确认收款?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '确认收款中'
-          this.setting.loading = true
-          receiptInvoice(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '收款成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getRemindContractList()
-            })
-            .catch(error => {
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-              this.setting.loading = false
-            })
-        })
-        .catch(e => {
-          console.log(e)
-        })
-    },
     getRemindContractList() {
       this.setting.loading = true
       let args = {
-        include: 'receive_date',
+        include: 'receiveDate.invoiceReceipt',
         page: this.pagination.currentPage,
         name: this.searchForm.name,
         contract_number: this.searchForm.contract_number

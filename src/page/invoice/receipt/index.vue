@@ -89,19 +89,19 @@
                 class="demo-table-expand">
                 <el-form-item 
                   label="付款公司:">
-                  <span>{{ scope.row.name }}</span> 
+                  <span>{{ scope.row.receipt_company }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="收款金额:">
-                  <span>{{ scope.row.address }}</span> 
+                  <span>{{ scope.row.receipt_money }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="到账日期:">
-                  <span>{{ scope.row.taxpayer_num }}</span> 
+                  <span>{{ scope.row.receipt_date }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="认领状态:">
-                  <span>{{ scope.row.status }}</span> 
+                  <span>{{ scope.row.claim_status }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="合同编号:">
@@ -116,22 +116,22 @@
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="name"
+            prop="receipt_company"
             label="付款公司"
             min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="address"
+            prop="receipt_money"
             label="收款金额"
             min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="taxpayer_num"
+            prop="receipt_date"
             label="到账日期"
             min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="status"
+            prop="claim_status"
             label="认领状态"
             min-width="80"/>
           <el-table-column
@@ -150,7 +150,7 @@
             <template 
               slot-scope="scope">
               <el-button
-                v-if="roles.name === 'finance' && status === '未认领'"
+                v-if="roles.name === 'finance' && scope.row.claim_status === '未认领'"
                 size="mini" 
                 type="primary"
                 @click="editReceipt(scope.row)">编辑</el-button>
@@ -160,7 +160,7 @@
                 type="warning"
                 @click="handleReceipt(scope.row)">认领收款</el-button>
               <el-button
-                v-if="roles.name === 'finance' && status === '已认领'"
+                v-if="roles.name === 'finance' && scope.row.claim_status === '已认领'"
                 size="mini" 
                 type="danger">删除</el-button>
             </template>
@@ -181,15 +181,35 @@
     <el-dialog title="认领收款" :visible.sync="dialogFormVisible">
       <el-form :model="claimReceiptForm">
         <el-form-item label="合同编号" label-width="130">
-          <el-select v-model="claimReceiptForm.contract_id" placeholder="请搜索合同编号">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select 
+            v-model="claimReceiptForm.contract_id"
+            :remote-method="getContract" 
+            :loading="searchLoading"
+            remote
+            filterable 
+            clearable
+            placeholder="请搜索合同编号"
+            @change="contractChangeHandle">
+            <el-option 
+              v-for="item in contractList"
+              :key="item.id"
+              :label="item.contract_number" 
+              :value="item.id"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="收款日期" label-width="130">
-          <el-select v-model="claimReceiptForm.date" placeholder="请选择收款日期">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        <el-form-item 
+          label="收款日期">
+          <el-select 
+            v-model="claimReceiptForm.dateId" 
+            :loading="searchLoading"
+            filterable 
+            clearable
+            placeholder="请选择收款日期">
+            <el-option 
+              v-for="item in receiptDateList"
+              :key="item.id"
+              :label="item.receive_date" 
+              :value="item.id"/>
           </el-select>
         </el-form-item>
       </el-form>
@@ -220,7 +240,9 @@ import {
   getReceiptList,
   Cookies,
   handleDateTransform,
-  receiptInvoice
+  getContract,
+  receiptInvoice,
+  getReceiveDate
 } from 'service'
 
 export default {
@@ -241,7 +263,7 @@ export default {
     return {
       claimReceiptForm: {
         contract_id: '',
-        date: ''
+        dateId: ''
       },
       dialogFormVisible: false,
       searchForm: {
@@ -249,6 +271,8 @@ export default {
         claim_status: '',
         dataValue: []
       },
+      contractList: [],
+      receiptDateList: [],
       pickerOptions2: {
         shortcuts: [
           {
@@ -329,8 +353,51 @@ export default {
     this.getReceiptList()
   },
   methods: {
+    getContract(query) {
+      this.searchLoading = true
+      let args = {
+        // 0 收款
+        type: 0,
+        contract_number: query
+      }
+      getContract(this, args)
+        .then(res => {
+          this.searchLoading = false
+          this.contractList = res.data
+        })
+        .catch(err => {
+          this.searchLoading = false
+          this.$message({
+            message: err.response.data.message,
+            type: 'warning'
+          })
+        })
+    },
+    contractChangeHandle() {
+      this.claimReceiptForm.dateId = ''
+      this.getReceiveDate()
+    },
+    getReceiveDate() {
+      this.searchLoading = true
+      let args = {
+        id: this.claimReceiptForm.contract_id
+      }
+      getReceiveDate(this, args)
+        .then(res => {
+          this.receiptDateList = res.data
+          this.searchLoading = false
+        })
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: 'warning'
+          })
+          this.searchLoading = false
+        })
+    },
     handleReceipt(obj) {
       this.id = obj.id
+      this.dialogFormVisible = true
     },
     getReceiptList() {
       this.setting.loading = true
@@ -376,13 +443,15 @@ export default {
     receiptInvoice() {
       this.setting.loading = true
       let args = {
-        receive_date_id: ''
+        receive_date_id: this.claimReceiptForm.dateId
       }
       receiptInvoice(this, this.id, args)
         .then(res => {
+          this.dialogFormVisible = false
           this.getReceiptList()
         })
         .catch(err => {
+          this.dialogFormVisible = false
           this.setting.loading = false
           this.$message({
             message: err.response.data.message,

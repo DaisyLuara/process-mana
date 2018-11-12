@@ -98,10 +98,10 @@ const receiveInvoice = (context, invoiceId) => {
 }
 
 // 认领收款
-const receiptInvoice = (context, invoiceId, params) => {
+const receiptInvoice = (context, receiptId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVOICE_RECEIPT_API + '/confirm/' + invoiceId, params)
+      .post(HOST + INVOICE_RECEIPT_API + '/confirm/' + receiptId, params)
       .then(response => {
         resolve(response.data)
       })
@@ -216,6 +216,8 @@ const modifyReceipt = (context, receiptId, params) => {
       })
   })
 }
+
+
 
 const invoicetHistory = context => {
   return new Promise(function(resolve, reject) {

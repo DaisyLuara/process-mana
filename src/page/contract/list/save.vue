@@ -63,7 +63,7 @@
               <el-radio-group v-model="contractForm.type">
                 <el-radio :label="0">收款合同</el-radio>
                 <el-radio :label="1">付款合同</el-radio>
-                <el-radio :label="2">其他合同</el-radio>
+                <el-radio :label="2">其它合同</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
