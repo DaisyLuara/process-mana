@@ -39,22 +39,43 @@
           </el-col>
           <el-col :span="12">
             <el-form-item 
-              label="合同编号:" 
-              prop="contract_number" >
-              {{ contractForm.contract_number }}
+              label="合同类型:" 
+              prop="type_name" >
+              {{ contractForm.type_name }}
+            </el-form-item>
+          </el-col>
+        </el-row>
+         <el-row>
+          <el-col :span="12">
+            <el-form-item
+              label="合同内容:" 
+              prop="content" >
+              <div 
+                v-for="item in fileList" 
+                :key="item.id">{{ item.name }}
+                <span 
+                  class="download" 
+                  @click="handlePreview(item)">下载</span></div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item 
+              label="合同金额:" 
+              prop="amount" >
+              {{ contractForm.amount }}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="合同类型:" 
-              prop="type_name" >
-              {{ contractForm.type_name }}
+              label="合同编号:" 
+              prop="contract_number" >
+              {{ contractForm.contract_number }}
             </el-form-item>
           </el-col>
           <el-col
-            v-if="contractForm.receive_date"
+            v-if="contractForm.type_name !== '付款合同'"
             :span="12">
             <el-form-item 
               label="收款日期:" 
@@ -63,16 +84,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item
-          label="合同内容:" 
-          prop="content" >
-          <div 
-            v-for="item in fileList" 
-            :key="item.id">{{ item.name }}
-            <span 
-              class="download" 
-              @click="handlePreview(item)">下载</span></div>
-        </el-form-item>
+        
         <el-form-item
           label="备注:" 
           prop="remark">
@@ -213,7 +225,8 @@ export default {
         date: [],
         receive_date: '',
         ids: '',
-        remark: ''
+        remark: '',
+        amount: ''
       },
       hide: null
     }
@@ -297,6 +310,7 @@ export default {
           this.contractForm.date = res.receive_date.split(',')
           this.contractForm.receive_date = res.receive_date
           this.contractForm.remark = res.remark
+          this.contractForm.amount = res.amount
           mediaData.map(r => {
             mediaIds.push(r.id)
           })
