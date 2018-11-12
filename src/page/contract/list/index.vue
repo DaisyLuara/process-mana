@@ -112,6 +112,10 @@
                   <span>{{ scope.row.name }}</span> 
                 </el-form-item>
                 <el-form-item 
+                  label="收款总额:">
+                  <span>{{ scope.row.amount }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="申请人:">
                   <span>{{ scope.row.applicant_name }}</span> 
                 </el-form-item>
@@ -131,9 +135,11 @@
                   label="最后操作时间:">
                   <span>{{ scope.row.updated_at }}</span> 
                 </el-form-item>
-                <el-form-item 
+                <el-form-item
+                  v-if="scope.row.type === '收款合同'"  
                   label="收款日期:">
-                  <span style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
+                  <span
+                    style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
                 </el-form-item>
               </el-form>
             </template>

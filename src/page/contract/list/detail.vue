@@ -39,22 +39,43 @@
           </el-col>
           <el-col :span="12">
             <el-form-item 
-              label="合同编号:" 
-              prop="contract_number" >
-              {{ contractForm.contract_number }}
+              label="合同类型:" 
+              prop="type_name" >
+              {{ contractForm.type_name }}
+            </el-form-item>
+          </el-col>
+        </el-row>
+         <el-row>
+          <el-col :span="12">
+            <el-form-item
+              label="合同内容:" 
+              prop="content" >
+              <div 
+                v-for="item in fileList" 
+                :key="item.id">{{ item.name }}
+                <span 
+                  class="download" 
+                  @click="handlePreview(item)">下载</span></div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item 
+              label="收款总额:" 
+              prop="amount" >
+              {{ contractForm.amount }}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="合同类型:" 
-              prop="type_name" >
-              {{ contractForm.type_name }}
+              label="合同编号:" 
+              prop="contract_number" >
+              {{ contractForm.contract_number }}
             </el-form-item>
           </el-col>
           <el-col
-            v-if="contractForm.receive_date"
+            v-if="contractForm.type_name !== '付款合同'"
             :span="12">
             <el-form-item 
               label="收款日期:" 
@@ -64,14 +85,22 @@
           </el-col>
         </el-row>
         <el-form-item
-          label="合同内容:" 
-          prop="content" >
-          <div 
-            v-for="item in fileList" 
-            :key="item.id">{{ item.name }}
-            <span 
-              class="download" 
-              @click="handlePreview(item)">下载</span></div>
+          v-if="contractForm.legal_message"
+          label="法务意见:"
+          prop="legal_message">
+          {{ contractForm.legal_message }}
+        </el-form-item>
+        <el-form-item
+          v-if="contractForm.legal_ma_message"
+          label="法务主管意见:" 
+          prop="legal_ma_message">
+          {{ contractForm.legal_ma_message }}
+        </el-form-item>
+         <el-form-item
+          v-if="contractForm.bd_ma_message"
+          label="bd主管意见:"
+          prop="bd_ma_message">
+          {{ contractForm.bd_ma_message }}
         </el-form-item>
         <el-form-item
           label="备注:" 
@@ -88,7 +117,7 @@
             v-if="!hide"
             type="primary"
             size="small"
-            @click="auditingHandle">审核通过</el-button>
+            @click="auditingDialog = true">审核通过</el-button>
           <el-button
             size="small"
             @click="historyBack">返回</el-button>
@@ -135,7 +164,7 @@
           <el-input
             v-model="contractForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
+            :maxlength="150"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
@@ -148,6 +177,71 @@
         <el-button 
           type="primary" 
           @click="rejected">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog  
+      :visible.sync="auditingDialog"
+      title="审批">
+      <el-form >
+        <el-form-item
+          v-if="(roles.name === 'legal-affairs-manager' || roles.name === 'legal-affairs')"
+          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
+          label="合同编号" 
+          prop="contact_number">
+         <el-input
+            v-model="contractForm.contract_number"
+            :maxlength="40"
+            :disabled="roles.name !== 'legal-affairs-manager' && roles.name !== 'legal-affairs'"
+            placeholder="请输入合同编号"
+            class="text-input"/>
+        </el-form-item>
+        <el-form-item
+          v-if="roles.name === 'legal-affairs-manager'"
+          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
+          label="意见" 
+          prop="legal_ma_message">
+          <el-input
+            v-model="contractForm.legal_ma_message"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="150"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
+        <el-form-item
+          v-if="roles.name === 'legal-affairs'"
+          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
+          label="意见" 
+          prop="legal_message">
+          <el-input
+            v-model="contractForm.legal_message"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="150"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
+        <el-form-item
+          v-if="roles.name === 'bd-manager'"
+          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
+          label="意见" 
+          prop="bd_ma_message">
+          <el-input
+            v-model="contractForm.bd_ma_message"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="150"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
+      </el-form>
+      <div 
+        slot="footer" 
+        class="dialog-footer">
+        <el-button @click="auditingDialog = false">取 消</el-button>
+        <el-button 
+          type="primary" 
+          @click="auditingHandle">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -189,6 +283,7 @@ export default {
   },
   data() {
     return {
+      auditingDialog: false,
       dialogFormVisible: false,
       roles: {},
       SERVER_URL: SERVER_URL,
@@ -213,7 +308,11 @@ export default {
         date: [],
         receive_date: '',
         ids: '',
-        remark: ''
+        remark: '',
+        amount: '',
+        bd_ma_message: '',
+        legal_message: '',
+        legal_ma_message: ''
       },
       hide: null
     }
@@ -287,7 +386,8 @@ export default {
           let mediaIds = []
           let mediaData = res.media.data
           this.contractForm.applicant_name = res.applicant_name
-          this.contractForm.type = res.type === '收款合同' ? 0 : 1
+          this.contractForm.type =
+            res.type === '收款合同' ? 0 : res.type === '付款合同' ? 1 : 2
           this.contractForm.type_name = res.type
           this.contractForm.applicant = res.applicant
           this.contractForm.name = res.name
@@ -297,6 +397,10 @@ export default {
           this.contractForm.date = res.receive_date.split(',')
           this.contractForm.receive_date = res.receive_date
           this.contractForm.remark = res.remark
+          this.contractForm.amount = res.amount
+          this.contractForm.bd_ma_message = res.bd_ma_message
+          this.contractForm.legal_message = res.legal_message
+          this.contractForm.legal_ma_message = res.legal_ma_message
           mediaData.map(r => {
             mediaIds.push(r.id)
           })
@@ -313,60 +417,66 @@ export default {
         })
     },
     auditingHandle() {
+      let args = {}
       this.setting.loading = true
-      this.$confirm('确定审核通过吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          if (!this.contractForm.contract_number) {
-            this.setting.loading = true
-            MessageBox.prompt('请输入合同编号', '填写合同编号', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消'
-            })
-              .then(({ value }) => {
-                let args = {
-                  contract_number: value
-                }
-                if (!value && this.roles.name === 'legal-affairs') {
-                  this.$message({
-                    type: 'info',
-                    message: '审批合同编号必填'
-                  })
-                  this.setting.loading = false
-                  return
-                }
+      if (!this.contractForm.contract_number) {
+        this.$message({
+          type: 'info',
+          message: '审批合同编号必填'
+        })
+        this.setting.loading = false
+        return
+      } else {
+        args.contract_number = this.contractForm.contract_number
+      }
 
-                if (!value && this.roles.name === 'legal-affairs-manager') {
-                  this.$message({
-                    type: 'info',
-                    message: '审批合同编号必填'
-                  })
-                  this.setting.loading = false
-                  return
-                }
-                if (value) {
-                  this.auditing(this, this.contractID, args)
-                }
-              })
-              .catch(() => {
-                this.setting.loading = false
-                this.$message({
-                  type: 'info',
-                  message: '审批合同编号必填'
-                })
-              })
-          } else {
-            this.setting.loadingText = '审核通过中'
-            this.setting.loading = true
-            this.auditing(this, this.contractID)
-          }
+      if (
+        this.roles.name === 'legal-affairs-manager' &&
+        !this.contractForm.legal_ma_message
+      ) {
+        this.$message({
+          type: 'info',
+          message: '审批意见必填'
         })
-        .catch(e => {
-          this.setting.loading = false
+        this.setting.loading = false
+        return
+      } else {
+        if (this.contractForm.legal_ma_message) {
+          args.legal_ma_message = this.contractForm.legal_ma_message
+        }
+      }
+
+      if (
+        this.roles.name === 'legal-affairs' &&
+        !this.contractForm.legal_message
+      ) {
+        this.$message({
+          type: 'info',
+          message: '审批意见必填'
         })
+        this.setting.loading = false
+        return
+      } else {
+        if (this.contractForm.legal_message) {
+          args.legal_message = this.contractForm.legal_message
+        }
+      }
+      if (
+        this.roles.name === 'bd-manager' &&
+        !this.contractForm.bd_ma_message
+      ) {
+        this.$message({
+          type: 'info',
+          message: '审批意见必填'
+        })
+        this.setting.loading = false
+        return
+      } else {
+        if (this.contractForm.bd_ma_message) {
+          args.bd_ma_message = this.contractForm.bd_ma_message
+        }
+      }
+      this.auditing(this, this.contractID, args)
     },
     auditing(obj, contractID, args) {
       auditingContract(obj, contractID, args)

@@ -24,15 +24,6 @@
                 class="item-input"/>
             </el-form-item>
             <el-form-item 
-              label="" 
-              prop="contract_number">
-              <el-input 
-                v-model="searchForm.contract_number" 
-                clearable
-                placeholder="合同编号"
-                class="item-input"/>
-            </el-form-item>
-            <el-form-item 
               label="">
               <el-button 
                 type="primary" 
@@ -60,43 +51,44 @@
             type="expand">
             <template 
               slot-scope="scope">
-              <el-form 
-                label-position="left" 
-                inline 
-                class="demo-table-expand">
-                <el-form-item 
-                  label="合同编号:">
-                  <span>{{ scope.row.contract_number }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="公司名称:">
-                  <span>{{ scope.row.company_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="合同名称:">
-                  <span>{{ scope.row.name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="申请人:">
-                  <span>{{ scope.row.applicant_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="待处理人:">
-                  <span>{{ scope.row.handler_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="审批状态:">
-                  <span>{{ scope.row.status }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="申请时间:">
-                  <span>{{ scope.row.created_at }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="收款日期:">
-                  <span style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
-                </el-form-item>
-              </el-form>
+               <el-table
+                :data="scope.row.receiveDate.data"
+                style="width: 100%">
+                <el-table-column
+                  prop="receive_date"
+                  label="收款日期"
+                  min-width="120">
+                </el-table-column>
+                <el-table-column
+                  prop="receive_status"
+                  label="收款状态"
+                  min-width="120">
+                </el-table-column>
+                <el-table-column
+                  prop="invoiceReceipt"
+                  label="收款金额"
+                  min-width="120">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.invoiceReceipt !== undefined ? scope.row.invoiceReceipt.receipt_money:'' }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="receipt_company"
+                  label="付款公司"
+                  min-width="120">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.invoiceReceipt !== undefined  ? scope.row.invoiceReceipt.receipt_company : ''}}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="receipt_date"
+                  label="到账时间"
+                  min-width="120">
+                  <template slot-scope="scope">
+                    <span>{{ scope.row.invoiceReceipt !== undefined ? scope.row.invoiceReceipt.receipt_date : '' }}</span>
+                  </template>
+                </el-table-column>
+              </el-table>
             </template>
           </el-table-column>
           <el-table-column
@@ -123,49 +115,11 @@
             label="申请人"
             min-width="80">
           </el-table-column>
-            <el-table-column
-            :show-overflow-tooltip="true"
-            prop="handler_name"
-            label="待处理人"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
-            </template>
-          </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="status"
-            label="审批状态"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.status }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="apply_time"
-            label="申请时间"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.created_at }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column 
-            label="操作" 
-            min-width="180">
-            <template 
-              slot-scope="scope">
-              <el-button
-                size="mini" 
-                type="info"
-                @click="detailContract(scope.row)">详情</el-button>
-              <el-button
-                v-if="buttonShow"
-                size="mini" 
-                type="warning"
-                @click="receiptInvoice(scope.row)">确认收款</el-button>
-            </template>
-          </el-table-column>
+            prop="amount"
+            label="收款总额"
+            min-width="80"/>
         </el-table>
         <div 
           class="pagination-wrap">
@@ -195,7 +149,7 @@ import {
   Select,
   Option
 } from 'element-ui'
-import { getRemindContractList, receiptInvoice, Cookies } from 'service'
+import { getRemindContractList, Cookies } from 'service'
 
 export default {
   components: {
@@ -226,7 +180,19 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: []
+      tableData: [],
+      tableDataTwo: [
+        {
+          date: '2016-05-02',
+          name: '2000',
+          address: '已收款'
+        },
+        {
+          date: '2016-05-04',
+          name: '200',
+          address: '未收款'
+        }
+      ]
     }
   },
   computed: {
@@ -244,41 +210,10 @@ export default {
     this.getRemindContractList()
   },
   methods: {
-    receiptInvoice(data) {
-      let id = data.id
-      this.$confirm('确认收款?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '确认收款中'
-          this.setting.loading = true
-          receiptInvoice(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '收款成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getRemindContractList()
-            })
-            .catch(error => {
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-              this.setting.loading = false
-            })
-        })
-        .catch(e => {
-          console.log(e)
-        })
-    },
     getRemindContractList() {
       this.setting.loading = true
       let args = {
+        include: 'receiveDate.invoiceReceipt',
         page: this.pagination.currentPage,
         name: this.searchForm.name,
         contract_number: this.searchForm.contract_number

@@ -16,28 +16,29 @@
         label-position="left"
         label-width="130px">
         <el-form-item 
-          label="申请人" 
-          prop="applicate_name" >
-          <el-input 
-            v-model="receiptForm.applicate_name" 
-            :maxlength="50"
-            class="item-input"/>
-        </el-form-item>
-        <el-form-item 
           label="付款公司" 
-          prop="company_name" >
+          prop="receipt_company" >
           <el-input 
-            v-model="receiptForm.company_name"
+            v-model="receiptForm.receipt_company"
             :maxlength="50"
             class="item-input"/>
         </el-form-item>
         <el-form-item 
           label="收款金额" 
-          prop="amount" >
+          prop="receipt_money" >
           <el-input 
-            v-model="receiptForm.amount" 
+            v-model="receiptForm.receipt_money" 
             :maxlength="50"
             class="item-input"/>
+        </el-form-item>
+        <el-form-item 
+          label="到账时间" 
+          prop="receipt_date" >
+          <el-date-picker
+            v-model="receiptForm.receipt_date"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button 
@@ -58,16 +59,25 @@ import {
   modifyReceipt,
   saveReceipt,
   ReceiptDetail,
-  Cookies
+  Cookies,
+  handleDateTransform
 } from 'service'
-import { Form, FormItem, Button, Input, MessageBox } from 'element-ui'
+import {
+  Form,
+  FormItem,
+  Button,
+  Input,
+  MessageBox,
+  DatePicker
+} from 'element-ui'
 
 export default {
   components: {
     ElForm: Form,
     ElFormItem: FormItem,
     ElButton: Button,
-    ElInput: Input
+    ElInput: Input,
+    ElDatePicker: DatePicker
   },
   data() {
     let checkNumber = (rule, value, callback) => {
@@ -86,20 +96,20 @@ export default {
       },
       receiptID: '',
       receiptForm: {
-        applicate_name: '',
-        company_name: '',
-        amount: ''
+        receipt_company: '',
+        receipt_money: '',
+        receipt_date: ''
       },
       rules: {
-        applicate_name: [
-          { required: true, message: '请输入申请人', trigger: 'submit' }
-        ],
-        company_name: [
+        receipt_company: [
           { required: true, message: '请输入付款公司', trigger: 'submit' }
         ],
-        amount: [
+        receipt_money: [
           { required: true, message: '请输入收款金额', trigger: 'submit' },
           { validator: checkNumber, trigger: 'submit' }
+        ],
+        receipt_date: [
+          { required: true, message: '请选择日期', trigger: 'submit' }
         ]
       }
     }
@@ -115,9 +125,9 @@ export default {
     ReceiptDetail() {
       ReceiptDetail(this, this.receiptID)
         .then(res => {
-          this.receiptForm.applicate_name = res.applicate_name
-          this.receiptForm.company_name = res.company_name
-          this.receiptForm.amount = res.amount
+          this.receiptForm.receipt_company = res.receipt_company
+          this.receiptForm.receipt_money = res.receipt_money
+          this.receiptForm.receipt_date = res.receipt_date
           this.setting.loading = false
         })
         .catch(err => {
@@ -136,6 +146,7 @@ export default {
         if (valid) {
           this.setting.loading = true
           let args = this.receiptForm
+          args.receipt_date = handleDateTransform(this.receiptForm.receipt_date)
           if (this.receiptID) {
             modifyReceipt(this, this.receiptID, args)
               .then(res => {

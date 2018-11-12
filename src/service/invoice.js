@@ -2,6 +2,7 @@ const INVOICE_API = '/api/invoice'
 const INVOICE_COMPANY_API = '/api/invoice_company'
 const INVOICE_HISTORY_API = '/api/invoice_history'
 const INVOICE_REJECT_API = '/api/invoice/reject'
+const INVOICE_RECEIPT_API = '/api/invoice_receipt'
 
 const HOST = process.env.SERVER_URL
 
@@ -70,10 +71,10 @@ const deleteInvoice = (context, invoiceId) => {
   })
 }
 // 审批票据
-const auditingInvoice = (context, invoiceId) => {
+const auditingInvoice = (context, invoiceId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVOICE_API + '/auditing/' + invoiceId)
+      .post(HOST + INVOICE_API + '/auditing/' + invoiceId, params)
       .then(response => {
         resolve(response.data)
       })
@@ -96,11 +97,11 @@ const receiveInvoice = (context, invoiceId) => {
   })
 }
 
-// 确认收款
-const receiptInvoice = (context, invoiceId) => {
+// 认领收款
+const receiptInvoice = (context, receiptId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVOICE_API + '/receipt/' + invoiceId)
+      .post(HOST + INVOICE_RECEIPT_API + '/confirm/' + receiptId, params)
       .then(response => {
         resolve(response.data)
       })
@@ -167,7 +168,7 @@ const modifyInvoiceCompany = (context, invoiceCompanyId, params) => {
 const getReceiptList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVOICE_COMPANY_API, { params: params })
+      .get(HOST + INVOICE_RECEIPT_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -180,7 +181,7 @@ const getReceiptList = (context, params) => {
 const saveReceipt = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVOICE_COMPANY_API, params)
+      .post(HOST + INVOICE_RECEIPT_API, params)
       .then(response => {
         resolve(response.data)
       })
@@ -193,7 +194,7 @@ const saveReceipt = (context, params) => {
 const ReceiptDetail = (context, receiptId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVOICE_COMPANY_API + '/' + receiptId, { params: params })
+      .get(HOST + INVOICE_RECEIPT_API + '/' + receiptId, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -206,7 +207,7 @@ const ReceiptDetail = (context, receiptId, params) => {
 const modifyReceipt = (context, receiptId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .patch(HOST + INVOICE_COMPANY_API + '/' + receiptId, params)
+      .patch(HOST + INVOICE_RECEIPT_API + '/' + receiptId, params)
       .then(response => {
         resolve(response.data)
       })

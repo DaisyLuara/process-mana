@@ -63,7 +63,50 @@
               <el-radio-group v-model="contractForm.type">
                 <el-radio :label="0">收款合同</el-radio>
                 <el-radio :label="1">付款合同</el-radio>
+                <el-radio :label="2">其它合同</el-radio>
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item 
+              label="合同内容" 
+              prop="ids" >
+              <el-upload
+                ref="upload"
+                :action="SERVER_URL + '/api/media'" 
+                :data="{type: 'file'}"
+                :headers="formHeader"
+                :before-upload="beforeUpload" 
+                :on-success="handleSuccess" 
+                :on-remove="handleRemove"
+                :on-preview="handlePreview"
+                :before-remove="beforeRemove"
+                :file-list="fileList"
+                class="upload-demo">
+                <el-button 
+                  size="small" 
+                  type="primary">点击上传</el-button>
+                <div 
+                  slot="tip" 
+                  style="display:inline-block"
+                  class="el-upload__tip">支持文件类型：doc(.docx)、.pdf</div>
+                <div 
+                  v-if="fileList.length !==0"
+                  slot="tip" 
+                  style="color: #ff5722;font-size: 12px;" >点击文件名称可以下载</div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item 
+              label="收款总额" 
+              prop="amount" >
+              <el-input 
+                v-model="contractForm.amount"
+                :maxlength="7"
+                class="item-input"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -94,34 +137,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item 
-          label="合同内容" 
-          prop="ids" >
-          <el-upload
-            ref="upload"
-            :action="SERVER_URL + '/api/media'" 
-            :data="{type: 'file'}"
-            :headers="formHeader"
-            :before-upload="beforeUpload" 
-            :on-success="handleSuccess" 
-            :on-remove="handleRemove"
-            :on-preview="handlePreview"
-            :before-remove="beforeRemove"
-            :file-list="fileList"
-            class="upload-demo">
-            <el-button 
-              size="small" 
-              type="primary">点击上传</el-button>
-            <div 
-              slot="tip" 
-              style="display:inline-block"
-              class="el-upload__tip">支持文件类型：doc(.docx)、.pdf</div>
-            <div 
-              v-if="fileList.length !==0"
-              slot="tip" 
-              style="color: #ff5722;font-size: 12px;" >点击文件名称可以下载</div>
-          </el-upload>
-        </el-form-item>
         <el-form-item 
           label="备注" 
           prop="remark">
@@ -213,7 +228,8 @@ export default {
         applicant: 0,
         receive_date: [],
         ids: '',
-        remark: ''
+        remark: '',
+        amount: 0
       },
       rules: {
         ids: [{ required: true, message: '请上传文件', trigger: 'submit' }],
@@ -223,7 +239,10 @@ export default {
         company_id: [
           { required: true, message: '请选择公司', trigger: 'submit' }
         ],
-        name: [{ required: true, message: '请输入合同名称', trigger: 'submit' }]
+        name: [
+          { required: true, message: '请输入合同名称', trigger: 'submit' }
+        ],
+        amount: [{ required: true, message: '请输入收款总额', trigger: 'submit' }]
       }
     }
   },
@@ -259,6 +278,7 @@ export default {
           this.contractForm.receive_date = res.receive_date.split(',')
           this.contractForm.remark = res.remark
           this.contractForm.contract_number = res.contract_number
+          this.contractForm.amount = res.amount
           mediaData.map(r => {
             mediaIds.push(r.id)
           })
@@ -350,7 +370,8 @@ export default {
             applicant: this.contractForm.applicant,
             type: this.contractForm.type,
             ids: this.contractForm.ids,
-            remark: this.contractForm.remark
+            remark: this.contractForm.remark,
+            amount: this.contractForm.amount
           }
           if (this.contractForm.type === 0) {
             if (this.contractForm.receive_date) {
