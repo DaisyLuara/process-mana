@@ -141,11 +141,6 @@
             label="金额(含税)"/>
         </el-table>
         <el-form-item
-          label="备注:" 
-          prop="remark">
-          {{ invoiceForm.remark }}
-        </el-form-item>
-        <el-form-item
           v-if="invoiceForm.bd_ma_message"
           label="bd主管意见:"
           prop="bd_ma_message">
@@ -156,6 +151,11 @@
           label="法务主管意见:" 
           prop="legal_ma_message">
           {{ invoiceForm.legal_ma_message }}
+        </el-form-item>
+        <el-form-item
+          label="备注:" 
+          prop="remark">
+          {{ invoiceForm.remark }}
         </el-form-item>
         <el-form-item>
           <el-button

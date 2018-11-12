@@ -77,6 +77,30 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-form-item
+          v-if="paymentForm.bd_ma_message"
+          label="bd主管意见:"
+          prop="bd_ma_message">
+          {{ paymentForm.bd_ma_message }}
+        </el-form-item>
+        <el-form-item
+          v-if="paymentForm.legal_message"
+          label="法务意见:" 
+          prop="legal_message">
+          {{ paymentForm.legal_message }}
+        </el-form-item>
+        <el-form-item
+          v-if="paymentForm.legal_ma_message"
+          label="法务主管意见:" 
+          prop="legal_ma_message">
+          {{ paymentForm.legal_ma_message }}
+        </el-form-item>
+        <el-form-item
+          v-if="paymentForm.auditor_message"
+          label="审计意见:" 
+          prop="auditor_message">
+          {{ paymentForm.auditor_message }}
+        </el-form-item>
         <el-form-item 
           label="备注:" 
           prop="remark">
@@ -129,7 +153,11 @@ export default {
         remark: '',
         applicant_name: '',
         handler: '',
-        status: ''
+        status: '',
+        bd_ma_message: '',
+        legal_ma_message: '',
+        auditor_message: '',
+        legal_message: ''
       },
       paymentID: ''
     }
@@ -163,6 +191,10 @@ export default {
           this.paymentForm.reason = res.reason
           this.paymentForm.handler = res.handler
           this.paymentForm.status = res.status
+          this.paymentForm.bd_ma_message = res.bd_ma_message
+          this.paymentForm.legal_message = res.legal_message
+          this.paymentForm.legal_ma_message = res.legal_ma_message
+          this.paymentForm.auditor_message = res.auditor_message
           this.setting.loading = false
         })
         .catch(err => {

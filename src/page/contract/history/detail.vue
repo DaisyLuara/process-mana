@@ -74,6 +74,24 @@
               @click="handlePreview(item)">下载</span></div>
         </el-form-item>
         <el-form-item
+          v-if="contractForm.legal_message"
+          label="法务意见:"
+          prop="legal_message">
+          {{ contractForm.legal_message }}
+        </el-form-item>
+        <el-form-item
+          v-if="contractForm.legal_ma_message"
+          label="法务主管意见:" 
+          prop="legal_ma_message">
+          {{ contractForm.legal_ma_message }}
+        </el-form-item>
+         <el-form-item
+          v-if="contractForm.bd_ma_message"
+          label="bd主管意见:"
+          prop="bd_ma_message">
+          {{ contractForm.bd_ma_message }}
+        </el-form-item>
+        <el-form-item
           label="备注:" 
           prop="remark">
           {{ contractForm.remark }}
@@ -122,7 +140,10 @@ export default {
         date: [],
         receive_date: '',
         ids: '',
-        remark: ''
+        remark: '',
+        bd_ma_message: '',
+        legal_message: '',
+        legal_ma_message: ''
       }
     }
   },
@@ -168,6 +189,9 @@ export default {
           this.contractForm.date = res.receive_date.split(',')
           this.contractForm.receive_date = res.receive_date
           this.contractForm.remark = res.remark
+          this.contractForm.bd_ma_message = res.bd_ma_message
+          this.contractForm.legal_message = res.legal_message
+          this.contractForm.legal_ma_message = res.legal_ma_message
           mediaData.map(r => {
             mediaIds.push(r.id)
           })

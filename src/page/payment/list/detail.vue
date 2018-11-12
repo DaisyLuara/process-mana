@@ -77,11 +77,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item 
-          label="备注:" 
-          prop="remark">
-          {{ paymentForm.remark }}
-        </el-form-item>
         <el-form-item
           v-if="paymentForm.bd_ma_message"
           label="bd主管意见:"
@@ -105,6 +100,11 @@
           label="审计意见:" 
           prop="auditor_message">
           {{ paymentForm.auditor_message }}
+        </el-form-item>
+        <el-form-item 
+          label="备注:" 
+          prop="remark">
+          {{ paymentForm.remark }}
         </el-form-item>
         <el-form-item>
           <el-button 
@@ -280,7 +280,7 @@ export default {
         legal_message: ''
       },
       id: '',
-
+      roles: [],
       paymentID: ''
     }
   },
@@ -289,6 +289,8 @@ export default {
     this.hide = this.$route.query.hide
     let user_info = JSON.parse(Cookies.get('user_info'))
     this.id = user_info.id
+    this.roles = user_info.roles.data[0]
+
     this.paymentDetail()
   },
   methods: {

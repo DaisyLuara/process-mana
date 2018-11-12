@@ -149,6 +149,18 @@
             label="金额(含税)"/>
         </el-table>
         <el-form-item
+          v-if="invoiceForm.bd_ma_message"
+          label="bd主管意见:"
+          prop="bd_ma_message">
+          {{ invoiceForm.bd_ma_message }}
+        </el-form-item>
+        <el-form-item
+          v-if="invoiceForm.legal_ma_message"
+          label="法务主管意见:" 
+          prop="legal_ma_message">
+          {{ invoiceForm.legal_ma_message }}
+        </el-form-item>
+        <el-form-item
           label="备注:" 
           prop="remark">
           {{ invoiceForm.remark }}
@@ -212,7 +224,9 @@ export default {
         type_name: '',
         contract_number: null,
         remark: '',
-        kind: ''
+        kind: '',
+        bd_ma_message: '',
+        legal_ma_message: ''
       },
       tableData: [
         {
@@ -250,6 +264,8 @@ export default {
               res.invoice_company.account_number
             this.invoiceCompany.taxpayer_num = res.invoice_company.taxpayer_num
             this.invoiceCompany.address = res.invoice_company.address
+            this.invoiceForm.bd_ma_message = res.bd_ma_message
+            this.invoiceForm.legal_ma_message = res.legal_ma_message
           }
           invoice_content.map(r => {
             let data = {

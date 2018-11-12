@@ -85,11 +85,6 @@
           </el-col>
         </el-row>
         <el-form-item
-          label="备注:" 
-          prop="remark">
-          {{ contractForm.remark }}
-        </el-form-item>
-        <el-form-item
           v-if="contractForm.legal_message"
           label="法务意见:"
           prop="legal_message">
@@ -106,6 +101,11 @@
           label="bd主管意见:"
           prop="bd_ma_message">
           {{ contractForm.bd_ma_message }}
+        </el-form-item>
+        <el-form-item
+          label="备注:" 
+          prop="remark">
+          {{ contractForm.remark }}
         </el-form-item>
         <el-form-item>
           <el-button
@@ -164,7 +164,7 @@
           <el-input
             v-model="contractForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
+            :maxlength="150"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
@@ -203,7 +203,7 @@
           <el-input
             v-model="contractForm.legal_ma_message"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
+            :maxlength="150"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
@@ -216,7 +216,7 @@
           <el-input
             v-model="contractForm.legal_message"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
+            :maxlength="150"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
@@ -229,7 +229,7 @@
           <el-input
             v-model="contractForm.bd_ma_message"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
+            :maxlength="150"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
@@ -399,7 +399,7 @@ export default {
           this.contractForm.remark = res.remark
           this.contractForm.amount = res.amount
           this.contractForm.bd_ma_message = res.bd_ma_message
-          this.contractForm.legal_ma_message = res.legal_ma_message
+          this.contractForm.legal_message = res.legal_message
           this.contractForm.legal_ma_message = res.legal_ma_message
           mediaData.map(r => {
             mediaIds.push(r.id)
