@@ -17,13 +17,19 @@
             <el-form-item 
               label="" 
               prop="name">
-              <el-select 
+              <el-input 
                 v-model="searchForm.name" 
                 placeholder="付款公司" 
-                filterable 
-                clearable>
+                clearable/>
+            </el-form-item>
+            <el-form-item
+              label=""
+              prop="status">
+              <el-select
+                v-model="searchForm.status" 
+                placeholder="认领状态" >
                 <el-option
-                  v-for="item in paymentCompanyList"
+                  v-for="item in statusReceiptList"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"/>
@@ -63,8 +69,8 @@
             总数:{{ pagination.total }} 
           </span>
           <div>
+              <!-- v-if="roles.name === 'finance'" -->
             <el-button
-              v-if="roles.name === 'finance'"
               size="small" 
               type="success"
               @click="addReceipt">新增收款</el-button>
@@ -90,8 +96,20 @@
                   <span>{{ scope.row.address }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="收款时间:">
+                  label="到账日期:">
                   <span>{{ scope.row.taxpayer_num }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="认领状态:">
+                  <span>{{ scope.row.status }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="合同编号:">
+                  <span>{{ scope.row.contract_number }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="所属BD:">
+                  <span>{{ scope.row.bd }}</span> 
                 </el-form-item>
               </el-form>
             </template>
@@ -109,7 +127,22 @@
           <el-table-column
             :show-overflow-tooltip="true"
             prop="taxpayer_num"
-            label="收款时间"
+            label="到账日期"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="status"
+            label="认领状态"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="contract_number"
+            label="合同编号"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="BD"
+            label="所属BD"
             min-width="80"/>
           <el-table-column 
             label="操作" 
@@ -117,10 +150,18 @@
             <template 
               slot-scope="scope">
               <el-button
-                v-if="roles.name === 'finance'"
+                v-if="roles.name === 'finance' && status === '未认领'"
                 size="mini" 
                 type="primary"
                 @click="editReceipt(scope.row)">编辑</el-button>
+              <el-button
+                v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'"
+                size="mini" 
+                type="warning">认领收款</el-button>
+              <el-button
+                v-if="roles.name === 'finance' && status === '已认领'"
+                size="mini" 
+                type="danger">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -172,6 +213,7 @@ export default {
     return {
       searchForm: {
         name: '',
+        status: '',
         dataValue: []
       },
       pickerOptions2: {
@@ -223,7 +265,16 @@ export default {
           }
         ]
       },
-      paymentCompanyList: [],
+      statusReceiptList: [
+        {
+          id: 0,
+          name: '未认领'
+        },
+        {
+          id: 1,
+          name: '已认领'
+        }
+      ],
       roles: {},
       setting: {
         loading: false,
@@ -241,7 +292,7 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get('user_info'))
     this.roles = user_info.roles.data[0]
-    // this.getReceiptList()
+    this.getReceiptList()
   },
   methods: {
     getReceiptList() {

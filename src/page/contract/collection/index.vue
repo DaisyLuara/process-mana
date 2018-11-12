@@ -60,43 +60,34 @@
             type="expand">
             <template 
               slot-scope="scope">
-              <el-form 
-                label-position="left" 
-                inline 
-                class="demo-table-expand">
-                <el-form-item 
-                  label="合同编号:">
-                  <span>{{ scope.row.contract_number }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="公司名称:">
-                  <span>{{ scope.row.company_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="合同名称:">
-                  <span>{{ scope.row.name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="申请人:">
-                  <span>{{ scope.row.applicant_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="待处理人:">
-                  <span>{{ scope.row.handler_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="审批状态:">
-                  <span>{{ scope.row.status }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="申请时间:">
-                  <span>{{ scope.row.created_at }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="收款日期:">
-                  <span style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
-                </el-form-item>
-              </el-form>
+               <el-table
+                :data="tableDataTwo"
+                style="width: 100%">
+                <el-table-column
+                  prop="date"
+                  label="收款日期"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="name"
+                  label="收款金额"
+                  width="180">
+                </el-table-column>
+                <el-table-column
+                  prop="address"
+                  label="收款状态">
+                </el-table-column>
+                <el-table-column 
+                  min-width="180">
+                  <template 
+                    slot-scope="scope">
+                    <el-button
+                      size="mini" 
+                      type="info"
+                      @click="detailContract(scope.row)">详情</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
             </template>
           </el-table-column>
           <el-table-column
@@ -126,46 +117,24 @@
             <el-table-column
             :show-overflow-tooltip="true"
             prop="handler_name"
-            label="待处理人"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
-            </template>
-          </el-table-column>
+            label="收款状态"
+            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="status"
-            label="审批状态"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.status }}</span>
-            </template>
-          </el-table-column>
+            label="收款总额"
+            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="apply_time"
-            label="申请时间"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.created_at }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column 
-            label="操作" 
-            min-width="180">
-            <template 
-              slot-scope="scope">
-              <el-button
-                size="mini" 
-                type="info"
-                @click="detailContract(scope.row)">详情</el-button>
-              <el-button
-                v-if="buttonShow"
-                size="mini" 
-                type="warning"
-                @click="receiptInvoice(scope.row)">确认收款</el-button>
-            </template>
-          </el-table-column>
+            label="已收款金额"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="apply_time"
+            label="未收款金额"
+            min-width="80"/>
+          
         </el-table>
         <div 
           class="pagination-wrap">
@@ -226,7 +195,19 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: []
+      tableData: [],
+      tableDataTwo: [
+        {
+          date: '2016-05-02',
+          name: '2000',
+          address: '已收款'
+        },
+        {
+          date: '2016-05-04',
+          name: '200',
+          address: '未收款'
+        }
+      ]
     }
   },
   computed: {

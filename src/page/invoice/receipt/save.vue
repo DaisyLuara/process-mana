@@ -16,14 +16,6 @@
         label-position="left"
         label-width="130px">
         <el-form-item 
-          label="申请人" 
-          prop="applicate_name" >
-          <el-input 
-            v-model="receiptForm.applicate_name" 
-            :maxlength="50"
-            class="item-input"/>
-        </el-form-item>
-        <el-form-item 
           label="付款公司" 
           prop="company_name" >
           <el-input 
@@ -38,6 +30,15 @@
             v-model="receiptForm.amount" 
             :maxlength="50"
             class="item-input"/>
+        </el-form-item>
+        <el-form-item 
+          label="到账时间" 
+          prop="time" >
+          <el-date-picker
+            v-model="receiptForm.time"
+            type="date"
+            placeholder="选择日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item>
           <el-button 
@@ -60,14 +61,22 @@ import {
   ReceiptDetail,
   Cookies
 } from 'service'
-import { Form, FormItem, Button, Input, MessageBox } from 'element-ui'
+import {
+  Form,
+  FormItem,
+  Button,
+  Input,
+  MessageBox,
+  DatePicker
+} from 'element-ui'
 
 export default {
   components: {
     ElForm: Form,
     ElFormItem: FormItem,
     ElButton: Button,
-    ElInput: Input
+    ElInput: Input,
+    ElDatePicker: DatePicker
   },
   data() {
     let checkNumber = (rule, value, callback) => {
@@ -86,21 +95,19 @@ export default {
       },
       receiptID: '',
       receiptForm: {
-        applicate_name: '',
         company_name: '',
-        amount: ''
+        amount: '',
+        time: ''
       },
       rules: {
-        applicate_name: [
-          { required: true, message: '请输入申请人', trigger: 'submit' }
-        ],
         company_name: [
           { required: true, message: '请输入付款公司', trigger: 'submit' }
         ],
         amount: [
           { required: true, message: '请输入收款金额', trigger: 'submit' },
           { validator: checkNumber, trigger: 'submit' }
-        ]
+        ],
+        time: [{ required: true, message: '请选择日期', trigger: 'submit' }]
       }
     }
   },
@@ -115,7 +122,6 @@ export default {
     ReceiptDetail() {
       ReceiptDetail(this, this.receiptID)
         .then(res => {
-          this.receiptForm.applicate_name = res.applicate_name
           this.receiptForm.company_name = res.company_name
           this.receiptForm.amount = res.amount
           this.setting.loading = false

@@ -100,7 +100,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item 
-              label="合同金额" 
+              label="收款总额" 
               prop="amount" >
               <el-input 
                 v-model="contractForm.amount"
@@ -241,7 +241,7 @@ export default {
         name: [
           { required: true, message: '请输入合同名称', trigger: 'submit' }
         ],
-        amount: [{ required: true, message: '请输入合同金额', trigger: 'submit' }]
+        amount: [{ required: true, message: '请输入收款总额', trigger: 'submit' }]
       }
     }
   },

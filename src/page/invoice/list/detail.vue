@@ -97,13 +97,6 @@
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="收款状态:" 
-              prop="receive_status" >
-              {{ invoiceForm.receive_status }}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item 
               label="开票种类:" 
               prop="kind" >
               {{ invoiceForm.kind }}
@@ -252,7 +245,6 @@ export default {
       invoiceForm: {
         applicant_name: '',
         applicant: '',
-        receive_status: null,
         type: null,
         type_name: '',
         contract_number: null,

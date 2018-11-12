@@ -153,16 +153,6 @@
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="收款状态" 
-              prop="receive_status" >
-              <el-radio-group v-model="invoiceForm.receive_status">
-                <el-radio :label="1">已收款</el-radio>
-                <el-radio :label="0">未收款</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item 
               label="开票种类" 
               prop="kind" >
               <el-select 
@@ -433,7 +423,6 @@ export default {
       },
       invoiceForm: {
         applicant_name: '',
-        receive_status: 1,
         applicant: '',
         type: 0,
         contract_id: '',
@@ -447,9 +436,6 @@ export default {
         ],
         type: [
           { required: true, message: '请选择开票类型', trigger: 'submit' }
-        ],
-        receive_status: [
-          { required: true, message: '请选择收款状态', trigger: 'submit' }
         ],
         kind: [
           { required: true, message: '请选择开票种类', trigger: 'submit' }
@@ -526,8 +512,6 @@ export default {
           }
           this.invoiceForm.type = res.type === '专票' ? 0 : 1
           this.invoiceForm.applicant_name = res.applicant_name
-          this.invoiceForm.receive_status =
-            res.receive_status === '未收款' ? 0 : 1
           this.invoiceForm.applicant = res.applicant
           this.invoiceForm.contract_id = res.contract_id
           this.invoiceForm.remark = res.remark
