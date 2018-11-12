@@ -149,18 +149,18 @@
             min-width="200">
             <template 
               slot-scope="scope">
-                <!-- v-if="roles.name === 'finance' && status === '未认领'" -->
               <el-button
+                v-if="roles.name === 'finance' && status === '未认领'"
                 size="mini" 
                 type="primary"
                 @click="editReceipt(scope.row)">编辑</el-button>
-                <!-- v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'" -->
               <el-button
+                v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'"
                 size="mini" 
                 type="warning"
                 @click="dialogFormVisible = true">认领收款</el-button>
-                <!-- v-if="roles.name === 'finance' && status === '已认领'" -->
               <el-button
+                v-if="roles.name === 'finance' && status === '已认领'"
                 size="mini" 
                 type="danger">删除</el-button>
             </template>

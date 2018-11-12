@@ -300,7 +300,8 @@ export default {
           let mediaIds = []
           let mediaData = res.media.data
           this.contractForm.applicant_name = res.applicant_name
-          this.contractForm.type = res.type === '收款合同' ? 0 : 1
+          this.contractForm.type =
+            res.type === '收款合同' ? 0 : res.type === '付款合同' ? 1 : 2
           this.contractForm.type_name = res.type
           this.contractForm.applicant = res.applicant
           this.contractForm.name = res.name
