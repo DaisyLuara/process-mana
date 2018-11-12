@@ -149,17 +149,18 @@
             min-width="200">
             <template 
               slot-scope="scope">
+                <!-- v-if="roles.name === 'finance' && status === '未认领'" -->
               <el-button
-                v-if="roles.name === 'finance' && status === '未认领'"
                 size="mini" 
                 type="primary"
                 @click="editReceipt(scope.row)">编辑</el-button>
+                <!-- v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'" -->
               <el-button
-                v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'"
                 size="mini" 
-                type="warning">认领收款</el-button>
+                type="warning"
+                @click="dialogFormVisible = true">认领收款</el-button>
+                <!-- v-if="roles.name === 'finance' && status === '已认领'" -->
               <el-button
-                v-if="roles.name === 'finance' && status === '已认领'"
                 size="mini" 
                 type="danger">删除</el-button>
             </template>
@@ -177,6 +178,26 @@
         </div>
       </div>  
     </div>
+    <el-dialog title="认领收款" :visible.sync="dialogFormVisible">
+      <el-form :model="claimReceiptForm">
+        <el-form-item label="合同编号" label-width="130">
+          <el-select v-model="claimReceiptForm.contract_id" placeholder="请搜索合同编号">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="收款日期" label-width="130">
+          <el-select v-model="claimReceiptForm.date" placeholder="请选择收款日期">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -192,7 +213,8 @@ import {
   Form,
   FormItem,
   MessageBox,
-  DatePicker
+  DatePicker,
+  Dialog
 } from 'element-ui'
 import { getReceiptList, Cookies, handleDateTransform } from 'service'
 
@@ -207,10 +229,16 @@ export default {
     'el-form-item': FormItem,
     'el-select': Select,
     'el-option': Option,
-    'el-date-picker': DatePicker
+    'el-date-picker': DatePicker,
+    'el-dialog': Dialog
   },
   data() {
     return {
+      claimReceiptForm: {
+        contract_id: '',
+        date: ''
+      },
+      dialogFormVisible: false,
       searchForm: {
         name: '',
         status: '',
