@@ -213,7 +213,7 @@
             :loading="searchLoading"
             filterable 
             clearable
-            placeholder="请选择收款日期">
+            placeholder="请选择预估收款日期">
             <el-option 
               v-for="item in receiptDateList"
               :key="item.id"
@@ -450,23 +450,30 @@ export default {
       })
     },
     receiptInvoice() {
-      this.setting.loading = true
-      let args = {
-        receive_date_id: this.claimReceiptForm.dateId
-      }
-      receiptInvoice(this, this.id, args)
-        .then(res => {
-          this.dialogFormVisible = false
-          this.getReceiptList()
-        })
-        .catch(err => {
-          this.dialogFormVisible = false
-          this.setting.loading = false
-          this.$message({
-            message: err.response.data.message,
-            type: 'warning'
+      if (this.claimReceiptForm.dateId !== '') {
+        this.setting.loading = true
+        let args = {
+          receive_date_id: this.claimReceiptForm.dateId
+        }
+        receiptInvoice(this, this.id, args)
+          .then(res => {
+            this.dialogFormVisible = false
+            this.getReceiptList()
           })
+          .catch(err => {
+            this.dialogFormVisible = false
+            this.setting.loading = false
+            this.$message({
+              message: err.response.data.message,
+              type: 'warning'
+            })
+          })
+      } else {
+        this.$message({
+          message: '合同编号，预估收款日期必须填写',
+          type: 'warning'
         })
+      }
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
