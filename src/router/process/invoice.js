@@ -114,14 +114,14 @@ export default {
       component: () =>
         import(/* webpackChunkName: "page/invoice/history/routerView" */ 'page/invoice/history/routerView'),
       meta: {
-        title: '审批历史'
+        title: '我已审批的'
       },
       children: [
         {
           path: '/',
           component: () =>
             import(/* webpackChunkName: "page/invoice/history/index" */ 'page/invoice/history/index'),
-          name: '票据审批历史',
+          name: '我已审批的列表',
           meta: {}
         },
         {
