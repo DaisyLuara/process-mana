@@ -115,7 +115,7 @@
             v-if="contractForm.type === 0"
             :span="12">
             <el-form-item 
-              label="收款日期" 
+              label="预估收款日期" 
               prop="receive_date" >
               <el-date-picker
                 v-model="contractForm.receive_date"
@@ -376,13 +376,20 @@ export default {
             amount: this.contractForm.amount
           }
           if (this.contractForm.type === 0) {
-            if (this.contractForm.receive_date) {
+            if (this.contractForm.receive_date.length > 0) {
               let date = []
               this.contractForm.receive_date.map(r => {
                 let dateTransform = handleDateTransform(r)
                 date.push(dateTransform)
               })
               args.receive_date = date.join(',')
+            } else {
+              this.$message({
+                message: '预估收款时间必填',
+                type: 'warning'
+              })
+              this.setting.loading = false
+              return
             }
           }
           if (

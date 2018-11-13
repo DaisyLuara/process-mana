@@ -137,7 +137,7 @@
                 </el-form-item>
                 <el-form-item
                   v-if="scope.row.type === '收款合同'"  
-                  label="收款日期:">
+                  label="预估收款日期:">
                   <span
                     style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
                 </el-form-item>
