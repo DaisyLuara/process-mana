@@ -170,7 +170,7 @@ export default {
             saveReceipt(this, args)
               .then(res => {
                 this.$message({
-                  message: '添加成功',
+                  message: '提交成功',
                   type: 'success'
                 })
                 this.$router.push({

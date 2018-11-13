@@ -7,7 +7,7 @@
       class="pane">
       <div 
         class="pane-title">
-        {{ paymentID ? '修改付款' : '新增付款' }}
+        新增付款
       </div>
       <el-form
         ref="paymentForm"
@@ -326,45 +326,24 @@ export default {
           this.setting.loading = true
           delete this.paymentForm.applicant_name
           let args = this.paymentForm
-          if (this.paymentID) {
-            modifyPayment(this, this.paymentID, args)
-              .then(res => {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/payment/list'
-                })
-                this.setting.loading = false
+          savePayment(this, args)
+            .then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
+              this.$router.push({
+                path: '/payment/list'
               })
-          } else {
-            savePayment(this, args)
-              .then(res => {
-                this.$message({
-                  message: '添加成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/payment/list'
-                })
-                this.setting.loading = false
+              this.setting.loading = false
+            })
+            .catch(err => {
+              this.setting.loading = false
+              this.$message({
+                message: err.response.data.message,
+                type: 'warning'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
-              })
-          }
+            })
         }
       })
     }

@@ -7,7 +7,7 @@
       class="pane">
       <div 
         class="pane-title">
-        {{ contractID ? '修改合同' : '新增合同' }}
+        新增合同
       </div>
       <el-form
         ref="contractForm"
@@ -399,26 +399,6 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number
           }
-          // if (this.contractID) {
-          //   modifyContract(this, this.contractID, args)
-          //     .then(res => {
-          //       this.$message({
-          //         message: '修改成功',
-          //         type: 'success'
-          //       })
-          //       this.$router.push({
-          //         path: '/contract/list'
-          //       })
-          //       this.setting.loading = false
-          //     })
-          //     .catch(err => {
-          //       this.setting.loading = false
-          //       this.$message({
-          //         message: err.response.data.message,
-          //         type: 'warning'
-          //       })
-          //     })
-          // } else {
           saveContract(this, args)
             .then(res => {
               this.$message({
@@ -437,7 +417,6 @@ export default {
                 type: 'warning'
               })
             })
-          // }
         }
       })
     }
