@@ -242,7 +242,9 @@ export default {
         name: [
           { required: true, message: '请输入合同名称', trigger: 'submit' }
         ],
-        amount: [{ required: true, message: '请输入收款总额', trigger: 'submit' }]
+        amount: [
+          { required: true, message: '请输入收款总额', trigger: 'submit' }
+        ]
       }
     }
   },
@@ -397,45 +399,45 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number
           }
-          if (this.contractID) {
-            modifyContract(this, this.contractID, args)
-              .then(res => {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/contract/list'
-                })
-                this.setting.loading = false
+          // if (this.contractID) {
+          //   modifyContract(this, this.contractID, args)
+          //     .then(res => {
+          //       this.$message({
+          //         message: '修改成功',
+          //         type: 'success'
+          //       })
+          //       this.$router.push({
+          //         path: '/contract/list'
+          //       })
+          //       this.setting.loading = false
+          //     })
+          //     .catch(err => {
+          //       this.setting.loading = false
+          //       this.$message({
+          //         message: err.response.data.message,
+          //         type: 'warning'
+          //       })
+          //     })
+          // } else {
+          saveContract(this, args)
+            .then(res => {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
+              this.$router.push({
+                path: '/contract/list'
               })
-          } else {
-            saveContract(this, args)
-              .then(res => {
-                this.$message({
-                  message: '添加成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/contract/list'
-                })
-                this.setting.loading = false
+              this.setting.loading = false
+            })
+            .catch(err => {
+              this.setting.loading = false
+              this.$message({
+                message: err.response.data.message,
+                type: 'warning'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
-              })
-          }
+            })
+          // }
         }
       })
     }
