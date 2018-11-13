@@ -207,7 +207,7 @@
           </el-select>
         </el-form-item>
         <el-form-item 
-          label="收款日期">
+          label="预估收款日期">
           <el-select 
             v-model="claimReceiptForm.dateId" 
             :loading="searchLoading"
