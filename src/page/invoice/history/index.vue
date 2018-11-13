@@ -31,21 +31,6 @@
             </el-form-item>
             <el-form-item 
               label="" 
-              prop="receive_status">
-              <el-select 
-                v-model="searchForm.receive_status" 
-                placeholder="请选择收款状态" 
-                filterable 
-                clearable>
-                <el-option
-                  v-for="item in receiveStatusList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item 
-              label="" 
               prop="name">
               <el-input 
                 v-model="searchForm.name"
@@ -120,10 +105,6 @@
                   <span>{{ scope.row.invoice_company_name }}</span> 
                 </el-form-item>
                 <el-form-item 
-                  label="收款状态:">
-                  <span>{{ scope.row.receive_status }}</span> 
-                </el-form-item>
-                <el-form-item 
                   label="申请人:">
                   <span>{{ scope.row.applicant_name }}</span> 
                 </el-form-item>
@@ -169,15 +150,6 @@
             prop="invoice_company_name"
             label="开票公司"
             min-width="100"/>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="receive_status"
-            label="收款状态"
-            min-width="80">
-            <template slot-scope="scope">
-              {{ scope.row.receive_status }}
-            </template>
-          </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="applicant_name"
@@ -280,8 +252,7 @@ export default {
         dataValue: [],
         name: '',
         status: '',
-        contract_number: '',
-        receive_status: ''
+        contract_number: ''
       },
       pickerOptions2: {
         shortcuts: [
@@ -332,16 +303,6 @@ export default {
           }
         ]
       },
-      receiveStatusList: [
-        {
-          id: 1,
-          name: '已收款'
-        },
-        {
-          id: 0,
-          name: '未收款'
-        }
-      ],
       statusList: [
         {
           id: 1,
@@ -395,8 +356,7 @@ export default {
         status: this.searchForm.status,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        end_date: handleDateTransform(this.searchForm.dataValue[1]),
-        receive_status: this.searchForm.receive_status
+        end_date: handleDateTransform(this.searchForm.dataValue[1])
       }
       if (!this.searchForm.name) {
         delete args.name
@@ -406,9 +366,6 @@ export default {
       }
       if (this.searchForm.contract_number === '') {
         delete args.contract_number
-      }
-      if (this.searchForm.receive_status === '') {
-        delete args.receive_status
       }
       if (!this.searchForm.dataValue[0]) {
         delete args.start_date
