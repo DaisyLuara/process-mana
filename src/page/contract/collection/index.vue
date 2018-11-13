@@ -56,7 +56,7 @@
                 style="width: 100%">
                 <el-table-column
                   prop="receive_date"
-                  label="收款日期"
+                  label="预估收款日期"
                   min-width="120">
                 </el-table-column>
                 <el-table-column
