@@ -188,14 +188,18 @@
       </div>  
     </div>
     <el-dialog title="认领收款" :visible.sync="dialogFormVisible">
-      <el-form :model="claimReceiptForm">
-        <el-form-item label="合同编号" label-width="130">
+      <el-form 
+        :model="claimReceiptForm"
+        label-position="right"
+        label-width="100px">
+        <el-form-item 
+          label="合同编号">
           <el-select 
             v-model="claimReceiptForm.contract_id"
             :remote-method="getContract" 
             :loading="searchLoading"
             remote
-            filterable 
+            filterable
             clearable
             placeholder="请搜索合同编号"
             @change="contractChangeHandle">
