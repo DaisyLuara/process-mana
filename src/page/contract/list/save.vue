@@ -63,7 +63,7 @@
               <el-radio-group v-model="contractForm.type">
                 <el-radio :label="0">收款合同</el-radio>
                 <el-radio :label="1">付款合同</el-radio>
-                <el-radio :label="2">其它合同</el-radio>
+                <el-radio :label="2">其他合同</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -100,8 +100,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item 
-              label="收款总额" 
+            <el-form-item
+              v-if="contractForm.type === 0" 
+              label="合同总额" 
               prop="amount" >
               <el-input 
                 v-model="contractForm.amount"
@@ -229,7 +230,7 @@ export default {
         receive_date: [],
         ids: '',
         remark: '',
-        amount: 0
+        amount: null
       },
       rules: {
         ids: [{ required: true, message: '请上传文件', trigger: 'submit' }],
@@ -239,12 +240,7 @@ export default {
         company_id: [
           { required: true, message: '请选择公司', trigger: 'submit' }
         ],
-        name: [
-          { required: true, message: '请输入合同名称', trigger: 'submit' }
-        ],
-        amount: [
-          { required: true, message: '请输入收款总额', trigger: 'submit' }
-        ]
+        name: [{ required: true, message: '请输入合同名称', trigger: 'submit' }]
       }
     }
   },
@@ -273,7 +269,8 @@ export default {
           let mediaIds = []
           let mediaData = res.media.data
           this.contractForm.applicant_name = res.applicant_name
-          this.contractForm.type = res.type === '收款合同' ? 0 : 1
+          this.contractForm.type =
+            res.type === '收款合同' ? 0 : res.type === '付款合同' ? 1 : 2
           this.contractForm.applicant = res.applicant
           this.contractForm.name = res.name
           this.contractForm.company_id = res.company_id
@@ -372,9 +369,9 @@ export default {
             applicant: this.contractForm.applicant,
             type: this.contractForm.type,
             ids: this.contractForm.ids,
-            remark: this.contractForm.remark,
-            amount: this.contractForm.amount
+            remark: this.contractForm.remark
           }
+
           if (this.contractForm.type === 0) {
             if (this.contractForm.receive_date.length > 0) {
               let date = []
@@ -390,6 +387,16 @@ export default {
               })
               this.setting.loading = false
               return
+            }
+            if (!this.contractForm.amount) {
+              this.$message({
+                message: '合同总额必填',
+                type: 'warning'
+              })
+              this.setting.loading = false
+              return
+            } else {
+              args.amount = this.contractForm.amount
             }
           }
           if (

@@ -58,9 +58,10 @@
                   @click="handlePreview(item)">下载</span></div>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12"
+            v-if="contractForm.type_name !== '付款合同'">
             <el-form-item 
-              label="收款总额:" 
+              label="合同总额:" 
               prop="amount" >
               {{ contractForm.amount }}
             </el-form-item>
