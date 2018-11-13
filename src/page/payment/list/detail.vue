@@ -385,7 +385,7 @@ export default {
         !this.paymentForm.legal_ma_message
       ) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false
@@ -401,7 +401,7 @@ export default {
         !this.paymentForm.legal_message
       ) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false
@@ -414,7 +414,7 @@ export default {
 
       if (this.roles.name === 'auditor' && !this.paymentForm.auditor_message) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false
@@ -427,7 +427,7 @@ export default {
 
       if (this.roles.name === 'bd-manager' && !this.paymentForm.bd_ma_message) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false
@@ -437,7 +437,6 @@ export default {
           args.bd_ma_message = this.paymentForm.bd_ma_message
         }
       }
-      console.log(args)
       this.auditingPayment(this, this.paymentID, args)
     },
     rejected() {

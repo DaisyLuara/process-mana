@@ -246,7 +246,7 @@
                 v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
                 size="mini" 
                 type="primary"
-                @click="editPayment(scope.row)">编辑</el-button>
+                @click="editPayment(scope.row)">再次提交</el-button>
               <el-button
                 v-if="scope.row.handler === applicant && (scope.row.status !== '驳回' && scope.row.status !== '已付款')"
                 size="mini" 

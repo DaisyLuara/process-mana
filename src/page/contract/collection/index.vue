@@ -118,7 +118,7 @@
           <el-table-column
             :show-overflow-tooltip="true"
             prop="amount"
-            label="收款总额"
+            label="合同金额"
             min-width="80"/>
         </el-table>
         <div 

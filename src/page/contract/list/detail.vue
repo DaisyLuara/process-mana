@@ -78,7 +78,7 @@
             v-if="contractForm.type_name !== '付款合同'"
             :span="12">
             <el-form-item 
-              label="收款日期:" 
+              label="预估收款日期:" 
               prop="receive_date" >
               {{ contractForm.receive_date }}
             </el-form-item>
@@ -421,7 +421,7 @@ export default {
       this.setting.loading = true
       if (!this.contractForm.contract_number) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批合同编号必填'
         })
         this.setting.loading = false
@@ -435,7 +435,7 @@ export default {
         !this.contractForm.legal_ma_message
       ) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false
@@ -451,7 +451,7 @@ export default {
         !this.contractForm.legal_message
       ) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false
@@ -466,7 +466,7 @@ export default {
         !this.contractForm.bd_ma_message
       ) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false

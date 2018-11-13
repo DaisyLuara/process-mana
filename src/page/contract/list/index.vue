@@ -137,7 +137,7 @@
                 </el-form-item>
                 <el-form-item
                   v-if="scope.row.type === '收款合同'"  
-                  label="收款日期:">
+                  label="预估收款日期:">
                   <span
                     style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
                 </el-form-item>
@@ -216,7 +216,7 @@
                 v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
                 size="mini" 
                 type="primary"
-                @click="editContract(scope.row)">编辑</el-button>
+                @click="editContract(scope.row)">再次提交</el-button>
               <el-button
                 v-if="scope.row.handler === applicant && scope.row.status !== '驳回'"
                 size="mini" 

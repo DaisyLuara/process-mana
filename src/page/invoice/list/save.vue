@@ -7,7 +7,7 @@
       class="pane">
       <div 
         class="pane-title">
-        {{ invoiceID ? '修改开票' : '新增开票' }}
+        新增开票
       </div>
       <el-form
         ref="invoiceForm"
@@ -637,45 +637,24 @@ export default {
           args.invoice_content = invoice_content
           args.total = this.total
           args.total_text = this.total_text
-          if (this.invoiceID) {
-            modifyInvoice(this, this.invoiceID, args)
-              .then(res => {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/invoice/list'
-                })
-                this.setting.loading = false
+          saveInvoice(this, args)
+            .then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
+              this.$router.push({
+                path: '/invoice/list'
               })
-          } else {
-            saveInvoice(this, args)
-              .then(res => {
-                this.$message({
-                  message: '添加成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/invoice/list'
-                })
-                this.setting.loading = false
+              this.setting.loading = false
+            })
+            .catch(err => {
+              this.setting.loading = false
+              this.$message({
+                message: err.response.data.message,
+                type: 'warning'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
-              })
-          }
+            })
         }
       })
     }

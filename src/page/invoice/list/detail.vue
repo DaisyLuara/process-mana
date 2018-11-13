@@ -440,7 +440,7 @@ export default {
         !this.invoiceForm.legal_ma_message
       ) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false
@@ -453,7 +453,7 @@ export default {
 
       if (this.roles.name === 'bd-manager' && !this.invoiceForm.bd_ma_message) {
         this.$message({
-          type: 'info',
+          type: 'warning',
           message: '审批意见必填'
         })
         this.setting.loading = false
@@ -463,7 +463,6 @@ export default {
           args.bd_ma_message = this.invoiceForm.bd_ma_message
         }
       }
-      console.log(args)
       this.auditingInvoice(this, this.invoiceID, args)
     },
     rejected() {
