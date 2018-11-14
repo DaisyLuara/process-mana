@@ -274,7 +274,9 @@ export default {
           this.contractForm.applicant = res.applicant
           this.contractForm.name = res.name
           this.contractForm.company_id = res.company_id
-          this.contractForm.receive_date = res.receive_date.split(',')
+          this.contractForm.receive_date = res.receive_date
+            ? res.receive_date.split(',')
+            : []
           this.contractForm.remark = res.remark
           this.contractForm.contract_number = res.contract_number
           this.contractForm.amount = res.amount
@@ -372,10 +374,7 @@ export default {
             remark: this.contractForm.remark
           }
           if (this.contractForm.type === 0) {
-            if (
-              !this.contractForm.receive_date ||
-              this.contractForm.receive_date.length === 0
-            ) {
+            if (!this.contractForm.receive_date.length) {
               this.$message({
                 message: '预估收款时间必填',
                 type: 'warning'
@@ -415,24 +414,24 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number
           }
-          saveContract(this, args)
-            .then(res => {
-              this.$message({
-                message: '添加成功',
-                type: 'success'
-              })
-              this.$router.push({
-                path: '/contract/list'
-              })
-              this.setting.loading = false
-            })
-            .catch(err => {
-              this.setting.loading = false
-              this.$message({
-                message: err.response.data.message,
-                type: 'warning'
-              })
-            })
+          // saveContract(this, args)
+          //   .then(res => {
+          //     this.$message({
+          //       message: '添加成功',
+          //       type: 'success'
+          //     })
+          //     this.$router.push({
+          //       path: '/contract/list'
+          //     })
+          //     this.setting.loading = false
+          //   })
+          //   .catch(err => {
+          //     this.setting.loading = false
+          //     this.$message({
+          //       message: err.response.data.message,
+          //       type: 'warning'
+          //     })
+          //   })
         }
       })
     }
