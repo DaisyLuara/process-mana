@@ -7,7 +7,7 @@
       class="pane">
       <div 
         class="pane-title">
-        {{ contractID ? '修改合同' : '新增合同' }}
+        新增合同
       </div>
       <el-form
         ref="contractForm"
@@ -63,7 +63,51 @@
               <el-radio-group v-model="contractForm.type">
                 <el-radio :label="0">收款合同</el-radio>
                 <el-radio :label="1">付款合同</el-radio>
+                <el-radio :label="2">其他合同</el-radio>
               </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item 
+              label="合同内容" 
+              prop="ids" >
+              <el-upload
+                ref="upload"
+                :action="SERVER_URL + '/api/media'" 
+                :data="{type: 'file'}"
+                :headers="formHeader"
+                :before-upload="beforeUpload" 
+                :on-success="handleSuccess" 
+                :on-remove="handleRemove"
+                :on-preview="handlePreview"
+                :before-remove="beforeRemove"
+                :file-list="fileList"
+                class="upload-demo">
+                <el-button 
+                  size="small" 
+                  type="primary">点击上传</el-button>
+                <div 
+                  slot="tip" 
+                  style="display:inline-block"
+                  class="el-upload__tip">支持文件类型：doc(.docx)、.pdf</div>
+                <div 
+                  v-if="fileList.length !==0"
+                  slot="tip" 
+                  style="color: #ff5722;font-size: 12px;" >点击文件名称可以下载</div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              v-if="contractForm.type === 0" 
+              label="合同总额" 
+              prop="amount" >
+              <el-input 
+                v-model="contractForm.amount"
+                :maxlength="7"
+                class="item-input"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -72,7 +116,7 @@
             v-if="contractForm.type === 0"
             :span="12">
             <el-form-item 
-              label="收款日期" 
+              label="预估收款日期" 
               prop="receive_date" >
               <el-date-picker
                 v-model="contractForm.receive_date"
@@ -80,35 +124,20 @@
                 placeholder="选择一个或多个日期"/>
             </el-form-item>
           </el-col>
+          <el-col 
+            :span="12">
+            <el-form-item 
+              v-if="this.roles.name == 'legal-affairs' || this.roles.name == 'legal-affairs-manager'"
+              label="合同编号" 
+              prop="contract_number" >
+              <el-input 
+                v-model="contractForm.contract_number" 
+                :maxlength="50"
+                placeholder="请输入合同编号"
+                class="item-input"/>
+            </el-form-item>
+          </el-col>
         </el-row>
-        <el-form-item 
-          label="合同内容" 
-          prop="ids" >
-          <el-upload
-            ref="upload"
-            :action="SERVER_URL + '/api/media'" 
-            :data="{type: 'file'}"
-            :headers="formHeader"
-            :before-upload="beforeUpload" 
-            :on-success="handleSuccess" 
-            :on-remove="handleRemove"
-            :on-preview="handlePreview"
-            :before-remove="beforeRemove"
-            :file-list="fileList"
-            class="upload-demo">
-            <el-button 
-              size="small" 
-              type="primary">点击上传</el-button>
-            <div 
-              slot="tip" 
-              style="display:inline-block"
-              class="el-upload__tip">支持文件类型：doc(.docx)、.pdf</div>
-            <div 
-              v-if="fileList.length !==0"
-              slot="tip" 
-              style="color: #ff5722;font-size: 12px;" >点击文件名称可以下载</div>
-          </el-upload>
-        </el-form-item>
         <el-form-item 
           label="备注" 
           prop="remark">
@@ -189,16 +218,19 @@ export default {
         loading: false,
         loadingText: '拼命加载中'
       },
+      roles: [],
       contractID: '',
       contractForm: {
         company_id: '',
         applicant_name: '',
+        contract_number: '',
         name: '',
         type: 0,
         applicant: 0,
         receive_date: [],
         ids: '',
-        remark: ''
+        remark: '',
+        amount: null
       },
       rules: {
         ids: [{ required: true, message: '请上传文件', trigger: 'submit' }],
@@ -223,6 +255,7 @@ export default {
       let user_info = JSON.parse(Cookies.get('user_info'))
       this.contractForm.applicant_name = user_info.name
       this.contractForm.applicant = user_info.id
+      this.roles = user_info.roles.data[0]
       this.setting.loading = false
     }
   },
@@ -236,12 +269,15 @@ export default {
           let mediaIds = []
           let mediaData = res.media.data
           this.contractForm.applicant_name = res.applicant_name
-          this.contractForm.type = res.type === '收款合同' ? 0 : 1
+          this.contractForm.type =
+            res.type === '收款合同' ? 0 : res.type === '付款合同' ? 1 : 2
           this.contractForm.applicant = res.applicant
           this.contractForm.name = res.name
           this.contractForm.company_id = res.company_id
           this.contractForm.receive_date = res.receive_date.split(',')
           this.contractForm.remark = res.remark
+          this.contractForm.contract_number = res.contract_number
+          this.contractForm.amount = res.amount
           mediaData.map(r => {
             mediaIds.push(r.id)
           })
@@ -335,55 +371,66 @@ export default {
             ids: this.contractForm.ids,
             remark: this.contractForm.remark
           }
+
           if (this.contractForm.type === 0) {
-            if (this.contractForm.receive_date.length !== 0) {
+            if (this.contractForm.receive_date.length > 0) {
               let date = []
               this.contractForm.receive_date.map(r => {
                 let dateTransform = handleDateTransform(r)
                 date.push(dateTransform)
               })
               args.receive_date = date.join(',')
+            } else {
+              this.$message({
+                message: '预估收款时间必填',
+                type: 'warning'
+              })
+              this.setting.loading = false
+              return
+            }
+            if (!this.contractForm.amount) {
+              this.$message({
+                message: '合同总额必填',
+                type: 'warning'
+              })
+              this.setting.loading = false
+              return
+            } else {
+              args.amount = this.contractForm.amount
             }
           }
-          if (this.contractID) {
-            modifyContract(this, this.contractID, args)
-              .then(res => {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/contract/list'
-                })
-                this.setting.loading = false
+          if (
+            this.roles.name === 'legal-affairs' ||
+            this.roles.name === 'legal-affairs-manager'
+          ) {
+            if (this.contractForm.contract_number === '') {
+              this.$message({
+                message: '请填写合同编号',
+                type: 'warning'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
-              })
-          } else {
-            saveContract(this, args)
-              .then(res => {
-                this.$message({
-                  message: '添加成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/contract/list'
-                })
-                this.setting.loading = false
-              })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
-              })
+              this.setting.loading = false
+              return
+            }
+            args.contract_number = this.contractForm.contract_number
           }
+          saveContract(this, args)
+            .then(res => {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.$router.push({
+                path: '/contract/list'
+              })
+              this.setting.loading = false
+            })
+            .catch(err => {
+              this.setting.loading = false
+              this.$message({
+                message: err.response.data.message,
+                type: 'warning'
+              })
+            })
         }
       })
     }

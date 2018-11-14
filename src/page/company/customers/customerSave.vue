@@ -15,7 +15,7 @@
         :rules="rules" 
         label-width="100px">
         <el-form-item 
-          label="商户名称" 
+          label="公司名称" 
           prop="customer.name">
           <el-input 
             v-model="customerForm.customer.name" 
@@ -23,7 +23,7 @@
             class="customer-form-input"/>
         </el-form-item>
         <el-form-item 
-          label="商户地址" 
+          label="公司地址" 
           prop="customer.address">
           <el-input 
             v-model="customerForm.customer.address" 
@@ -31,7 +31,7 @@
             class="customer-form-input" />
         </el-form-item>
         <el-form-item 
-          label="商户详情" 
+          label="公司详情" 
           prop="customer.description">
           <el-input 
             type="textarea"
@@ -40,7 +40,7 @@
             class="customer-form-input" />
         </el-form-item>
         <el-form-item 
-          label="商户logo" 
+          label="公司logo" 
           prop="customer.logo">
           <el-input 
             v-model="customerForm.customer.logo" 
@@ -125,13 +125,13 @@ export default {
       customerID: '',
       rules: {
         'customer.name': [
-          { message: '请输入商户名称', trigger: 'blur', required: true }
+          { message: '请输入公司名称', trigger: 'blur', required: true }
         ],
         'customer.address': [
-          { message: '请输入商户地址', trigger: 'blur', required: true }
+          { message: '请输入公司地址', trigger: 'blur', required: true }
         ],
         'customer.description': [
-          { message: '请输入商户详情', trigger: 'blur', required: true }
+          { message: '请输入公司详情', trigger: 'blur', required: true }
         ]
       },
       loading: false

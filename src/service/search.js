@@ -1,6 +1,9 @@
 const COMPANY_QUERY_API = '/api/company/query'
 const CONTRACT_QUERY_API = '/api/contract/query'
+const INVOICE_COMPANY_QUERY_API = '/api/invoice_company/query'
+const PAYMENT_PAYEE_QUERY_API = '/api/payment_payee/query'
 const GOODS_SERVICE_QUERY_API = '/api/goods_service/query'
+const RECEIVE_DATE_QUERY_API = '/api/receive_date/query'
 const HOST = process.env.SERVER_URL
 
 const getCompanyList = (context, params) => {
@@ -43,4 +46,52 @@ const goodsService = context => {
   })
 }
 
-export { getCompanyList, getContract, goodsService }
+// 开票公司下拉列表
+const getInvoiceCompany = context => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + INVOICE_COMPANY_QUERY_API)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+// 收款人下拉列表
+const getPaymentPayee = context => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PAYMENT_PAYEE_QUERY_API)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const getReceiveDate = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + RECEIVE_DATE_QUERY_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+export {
+  getCompanyList,
+  getContract,
+  goodsService,
+  getInvoiceCompany,
+  getPaymentPayee,
+  getReceiveDate
+}

@@ -7,7 +7,7 @@
       class="pane">
       <div 
         class="pane-title">
-        {{ paymentID ? '修改付款' : '新增付款' }}
+        新增付款
       </div>
       <el-form
         ref="paymentForm"
@@ -84,11 +84,20 @@
           <el-col :span="12">
             <el-form-item 
               label="收款人" 
-              prop="payee" >
-              <el-input 
-                v-model="paymentForm.payee"
-                :maxlength="50"
-                class="item-input"/>
+              prop="payment_payee_id" >
+              <el-select 
+                v-model="paymentForm.payment_payee_id"
+                :loading="searchLoading" 
+                placeholder="请选择" 
+                filterable 
+                clearable
+                @change="paymentPayeeHandle">
+                <el-option
+                  v-for="item in paymentPayeeList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -98,7 +107,8 @@
               label="收款人开户行" 
               prop="account_bank" >
               <el-input 
-                v-model="paymentForm.account_bank"
+                v-model="paymentPayee.account_bank"
+                :disabled="true"
                 :maxlength="50"
                 class="item-input"/>
             </el-form-item>
@@ -108,7 +118,8 @@
               label="收款人账号" 
               prop="account_number" >
               <el-input 
-                v-model="paymentForm.account_number"
+                v-model="paymentPayee.account_number"
+                :disabled="true"
                 :maxlength="20"
                 class="item-input"/>
             </el-form-item>
@@ -144,6 +155,7 @@ import {
   modifyPayment,
   paymentDetail,
   Cookies,
+  getPaymentPayee,
   historyBack
 } from 'service'
 
@@ -192,45 +204,41 @@ export default {
     }
     return {
       contractList: [],
-
       searchLoading: false,
       setting: {
         isOpenSelectAll: true,
         loading: false,
         loadingText: '拼命加载中'
       },
-
+      paymentPayeeList: [],
       paymentID: '',
+      paymentPayee: {
+        account_bank: '',
+        account_number: ''
+      },
       paymentForm: {
-        payee: '',
+        payment_payee_id: '',
         applicant: '',
         type: 1,
-        account_bank: '',
         contract_id: '',
         reason: '',
         amount: '',
-        account_number: '',
         remark: '',
         applicant_name: ''
       },
       rules: {
-        account_number: [
-          { required: true, message: '请输入收款人账号', trigger: 'submit' },
-          { validator: checkNumber, trigger: 'submit' }
-        ],
         reason: [
           { required: true, message: '请输入申请事由', trigger: 'submit' }
         ],
         amount: [
           { required: true, message: '请输入申请金额', trigger: 'submit' }
         ],
-        account_bank: [
-          { required: true, message: '请输入收款人开户行', trigger: 'submit' }
-        ],
         contract_id: [
           { required: true, message: '请选择合同编号', trigger: 'submit' }
         ],
-        payee: [{ required: true, message: '请输入收款人', trigger: 'submit' }]
+        payment_payee_id: [
+          { required: true, message: '请输入收款人', trigger: 'submit' }
+        ]
       }
     }
   },
@@ -238,6 +246,7 @@ export default {
     this.setting.loading = true
     this.paymentID = this.$route.params.uid
     this.getContract()
+    this.getPaymentPayee()
     if (this.paymentID) {
       this.paymentDetail()
     } else {
@@ -248,20 +257,45 @@ export default {
     }
   },
   methods: {
+    paymentPayeeHandle(obj) {
+      let paymentPayee = this.paymentPayeeList.find(r => {
+        return r.id === obj
+      })
+      if (paymentPayee) {
+        this.paymentPayee.account_bank = paymentPayee.account_bank
+        this.paymentPayee.account_number = paymentPayee.account_number
+      }
+    },
+    getPaymentPayee() {
+      this.searchLoading = true
+      getPaymentPayee(this)
+        .then(res => {
+          this.paymentPayeeList = res.data
+          this.searchLoading = false
+        })
+        .catch(err => {
+          this.searchLoading = false
+        })
+    },
     paymentDetail() {
-      paymentDetail(this, this.paymentID)
+      let args = {
+        include: 'payment_payee'
+      }
+      paymentDetail(this, this.paymentID, args)
         .then(res => {
           this.paymentForm.contract_id = res.contract_id
-          this.paymentForm.payee = res.payee
           this.paymentForm.type =
             res.type === '支票' ? 1 : res.type === '电汇单' ? 2 : 3
           this.paymentForm.applicant = res.applicant
           this.paymentForm.applicant_name = res.applicant_name
           this.paymentForm.amount = res.amount
           this.paymentForm.remark = res.remark
-          this.paymentForm.account_bank = res.account_bank
-          this.paymentForm.account_number = res.account_number
           this.paymentForm.reason = res.reason
+          if (res.payment_payee) {
+            this.paymentForm.payment_payee_id = res.payment_payee.id
+            this.paymentPayee.account_bank = res.payment_payee.account_bank
+            this.paymentPayee.account_number = res.payment_payee.account_number
+          }
           this.setting.loading = false
         })
         .catch(err => {
@@ -292,45 +326,24 @@ export default {
           this.setting.loading = true
           delete this.paymentForm.applicant_name
           let args = this.paymentForm
-          if (this.paymentID) {
-            modifyPayment(this, this.paymentID, args)
-              .then(res => {
-                this.$message({
-                  message: '修改成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/payment/list'
-                })
-                this.setting.loading = false
+          savePayment(this, args)
+            .then(res => {
+              this.$message({
+                message: '提交成功',
+                type: 'success'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
+              this.$router.push({
+                path: '/payment/list'
               })
-          } else {
-            savePayment(this, args)
-              .then(res => {
-                this.$message({
-                  message: '添加成功',
-                  type: 'success'
-                })
-                this.$router.push({
-                  path: '/payment/list'
-                })
-                this.setting.loading = false
+              this.setting.loading = false
+            })
+            .catch(err => {
+              this.setting.loading = false
+              this.$message({
+                message: err.response.data.message,
+                type: 'warning'
               })
-              .catch(err => {
-                this.setting.loading = false
-                this.$message({
-                  message: err.response.data.message,
-                  type: 'warning'
-                })
-              })
-          }
+            })
         }
       })
     }

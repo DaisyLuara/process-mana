@@ -61,8 +61,31 @@ export default {
             import(/* webpackChunkName: "page/contract/collection/index" */ 'page/contract/collection/index'),
           name: '收款提示列表',
           meta: {}
+        }
+      ]
+    },
+    {
+      path: 'history',
+      component: () =>
+        import(/* webpackChunkName: "page/contract/history/routerView" */ 'page/contract/history/routerView'),
+      meta: {
+        title: '我已审批的'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/history/index" */ 'page/contract/history/index'),
+          name: '我已审批的列表',
+          meta: {}
         },
-        
+        {
+          path: 'detail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/history/detail" */ 'page/contract/history/detail'),
+          name: '详情',
+          meta: {}
+        }
       ]
     }
   ]

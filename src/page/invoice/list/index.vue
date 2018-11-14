@@ -31,21 +31,6 @@
             </el-form-item>
             <el-form-item 
               label="" 
-              prop="receive_status">
-              <el-select 
-                v-model="searchForm.receive_status" 
-                placeholder="请选择收款状态" 
-                filterable 
-                clearable>
-                <el-option
-                  v-for="item in receiveStatusList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"/>
-              </el-select>
-            </el-form-item>
-            <el-form-item 
-              label="" 
               prop="name">
               <el-input 
                 v-model="searchForm.name"
@@ -124,11 +109,7 @@
                 </el-form-item>
                 <el-form-item 
                   label="开票公司:">
-                  <span>{{ scope.row.invoice_company }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="收款状态:">
-                  <span>{{ scope.row.receive_status }}</span> 
+                  <span>{{ scope.row.invoice_company_name }}</span> 
                 </el-form-item>
                 <el-form-item 
                   label="申请人:">
@@ -173,18 +154,9 @@
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="invoice_company"
+            prop="invoice_company_name"
             label="开票公司"
             min-width="100"/>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="receive_status"
-            label="收款状态"
-            min-width="80">
-            <template slot-scope="scope">
-              {{ scope.row.receive_status }}
-            </template>
-          </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="applicant_name"
@@ -223,14 +195,14 @@
           </el-table-column>
           <el-table-column 
             label="操作" 
-            min-width="200">
+            min-width="280">
             <template 
               slot-scope="scope">
               <el-button 
                 v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
                 size="mini" 
                 type="primary"
-                @click="editInvoice(scope.row)">编辑</el-button>
+                @click="editInvoice(scope.row)">再次提交</el-button>
               <el-button 
                 v-if="scope.row.handler === applicant && (scope.row.status !== '驳回' && scope.row.status !== '已开票' && scope.row.status !== '已认领')"
                 size="mini" 
@@ -241,15 +213,10 @@
                 type="danger"
                 @click="deleteInvoice(scope.row)">删除</el-button>
               <el-button 
-                v-if="scope.row.status === '已开票' && scope.row.applicant === applicant"
+                v-if="scope.row.status === '已开票' && roles.name === 'finance'"
                 size="mini" 
                 type="warning"
                 @click="receiveInvoice(scope.row)">认领票据</el-button>
-              <el-button 
-                v-if="scope.row.receive_status === '未收款' && roles.name === 'finance'"
-                size="mini" 
-                type="warning"
-                @click="receiptInvoice(scope.row)">确认收款</el-button>
               <el-button
                 size="mini" 
                 type="info"
@@ -293,8 +260,7 @@ import {
   receiveInvoice,
   handleDateTransform,
   getInvoiceList,
-  Cookies,
-  receiptInvoice
+  Cookies
 } from 'service'
 
 export default {
@@ -318,8 +284,7 @@ export default {
         dataValue: [],
         name: '',
         status: '',
-        contract_number: '',
-        receive_status: ''
+        contract_number: ''
       },
       pickerOptions2: {
         shortcuts: [
@@ -370,16 +335,6 @@ export default {
           }
         ]
       },
-      receiveStatusList: [
-        {
-          id: 1,
-          name: '已收款'
-        },
-        {
-          id: 0,
-          name: '未收款'
-        }
-      ],
       statusList: [
         {
           id: 1,
@@ -423,7 +378,13 @@ export default {
   },
   computed: {
     addButtonShow: function() {
-      if (this.roles.name == 'user' || this.roles.name === 'bd-manager') {
+      // BD BD主管，法务，法务主管
+      if (
+        this.roles.name == 'user' ||
+        this.roles.name === 'bd-manager' ||
+        this.roles.name == 'legal-affairs' ||
+        this.roles.name == 'legal-affairs-manager'
+      ) {
         return true
       } else {
         return false
@@ -453,38 +414,6 @@ export default {
               this.$message({
                 type: 'success',
                 message: '认领成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getInvoiceList()
-            })
-            .catch(error => {
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-              this.setting.loading = false
-            })
-        })
-        .catch(e => {
-          console.log(e)
-        })
-    },
-    receiptInvoice(data) {
-      let id = data.id
-      this.$confirm('确认收款?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '确认收款中'
-          this.setting.loading = true
-          receiptInvoice(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '收款成功！'
               })
               this.pagination.currentPage = 1
               this.getInvoiceList()
@@ -541,8 +470,7 @@ export default {
         status: this.searchForm.status,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        end_date: handleDateTransform(this.searchForm.dataValue[1]),
-        receive_status: this.searchForm.receive_status
+        end_date: handleDateTransform(this.searchForm.dataValue[1])
       }
       if (!this.searchForm.name) {
         delete args.name
@@ -552,9 +480,6 @@ export default {
       }
       if (this.searchForm.contract_number === '') {
         delete args.contract_number
-      }
-      if (this.searchForm.receive_status === '') {
-        delete args.receive_status
       }
       if (!this.searchForm.dataValue[0]) {
         delete args.start_date

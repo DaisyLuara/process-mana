@@ -11,41 +11,29 @@
         <div 
           class="search-wrap">
           <el-form 
-            ref="searchForm"
+            ref="searchForm" 
             :model="searchForm" 
             :inline="true">
-            <el-form-item 
-              label="" 
-              prop="status">
-              <el-select 
-                v-model="searchForm.status" 
-                placeholder="请选择审批状态" 
-                filterable 
-                clearable>
-                <el-option
-                  v-for="item in statusList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"/>
-              </el-select>
-            </el-form-item>
             <el-form-item 
               label="" 
               prop="name">
               <el-input 
                 v-model="searchForm.name" 
-                clearable
-                placeholder="公司名称"
-                class="item-input"/>
+                placeholder="付款公司" 
+                clearable/>
             </el-form-item>
-            <el-form-item 
-              label="" 
-              prop="contract_number">
-              <el-input 
-                v-model="searchForm.contract_number" 
-                clearable
-                placeholder="合同编号"
-                class="item-input"/>
+            <el-form-item
+              label=""
+              prop="claim_status">
+              <el-select
+                v-model="searchForm.claim_status" 
+                placeholder="认领状态" >
+                <el-option
+                  v-for="item in statusReceiptList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
             </el-form-item>
             <el-form-item 
               label="" 
@@ -73,7 +61,7 @@
             </el-form-item>
           </el-form>
         </div>
-        <!-- 合同列表 -->
+        <!-- 开票列表 -->
         <div 
           class="total-wrap">
           <span 
@@ -82,10 +70,10 @@
           </span>
           <div>
             <el-button
-              v-if="addButtonShow" 
+              v-if="roles.name === 'finance'"
               size="small" 
               type="success"
-              @click="addContract">新建合同</el-button>
+              @click="addReceipt">新增收款</el-button>
           </div>
         </div>
         <el-table 
@@ -100,141 +88,90 @@
                 inline 
                 class="demo-table-expand">
                 <el-form-item 
+                  label="付款公司:">
+                  <span>{{ scope.row.receipt_company }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="收款金额:">
+                  <span>{{ scope.row.receipt_money }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="到账日期:">
+                  <span>{{ scope.row.receipt_date }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="认领状态:">
+                  <span>{{ scope.row.claim_status }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="合同编号:">
-                  <span>{{ scope.row.contract_number }}</span> 
+                  <span>
+                    {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : ''}}
+                  </span> 
                 </el-form-item>
                 <el-form-item 
-                  label="公司名称:">
-                  <span>{{ scope.row.company_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="合同名称:">
-                  <span>{{ scope.row.name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="收款总额:">
-                  <span>{{ scope.row.amount }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="申请人:">
-                  <span>{{ scope.row.applicant_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="审批状态:">
-                  <span>{{ scope.row.status }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="待处理人:">
-                  <span>{{ scope.row.handler_name }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="申请时间:">
-                  <span>{{ scope.row.created_at }}</span> 
-                </el-form-item>
-                <el-form-item 
-                  label="最后操作时间:">
-                  <span>{{ scope.row.updated_at }}</span> 
-                </el-form-item>
-                <el-form-item
-                  v-if="scope.row.type === '收款合同'"  
-                  label="预估收款日期:">
-                  <span
-                    style="color:#dd0d0d;">{{ scope.row.receive_date }}</span> 
+                  label="所属人:">
+                  <span>
+                    {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.applicant_name : ''}}
+                  </span> 
                 </el-form-item>
               </el-form>
             </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
+            prop="receipt_company"
+            label="付款公司"
+            min-width="100"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="receipt_money"
+            label="收款金额"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="receipt_date"
+            label="到账日期"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="claim_status"
+            label="认领状态"
+            min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
             prop="contract_number"
             label="合同编号"
             min-width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.contract_number }}</span>
+              {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : ''}}
             </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="company_name"
-            label="公司名称"
-            min-width="100">
-            <template slot-scope="scope">
-              <span>{{ scope.row.company_name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="name"
-            label="合同名称"
+            prop="BD"
+            label="所属人"
             min-width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="applicant_name"
-            label="申请人"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.applicant_name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="status"
-            label="审批状态"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.status }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="handler_name"
-            label="待处理人"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.handler_name === null ? '--' : scope.row.handler_name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="apply_time"
-            label="申请时间"
-            min-width="80">
-            <template slot-scope="scope">
-              <span>{{ scope.row.created_at }}</span>
+              {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.applicant_name : ''}}
             </template>
           </el-table-column>
           <el-table-column 
             label="操作" 
-            min-width="180">
+            min-width="200"
+            v-if="roles.name === 'finance' || roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'">
             <template 
               slot-scope="scope">
               <el-button
-                v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
+                v-if="roles.name === 'finance' && scope.row.claim_status === '未认领'"
                 size="mini" 
                 type="primary"
-                @click="editContract(scope.row)">再次提交</el-button>
+                @click="editReceipt(scope.row)">编辑</el-button>
               <el-button
-                v-if="scope.row.handler === applicant && scope.row.status !== '驳回'"
-                size="mini" 
-                @click="auditingContract(scope.row)">审批</el-button>
-              <el-button
-                v-if="((scope.row.status === '待审批' && roles.name === 'user' && scope.row.applicant === applicant) || (scope.row.status === '待审批' && roles.name === 'bd-manager' && scope.row.applicant === applicant)) "
-                size="mini" 
-                type="danger"
-                @click="deleteContract(scope.row)">删除</el-button>
-              <el-button 
-                v-if="scope.row.status === '待审批' && scope.row.applicant === applicant"
+                v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'"
                 size="mini" 
                 type="warning"
-                @click="specialAuditingContract(scope.row)">特批</el-button>
-              <el-button
-                size="mini" 
-                type="info"
-                @click="detailContract(scope.row)">详情</el-button>
+                @click="handleReceipt(scope.row)">认领收款</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -250,6 +187,50 @@
         </div>
       </div>  
     </div>
+    <el-dialog title="认领收款" :visible.sync="dialogFormVisible">
+      <el-form 
+        :model="claimReceiptForm"
+        label-position="right"
+        label-width="100px">
+        <el-form-item 
+          label="合同编号">
+          <el-select 
+            v-model="claimReceiptForm.contract_id"
+            :remote-method="getContract" 
+            :loading="searchLoading"
+            remote
+            filterable
+            clearable
+            placeholder="请搜索合同编号"
+            @change="contractChangeHandle">
+            <el-option 
+              v-for="item in contractList"
+              :key="item.id"
+              :label="item.contract_number" 
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item 
+          label="预估收款日期">
+          <el-select 
+            v-model="claimReceiptForm.dateId" 
+            :loading="searchLoading"
+            filterable 
+            clearable
+            placeholder="请选择预估收款日期">
+            <el-option 
+              v-for="item in receiptDateList"
+              :key="item.id"
+              :label="item.receive_date" 
+              :value="item.id"/>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="receiptInvoice">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -259,22 +240,22 @@ import {
   Input,
   Table,
   TableColumn,
+  Select,
+  Option,
   Pagination,
   Form,
   FormItem,
   MessageBox,
-  Select,
-  Option,
-  Row,
-  Col,
-  DatePicker
+  DatePicker,
+  Dialog
 } from 'element-ui'
 import {
-  getContractList,
+  getReceiptList,
+  Cookies,
   handleDateTransform,
-  deleteContract,
-  specialAuditingContract,
-  Cookies
+  getContract,
+  receiptInvoice,
+  getReceiveDate
 } from 'service'
 
 export default {
@@ -288,20 +269,23 @@ export default {
     'el-form-item': FormItem,
     'el-select': Select,
     'el-option': Option,
-    'el-row': Row,
-    'el-col': Col,
-    'el-date-picker': DatePicker
+    'el-date-picker': DatePicker,
+    'el-dialog': Dialog
   },
   data() {
     return {
-      searchForm: {
-        dataValue: [],
-        name: '',
-        status: '',
-        contract_number: ''
+      claimReceiptForm: {
+        contract_id: '',
+        dateId: ''
       },
-      roles: {},
-      applicant: null,
+      dialogFormVisible: false,
+      searchForm: {
+        name: '',
+        claim_status: '',
+        dataValue: []
+      },
+      contractList: [],
+      receiptDateList: [],
       pickerOptions2: {
         shortcuts: [
           {
@@ -351,28 +335,17 @@ export default {
           }
         ]
       },
-      statusList: [
+      statusReceiptList: [
+        {
+          id: 0,
+          name: '未认领'
+        },
         {
           id: 1,
-          name: '待审批'
-        },
-        {
-          id: 2,
-          name: '审批中'
-        },
-        {
-          id: 3,
-          name: '已审批'
-        },
-        {
-          id: 4,
-          name: '特批'
-        },
-        {
-          id: 5,
-          name: '驳回'
+          name: '已认领'
         }
       ],
+      roles: {},
       setting: {
         loading: false,
         loadingText: '拼命加载中'
@@ -383,114 +356,76 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: []
-    }
-  },
-  computed: {
-    addButtonShow: function() {
-      // BD BD主管，法务，法务主管
-      if (
-        this.roles.name == 'user' ||
-        this.roles.name === 'bd-manager' ||
-        this.roles.name == 'legal-affairs' ||
-        this.roles.name == 'legal-affairs-manager'
-      ) {
-        return true
-      } else {
-        return false
-      }
+      tableData: [],
+      id: ''
     }
   },
   created() {
-    this.getContractList()
     let user_info = JSON.parse(Cookies.get('user_info'))
-    this.applicant = user_info.id
     this.roles = user_info.roles.data[0]
+    this.getReceiptList()
   },
   methods: {
-    specialAuditingContract(data) {
-      let id = data.id
-      this.$confirm('确认特批此合同?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '特批申请中'
-          this.setting.loading = true
-          specialAuditingContract(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '申请成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getContractList()
-            })
-            .catch(error => {
-              this.setting.loading = false
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-            })
+    getContract(query) {
+      this.searchLoading = true
+      let args = {
+        // 0 收款
+        type: 0,
+        contract_number: query
+      }
+      getContract(this, args)
+        .then(res => {
+          this.searchLoading = false
+          this.contractList = res.data
         })
-        .catch(e => {
-          this.setting.loading = false
+        .catch(err => {
+          this.searchLoading = false
+          this.$message({
+            message: err.response.data.message,
+            type: 'warning'
+          })
         })
     },
-    deleteContract(data) {
-      let id = data.id
-      this.$confirm('确认删除此合同?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          this.setting.loadingText = '删除中'
-          this.setting.loading = true
-          deleteContract(this, id)
-            .then(response => {
-              this.setting.loading = false
-              this.$message({
-                type: 'success',
-                message: '删除成功！'
-              })
-              this.pagination.currentPage = 1
-              this.getContractList()
-            })
-            .catch(error => {
-              this.setting.loading = false
-              this.$message({
-                message: error.response.data.message,
-                type: 'warning'
-              })
-            })
+    contractChangeHandle() {
+      this.claimReceiptForm.dateId = ''
+      this.getReceiveDate()
+    },
+    getReceiveDate() {
+      this.searchLoading = true
+      let args = {
+        id: this.claimReceiptForm.contract_id
+      }
+      getReceiveDate(this, args)
+        .then(res => {
+          this.receiptDateList = res.data
+          this.searchLoading = false
         })
-        .catch(e => {
-          this.setting.loading = false
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: 'warning'
+          })
+          this.searchLoading = false
         })
     },
-    getContractList() {
+    handleReceipt(obj) {
+      this.id = obj.id
+      this.dialogFormVisible = true
+    },
+    getReceiptList() {
       this.setting.loading = true
       let args = {
-        include: 'company',
-        page: this.pagination.currentPage,
+        include: 'receiveDate.contract',
         name: this.searchForm.name,
-        status: this.searchForm.status,
-        contract_number: this.searchForm.contract_number,
+        claim_status: this.searchForm.claim_status,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
         end_date: handleDateTransform(this.searchForm.dataValue[1])
       }
       if (!this.searchForm.name) {
         delete args.name
       }
-      if (this.searchForm.contract_number === '') {
-        delete args.contract_number
-      }
-      if (!this.searchForm.status) {
-        delete args.status
+      if (this.searchForm.claim_status === '') {
+        delete args.claim_status
       }
       if (!this.searchForm.dataValue[0]) {
         delete args.start_date
@@ -498,7 +433,7 @@ export default {
       if (!this.searchForm.dataValue[1]) {
         delete args.end_date
       }
-      getContractList(this, args)
+      getReceiptList(this, args)
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
@@ -508,41 +443,54 @@ export default {
           this.setting.loading = false
         })
     },
-    addContract() {
+    addReceipt() {
       this.$router.push({
-        path: '/contract/list/add'
+        path: '/invoice/receipt/add'
       })
     },
-    editContract(data) {
+    editReceipt(data) {
       this.$router.push({
-        path: '/contract/list/edit/' + data.id
+        path: '/invoice/receipt/edit/' + data.id
       })
     },
-    auditingContract(data) {
-      this.$router.push({
-        path: '/contract/list/detail/' + data.id
-      })
-    },
-    detailContract(data) {
-      this.$router.push({
-        path: '/contract/list/detail/' + data.id,
-        query: {
-          hide: 'none'
+    receiptInvoice() {
+      if (this.claimReceiptForm.dateId !== '') {
+        this.setting.loading = true
+        let args = {
+          receive_date_id: this.claimReceiptForm.dateId
         }
-      })
+        receiptInvoice(this, this.id, args)
+          .then(res => {
+            this.dialogFormVisible = false
+            this.getReceiptList()
+          })
+          .catch(err => {
+            this.dialogFormVisible = false
+            this.setting.loading = false
+            this.$message({
+              message: err.response.data.message,
+              type: 'warning'
+            })
+          })
+      } else {
+        this.$message({
+          message: '合同编号，预估收款日期必须填写',
+          type: 'warning'
+        })
+      }
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
-      this.getContractList()
+      this.getReceiptList()
     },
     search() {
       this.pagination.currentPage = 1
-      this.getContractList()
+      this.getReceiptList()
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields()
       this.pagination.currentPage = 1
-      this.getContractList()
+      this.getReceiptList()
     }
   }
 }
@@ -555,7 +503,6 @@ export default {
   .item-list-wrap {
     background: #fff;
     padding: 30px;
-
     .el-form-item {
       margin-bottom: 0;
     }
@@ -604,9 +551,6 @@ export default {
             margin-right: 5px;
           }
         }
-      }
-      .highlighted {
-        color: red;
       }
       .total-wrap {
         margin-top: 5px;

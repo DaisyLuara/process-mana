@@ -1,4 +1,8 @@
 const PAYMENT_API = '/api/payment'
+const PAYMENT_PAYEE_API = '/api/payment_payee'
+const PAYMENT_HISTORY_API = '/api/payment_history'
+const PAYMENT_REJECT_API = '/api/payment/reject'
+
 const HOST = process.env.SERVER_URL
 
 const getPaymentList = (context, params) => {
@@ -66,10 +70,10 @@ const deletePayment = (context, paymentId) => {
   })
 }
 // 审批付款
-const auditingPayment = (context, paymentId) => {
+const auditingPayment = (context, paymentId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + PAYMENT_API + '/auditing/' + paymentId)
+      .post(HOST + PAYMENT_API + '/auditing/' + paymentId, params)
       .then(response => {
         resolve(response.data)
       })
@@ -91,6 +95,84 @@ const receivePayment = (context, paymentId) => {
       })
   })
 }
+
+const getPayeeList = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PAYMENT_PAYEE_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const savePayee = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + PAYMENT_PAYEE_API, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const payeeDetail = (context, payeeId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PAYMENT_PAYEE_API + '/' + payeeId, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const modifyPayee = (context, payeeId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .patch(HOST + PAYMENT_PAYEE_API + '/' + payeeId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const paymentHistory = context => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PAYMENT_HISTORY_API)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const paymentReject = (context, paymentId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + PAYMENT_REJECT_API + '/' + paymentId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   getPaymentList,
   savePayment,
@@ -98,5 +180,11 @@ export {
   modifyPayment,
   deletePayment,
   auditingPayment,
-  receivePayment
+  receivePayment,
+  getPayeeList,
+  savePayee,
+  payeeDetail,
+  modifyPayee,
+  paymentHistory,
+  paymentReject
 }

@@ -1,5 +1,7 @@
 const CONTRACT_API = '/api/contract'
 const CONTRACT_REMIND_API = '/api/remind_contract'
+const CONTRACT_HISTORY_API = '/api/contract_history'
+const CONTRACT_REJECT_API = '/api/contract/reject'
 const HOST = process.env.SERVER_URL
 
 const getContractList = (context, params) => {
@@ -105,6 +107,32 @@ const specialAuditingContract = (context, contractId) => {
       })
   })
 }
+
+const contractHistory = context => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + CONTRACT_HISTORY_API)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const rejectContract = (context, contractId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + CONTRACT_REJECT_API + '/' + contractId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   getContractList,
   saveContract,
@@ -113,5 +141,7 @@ export {
   deleteContract,
   auditingContract,
   specialAuditingContract,
-  getRemindContractList
+  getRemindContractList,
+  contractHistory,
+  rejectContract
 }

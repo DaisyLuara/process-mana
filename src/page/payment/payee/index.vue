@@ -11,16 +11,17 @@
         <div 
           class="search-wrap">
           <el-form 
-            ref="searchForm"
+            ref="searchForm" 
             :model="searchForm" 
-            :inline="true">
+            :inline="true"
+            class="search-content">
             <el-form-item 
               label="" 
               prop="name">
               <el-input 
-                v-model="searchForm.name" 
-                clearable
-                placeholder="公司名称"
+                v-model="searchForm.name"
+                clearable 
+                placeholder="收款人"
                 class="item-input"/>
             </el-form-item>
             <el-form-item 
@@ -43,6 +44,13 @@
             class="label">
             总数:{{ pagination.total }} 
           </span>
+          <div>
+            <el-button
+              v-if="buttonShow" 
+              size="small" 
+              type="success"
+              @click="addPayee">新增收款人</el-button>
+          </div>
         </div>
         <el-table 
           :data="tableData" 
@@ -51,75 +59,52 @@
             type="expand">
             <template 
               slot-scope="scope">
-               <el-table
-                :data="scope.row.receiveDate.data"
-                style="width: 100%">
-                <el-table-column
-                  prop="receive_date"
-                  label="预估收款日期"
-                  min-width="120">
-                </el-table-column>
-                <el-table-column
-                  prop="receive_status"
-                  label="收款状态"
-                  min-width="120">
-                </el-table-column>
-                <el-table-column
-                  prop="invoiceReceipt"
-                  label="收款金额"
-                  min-width="120">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.invoiceReceipt !== undefined ? scope.row.invoiceReceipt.receipt_money:'' }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="receipt_company"
-                  label="付款公司"
-                  min-width="120">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.invoiceReceipt !== undefined  ? scope.row.invoiceReceipt.receipt_company : ''}}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="receipt_date"
-                  label="到账时间"
-                  min-width="120">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row.invoiceReceipt !== undefined ? scope.row.invoiceReceipt.receipt_date : '' }}</span>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
+                <el-form-item 
+                  label="收款人:">
+                  <span>{{ scope.row.name }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="收款人开户行:">
+                  <span>{{ scope.row.account_bank }}</span> 
+                </el-form-item>
+                <el-form-item 
+                  label="收款人账号:">
+                  <span>{{ scope.row.account_number }}</span> 
+                </el-form-item>
+              </el-form>
             </template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="contract_number"
-            label="合同编号"
-            min-width="80">
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="company_name"
-            label="公司名称"
-            min-width="100">
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
             prop="name"
-            label="合同名称"
-            min-width="80">
-          </el-table-column>
+            label="收款人"
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="applicant_name"
-            label="申请人"
-            min-width="80">
-          </el-table-column>
+            prop="account_number"
+            label="收款人账号"
+            min-width="280"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="amount"
-            label="合同金额"
-            min-width="80"/>
+            prop="account_bank"
+            label="收款人开户行"
+            min-width="180"/>
+          <el-table-column 
+            label="操作" 
+            min-width="200">
+            <template 
+              slot-scope="scope">
+              <el-button 
+                v-if="buttonShow"
+                size="mini" 
+                type="primary"
+                @click="editPayee(scope.row)">编辑</el-button>
+            </template>
+          </el-table-column>
         </el-table>
         <div 
           class="pagination-wrap">
@@ -145,11 +130,15 @@ import {
   Pagination,
   Form,
   FormItem,
-  MessageBox,
-  Select,
-  Option
+  MessageBox
 } from 'element-ui'
-import { getRemindContractList, Cookies } from 'service'
+import {
+  getPayeeList,
+  handleDateTransform,
+  receivePayment,
+  deletePayment,
+  Cookies
+} from 'service'
 
 export default {
   components: {
@@ -159,45 +148,34 @@ export default {
     'el-input': Input,
     'el-pagination': Pagination,
     'el-form': Form,
-    'el-form-item': FormItem,
-    'el-select': Select,
-    'el-option': Option
+    'el-form-item': FormItem
   },
   data() {
     return {
       searchForm: {
-        name: '',
-        contract_number: ''
+        name: ''
       },
-      roles: [],
+      roles: {},
       setting: {
         loading: false,
         loadingText: '拼命加载中'
       },
-      searchLoading: false,
       pagination: {
         total: 0,
         pageSize: 10,
         currentPage: 1
       },
-      tableData: [],
-      tableDataTwo: [
-        {
-          date: '2016-05-02',
-          name: '2000',
-          address: '已收款'
-        },
-        {
-          date: '2016-05-04',
-          name: '200',
-          address: '未收款'
-        }
-      ]
+      tableData: []
     }
   },
   computed: {
     buttonShow: function() {
-      if (this.roles.name == 'user' || this.roles.name === 'bd-manager') {
+      if (
+        this.roles.name == 'user' ||
+        this.roles.name === 'bd-manager' ||
+        this.roles.name == 'legal-affairs' ||
+        this.roles.name == 'legal-affairs-manager'
+      ) {
         return true
       } else {
         return false
@@ -205,26 +183,21 @@ export default {
     }
   },
   created() {
+    this.getPayeeList()
     let user_info = JSON.parse(Cookies.get('user_info'))
     this.roles = user_info.roles.data[0]
-    this.getRemindContractList()
   },
   methods: {
-    getRemindContractList() {
+    getPayeeList() {
       this.setting.loading = true
       let args = {
-        include: 'receiveDate.invoiceReceipt',
         page: this.pagination.currentPage,
-        name: this.searchForm.name,
-        contract_number: this.searchForm.contract_number
+        name: this.searchForm.name
       }
       if (!this.searchForm.name) {
         delete args.name
       }
-      if (this.searchForm.contract_number === '') {
-        delete args.contract_number
-      }
-      getRemindContractList(this, args)
+      getPayeeList(this, args)
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
@@ -234,26 +207,28 @@ export default {
           this.setting.loading = false
         })
     },
-    detailContract(data) {
+    addPayee() {
       this.$router.push({
-        path: '/contract/list/detail/' + data.id,
-        query: {
-          hide: 'none'
-        }
+        path: '/payment/payee/add'
+      })
+    },
+    editPayee(data) {
+      this.$router.push({
+        path: '/payment/payee/edit/' + data.id
       })
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage
-      this.getRemindContractList()
+      this.getPayeeList()
     },
     search() {
       this.pagination.currentPage = 1
-      this.getRemindContractList()
+      this.getPayeeList()
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields()
       this.pagination.currentPage = 1
-      this.getRemindContractList()
+      this.getPayeeList()
     }
   }
 }
@@ -295,6 +270,9 @@ export default {
         font-size: 16px;
         align-items: center;
         margin-bottom: 10px;
+        .search-content {
+          width: 800px;
+        }
         .el-form-item {
           margin-bottom: 10px;
         }

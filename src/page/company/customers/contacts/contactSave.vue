@@ -140,6 +140,9 @@ export default {
         ],
         'contact.position': [
           { message: '请输入联系人职务', trigger: 'blur', required: true }
+        ],
+        'contact.password': [
+          { message: '请输入密码', trigger: 'submit', required: true }
         ]
       },
       contactName: '',
