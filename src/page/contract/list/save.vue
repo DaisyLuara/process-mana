@@ -414,24 +414,24 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number
           }
-          // saveContract(this, args)
-          //   .then(res => {
-          //     this.$message({
-          //       message: '添加成功',
-          //       type: 'success'
-          //     })
-          //     this.$router.push({
-          //       path: '/contract/list'
-          //     })
-          //     this.setting.loading = false
-          //   })
-          //   .catch(err => {
-          //     this.setting.loading = false
-          //     this.$message({
-          //       message: err.response.data.message,
-          //       type: 'warning'
-          //     })
-          //   })
+          saveContract(this, args)
+            .then(res => {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.$router.push({
+                path: '/contract/list'
+              })
+              this.setting.loading = false
+            })
+            .catch(err => {
+              this.setting.loading = false
+              this.$message({
+                message: err.response.data.message,
+                type: 'warning'
+              })
+            })
         }
       })
     }
