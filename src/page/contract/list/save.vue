@@ -274,7 +274,9 @@ export default {
           this.contractForm.applicant = res.applicant
           this.contractForm.name = res.name
           this.contractForm.company_id = res.company_id
-          this.contractForm.receive_date = res.receive_date.split(',')
+          this.contractForm.receive_date = res.receive_date
+            ? res.receive_date.split(',')
+            : []
           this.contractForm.remark = res.remark
           this.contractForm.contract_number = res.contract_number
           this.contractForm.amount = res.amount
@@ -371,22 +373,21 @@ export default {
             ids: this.contractForm.ids,
             remark: this.contractForm.remark
           }
-
           if (this.contractForm.type === 0) {
-            if (this.contractForm.receive_date.length > 0) {
-              let date = []
-              this.contractForm.receive_date.map(r => {
-                let dateTransform = handleDateTransform(r)
-                date.push(dateTransform)
-              })
-              args.receive_date = date.join(',')
-            } else {
+            if (!this.contractForm.receive_date.length) {
               this.$message({
                 message: '预估收款时间必填',
                 type: 'warning'
               })
               this.setting.loading = false
               return
+            } else {
+              let date = []
+              this.contractForm.receive_date.map(r => {
+                let dateTransform = handleDateTransform(r)
+                date.push(dateTransform)
+              })
+              args.receive_date = date.join(',')
             }
             if (!this.contractForm.amount) {
               this.$message({
