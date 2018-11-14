@@ -188,73 +188,7 @@
         <el-button @click="cancel">取 消</el-button>
         <el-button 
           type="primary" 
-          @click="rejected">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog  
-      :visible.sync="auditingDialog"
-      title="审批">
-      <el-form >
-        <el-form-item
-          v-if="roles.name === 'legal-affairs-manager'"
-          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
-          label="意见" 
-          prop="legal_ma_message">
-          <el-input
-            v-model="paymentForm.legal_ma_message"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
-            type="textarea"
-            placeholder="请输入内容"
-            class="text-input"/>
-        </el-form-item>
-        <el-form-item
-          v-if="roles.name === 'legal-affairs'"
-          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
-          label="意见" 
-          prop="legal_message">
-          <el-input
-            v-model="paymentForm.legal_message"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
-            type="textarea"
-            placeholder="请输入内容"
-            class="text-input"/>
-        </el-form-item>
-        <el-form-item
-          v-if="roles.name === 'bd-manager'"
-          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
-          label="意见" 
-          prop="bd_ma_message">
-          <el-input
-            v-model="paymentForm.bd_ma_message"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
-            type="textarea"
-            placeholder="请输入内容"
-            class="text-input"/>
-        </el-form-item>
-        <el-form-item
-          v-if="roles.name === 'auditor'"
-          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
-          label="意见" 
-          prop="auditor_message">
-          <el-input
-            v-model="paymentForm.auditor_message"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
-            type="textarea"
-            placeholder="请输入内容"
-            class="text-input"/>
-        </el-form-item>
-      </el-form>
-      <div 
-        slot="footer" 
-        class="dialog-footer">
-        <el-button @click="auditingDialog = false">取 消</el-button>
-        <el-button 
-          type="primary" 
-          @click="auditingHandle">确 定</el-button>
+          @click="rejectedAuditingHandle">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -425,7 +359,7 @@ export default {
           this.setting.loading = false
         })
     },
-    auditingHandle() {
+    rejectedAuditingHandle() {
       let args = {}
       this.setting.loading = true
       if (
