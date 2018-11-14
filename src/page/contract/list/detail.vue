@@ -132,8 +132,8 @@
       :title="rejectStatus === true ? '驳回理由': '审批' ">
       <el-form >
         <el-form-item
+          :rules="[{ required: true, message: '请上传合同内容', trigger: 'submit' }]"
           v-if="!hide && roles.name === 'legal-affairs'&& rejectStatus"
-          :rules="[{ required: true, message: '请上传文件', trigger: 'submit' }]"
           label="合同内容" 
           prop="ids">
           <el-upload
@@ -175,7 +175,7 @@
         </el-form-item>
         <el-form-item
           v-if="roles.name === 'legal-affairs-manager'"
-          :rules="[{ required: true, message: '请填写合同意见', trigger: 'submit' }]"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
           label="意见" 
           prop="legal_ma_message">
           <el-input
@@ -188,7 +188,7 @@
         </el-form-item>
         <el-form-item
           v-if="roles.name === 'legal-affairs'"
-          :rules="[{ required: true, message: '请填写合同意见', trigger: 'submit' }]"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
           label="意见" 
           prop="legal_message">
           <el-input
@@ -201,7 +201,7 @@
         </el-form-item>
         <el-form-item
           v-if="roles.name === 'bd-manager'"
-          :rules="[{ required: true, message: '请填写合同意见', trigger: 'submit' }]"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
           label="意见" 
           prop="bd_ma_message">
           <el-input
@@ -263,7 +263,6 @@ export default {
     return {
       rejectStatus: false,
       agreeStatus: false,
-      auditingDialog: false,
       dialogFormVisible: false,
       roles: {},
       SERVER_URL: SERVER_URL,
@@ -398,7 +397,6 @@ export default {
     },
     rejectAuditingHandle() {
       let args = {}
-      this.setting.loading = true
       // 法务主管
       if (
         this.rolesJudge('legal-affairs-manager') &&
@@ -439,7 +437,6 @@ export default {
             type: 'warning',
             message: '审批合同编号必填'
           })
-          this.setting.loading = false
           return
         } else {
           args.contract_number = this.contractForm.contract_number
@@ -449,6 +446,7 @@ export default {
       }
       // 驳回处理
       if (this.rejectStatus) {
+        this.setting.loading = true
         // 法务
         if (this.rolesJudge('legal-affairs')) {
           let mediaIds = []
@@ -456,6 +454,13 @@ export default {
             this.fileList.map(r => {
               mediaIds.push(r.id)
             })
+          } else {
+            this.$message({
+              message: '合同内容必须上传',
+              type: 'warning'
+            })
+            this.dialogFormVisible = false
+            return
           }
           this.contractForm.ids = mediaIds.join(',')
           args.ids = this.contractForm.ids
@@ -501,6 +506,7 @@ export default {
     auditing(obj, contractID, args) {
       auditingContract(obj, contractID, args)
         .then(res => {
+          this.dialogFormVisible = false
           this.$message({
             message: '审批通过',
             type: 'success'
@@ -511,6 +517,7 @@ export default {
           this.setting.loading = false
         })
         .catch(err => {
+          this.dialogFormVisible = false
           this.$message({
             message: err.response.data.message,
             type: 'warning'

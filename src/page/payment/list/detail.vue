@@ -111,7 +111,7 @@
             v-if="!hide"
             type="danger"
             size="small"
-            @click="dialogFormVisible = true">驳回</el-button>
+            @click="dialogFormVisible = true, rejectStatus=true, agreeStatus = false">驳回</el-button>
           <el-button 
             v-if="!hide"
             :type="(paymentForm.status === '已审批' && paymentForm.handler === id) ?'warning' : 'primary'"
@@ -125,13 +125,56 @@
     </div>
     <el-dialog 
       :visible.sync="dialogFormVisible"
-      title="驳回理由">
+      :close-on-click-modal="false"
+      :show-close="false"
+      :title="rejectStatus === true ? '驳回理由': '审批'">
       <el-form>
         <el-form-item
-          label="备注:" 
-          prop="remark">
+          v-if="roles.name === 'legal-affairs-manager'"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
+          label="意见" 
+          prop="legal_ma_message">
           <el-input
-            v-model="paymentForm.remark"
+            v-model="paymentForm.legal_ma_message"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="180"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
+        <el-form-item
+          v-if="roles.name === 'legal-affairs'"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
+          label="意见" 
+          prop="legal_message">
+          <el-input
+            v-model="paymentForm.legal_message"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="180"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
+        <el-form-item
+          v-if="roles.name === 'bd-manager'"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
+          label="意见" 
+          prop="bd_ma_message">
+          <el-input
+            v-model="paymentForm.bd_ma_message"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            :maxlength="180"
+            type="textarea"
+            placeholder="请输入内容"
+            class="text-input"/>
+        </el-form-item>
+        <el-form-item
+          v-if="roles.name === 'auditor'"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
+          label="意见" 
+          prop="auditor_message">
+          <el-input
+            v-model="paymentForm.auditor_message"
             :autosize="{ minRows: 2, maxRows: 4}"
             :maxlength="180"
             type="textarea"
@@ -142,7 +185,7 @@
       <div 
         slot="footer" 
         class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
         <el-button 
           type="primary" 
           @click="rejected">确 定</el-button>
@@ -249,6 +292,8 @@ export default {
   },
   data() {
     return {
+      rejectStatus: false,
+      agreeStatus: false,
       auditingDialog: false,
       hide: null,
       dialogFormVisible: false,
@@ -349,6 +394,8 @@ export default {
           })
       } else {
         this.auditingDialog = true
+        this.rejectStatus = false
+        this.agreeStatus = true
       }
     },
     auditingPayment(obj, paymentID, args) {
@@ -379,16 +426,11 @@ export default {
     auditingHandle() {
       let args = {}
       this.setting.loading = true
-
       if (
-        this.roles.name === 'legal-affairs-manager' &&
+        this.rolesJudge('legal-affairs-manager') &&
         !this.paymentForm.legal_ma_message
       ) {
-        this.$message({
-          type: 'warning',
-          message: '审批意见必填'
-        })
-        this.setting.loading = false
+        this.warningInfo()
         return
       } else {
         if (this.paymentForm.legal_ma_message) {
@@ -396,15 +438,8 @@ export default {
         }
       }
 
-      if (
-        this.roles.name === 'legal-affairs' &&
-        !this.paymentForm.legal_message
-      ) {
-        this.$message({
-          type: 'warning',
-          message: '审批意见必填'
-        })
-        this.setting.loading = false
+      if (this.rolesJudge('legal-affairs') && !this.paymentForm.legal_message) {
+        this.warningInfo()
         return
       } else {
         if (this.paymentForm.legal_message) {
@@ -412,12 +447,8 @@ export default {
         }
       }
 
-      if (this.roles.name === 'auditor' && !this.paymentForm.auditor_message) {
-        this.$message({
-          type: 'warning',
-          message: '审批意见必填'
-        })
-        this.setting.loading = false
+      if (this.rolesJudge('auditor') && !this.paymentForm.auditor_message) {
+        this.warningInfo()
         return
       } else {
         if (this.paymentForm.auditor_message) {
@@ -425,30 +456,30 @@ export default {
         }
       }
 
-      if (this.roles.name === 'bd-manager' && !this.paymentForm.bd_ma_message) {
-        this.$message({
-          type: 'warning',
-          message: '审批意见必填'
-        })
-        this.setting.loading = false
+      if (this.rolesJudge('bd-manager') && !this.paymentForm.bd_ma_message) {
+        this.warningInfo()
         return
       } else {
         if (this.paymentForm.bd_ma_message) {
           args.bd_ma_message = this.paymentForm.bd_ma_message
         }
       }
-      this.auditingPayment(this, this.paymentID, args)
-    },
-    rejected() {
-      this.setting.loading = true
-      let args = {
-        remark: this.paymentForm.remark
+      if (this.agreeStatus) {
+        this.auditingPayment(this, this.paymentID, args)
+        return
       }
+      if (this.rejectStatus) {
+        this.rejected(args)
+        return
+      }
+    },
+    rejected(args) {
+      this.setting.loading = true
       paymentReject(this, this.paymentID, args)
         .then(res => {
           this.dialogFormVisible = false
           this.$message({
-            message: '修改成功',
+            message: '驳回成功',
             type: 'success'
           })
           this.$router.push({
@@ -464,6 +495,39 @@ export default {
             type: 'warning'
           })
         })
+    },
+    warningInfo() {
+      this.$message({
+        type: 'warning',
+        message: '意见必填'
+      })
+      this.setting.loading = false
+    },
+    // 角色判断
+    rolesJudge(role) {
+      if (this.roles.name === role) {
+        return true
+      } else {
+        return false
+      }
+    },
+    // 管理弹窗
+    cancel() {
+      this.dialogFormVisible = false
+      if (this.rolesJudge('legal-affairs-manager')) {
+        this.paymentForm.legal_ma_message = ''
+      }
+      if (this.rolesJudge('bd-manager')) {
+        this.paymentForm.bd_ma_message = ''
+      }
+      if (this.rolesJudge('legal-manager')) {
+        this.paymentForm.legal_message = ''
+      }
+      if (this.rolesJudge('auditor')) {
+        this.paymentForm.auditor_message = ''
+      }
+
+      this.setting.loading = false
     }
   }
 }

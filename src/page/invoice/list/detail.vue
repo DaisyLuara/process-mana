@@ -162,7 +162,7 @@
             v-if="!hide"
             type="danger"
             size="small"
-            @click="dialogFormVisible = true">驳回</el-button>
+            @click="dialogFormVisible = true, rejectStatus=true, agreeStatus = false">驳回</el-button>
           <el-button
             v-if="!hide"
             :type="(invoiceForm.status === '已审批' && invoiceForm.handler === id) ? 'warning' : 'primary'"
@@ -176,36 +176,13 @@
     </div>
     <el-dialog 
       :visible.sync="dialogFormVisible"
-      title="驳回理由">
+      :close-on-click-modal="false"
+      :show-close="false"
+      :title="rejectStatus === true ? '驳回理由': '审批'">
       <el-form>
-        <el-form-item
-          label="备注:" 
-          prop="remark">
-          <el-input
-            v-model="invoiceForm.remark"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
-            type="textarea"
-            placeholder="请输入内容"
-            class="text-input"/>
-        </el-form-item>
-      </el-form>
-      <div 
-        slot="footer" 
-        class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button 
-          type="primary" 
-          @click="rejected">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog  
-      :visible.sync="auditingDialog"
-      title="审批">
-      <el-form >
-        <el-form-item
+          <el-form-item
           v-if="roles.name === 'legal-affairs-manager'"
-          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
           label="意见" 
           prop="legal_ma_message">
           <el-input
@@ -218,7 +195,7 @@
         </el-form-item>
         <el-form-item
           v-if="roles.name === 'bd-manager'"
-          :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
+          :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
           label="意见" 
           prop="bd_ma_message">
           <el-input
@@ -233,10 +210,10 @@
       <div 
         slot="footer" 
         class="dialog-footer">
-        <el-button @click="auditingDialog = false">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
         <el-button 
           type="primary" 
-          @click="auditingHandle">确 定</el-button>
+          @click="rejectedAuditingHandle">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -278,6 +255,8 @@ export default {
   },
   data() {
     return {
+      rejectStatus: false,
+      agreeStatus: false,
       dialogFormVisible: false,
       hide: null,
       setting: {
@@ -285,7 +264,6 @@ export default {
         loading: false,
         loadingText: '拼命加载中'
       },
-      auditingDialog: false,
       invoiceCompany: {
         phone: '',
         telephone: '',
@@ -403,13 +381,16 @@ export default {
             this.setting.loading = false
           })
       } else {
-        this.auditingDialog = true
+        this.dialogFormVisible = true
+        this.rejectStatus = false
+        this.agreeStatus = true
       }
     },
     auditingInvoice(obj, invoiceID, args) {
       this.setting.loading = true
       auditingInvoice(obj, invoiceID, args)
         .then(res => {
+          this.dialogFormVisible = false
           this.$message({
             message:
               this.invoiceForm.status === '已审批' &&
@@ -424,6 +405,7 @@ export default {
           this.setting.loading = false
         })
         .catch(err => {
+          this.dialogFormVisible = false
           this.$message({
             message: err.response.data.message,
             type: 'warning'
@@ -431,19 +413,15 @@ export default {
           this.setting.loading = false
         })
     },
-    auditingHandle() {
+    rejectedAuditingHandle() {
       let args = {}
       this.setting.loading = true
 
       if (
-        this.roles.name === 'legal-affairs-manager' &&
+        this.rolesJudge('legal-affairs-manager') &&
         !this.invoiceForm.legal_ma_message
       ) {
-        this.$message({
-          type: 'warning',
-          message: '审批意见必填'
-        })
-        this.setting.loading = false
+        this.warningInfo()
         return
       } else {
         if (this.invoiceForm.legal_ma_message) {
@@ -451,30 +429,31 @@ export default {
         }
       }
 
-      if (this.roles.name === 'bd-manager' && !this.invoiceForm.bd_ma_message) {
-        this.$message({
-          type: 'warning',
-          message: '审批意见必填'
-        })
-        this.setting.loading = false
+      if (this.rolesJudge('bd-manager') && !this.invoiceForm.bd_ma_message) {
+        this.warningInfo()
         return
       } else {
         if (this.invoiceForm.bd_ma_message) {
           args.bd_ma_message = this.invoiceForm.bd_ma_message
         }
       }
-      this.auditingInvoice(this, this.invoiceID, args)
-    },
-    rejected() {
-      this.setting.loading = true
-      let args = {
-        remark: this.invoiceForm.remark
+      if (this.agreeStatus) {
+        this.auditingInvoice(this, this.invoiceID, args)
+        return
       }
+
+      if (this.rejectStatus) {
+        this.rejected(args)
+        return
+      }
+    },
+    rejected(args) {
+      this.setting.loading = true
       rejectInvoice(this, this.invoiceID, args)
         .then(res => {
           this.dialogFormVisible = false
           this.$message({
-            message: '修改成功',
+            message: '驳回成功',
             type: 'success'
           })
           this.$router.push({
@@ -484,12 +463,38 @@ export default {
         })
         .catch(err => {
           this.dialogFormVisible = false
-          this.setting.loading = false
           this.$message({
             message: err.response.data.message,
             type: 'warning'
           })
+          this.setting.loading = false
         })
+    },
+    warningInfo() {
+      this.$message({
+        type: 'warning',
+        message: '意见必填'
+      })
+      this.setting.loading = false
+    },
+    // 角色判断
+    rolesJudge(role) {
+      if (this.roles.name === role) {
+        return true
+      } else {
+        return false
+      }
+    },
+    // 管理弹窗
+    cancel() {
+      this.dialogFormVisible = false
+      if (this.rolesJudge('legal-affairs-manager')) {
+        this.invoiceForm.legal_ma_message = ''
+      }
+      if (this.rolesJudge('bd-manager')) {
+        this.invoiceForm.bd_ma_message = ''
+      }
+      this.setting.loading = false
     }
   }
 }
