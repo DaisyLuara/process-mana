@@ -402,6 +402,7 @@ export default {
       this.setting.loading = true
       auditingPayment(obj, paymentID, args)
         .then(res => {
+          this.dialogFormVisible = false
           this.$message({
             message:
               this.paymentForm.status === '已审批' &&
@@ -416,6 +417,7 @@ export default {
           this.setting.loading = false
         })
         .catch(err => {
+          this.dialogFormVisible = false
           this.$message({
             message: err.response.data.message,
             type: 'warning'
