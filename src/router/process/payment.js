@@ -90,7 +90,7 @@ export default {
           path: '/',
           component: () =>
             import(/* webpackChunkName: "page/payment/history/index" */ 'page/payment/history/index'),
-          name: '我已审批的列表',
+          name: '付款已审批的列表',
           meta: {}
         },
         {
