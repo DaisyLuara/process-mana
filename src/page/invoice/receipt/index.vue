@@ -139,6 +139,11 @@
             min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
+            prop="creator"
+            label="收款创建人"
+            min-width="100"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
             prop="claim_status"
             label="认领状态"
             min-width="80"/>
