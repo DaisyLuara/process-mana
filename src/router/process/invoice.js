@@ -121,7 +121,7 @@ export default {
           path: '/',
           component: () =>
             import(/* webpackChunkName: "page/invoice/history/index" */ 'page/invoice/history/index'),
-          name: '我已审批的列表',
+          name: '票据已审批的列表',
           meta: {}
         },
         {

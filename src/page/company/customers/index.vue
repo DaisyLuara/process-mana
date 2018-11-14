@@ -19,7 +19,7 @@
               prop="name">
               <el-input 
                 v-model="filters.name" 
-                placeholder="请输入商户名称" 
+                placeholder="请输入公司名称" 
                 style="width: 200px;"/>
             </el-form-item>
             <el-button  
@@ -36,12 +36,12 @@
           class="actions-wrap">
           <span 
             class="label">
-            商户数量: {{ pagination.total }}
+            公司数量: {{ pagination.total }}
           </span>
           <el-button 
             size="small" 
             type="success" 
-            @click="linkToAddClient">新增商户</el-button>
+            @click="linkToAddClient">新增公司</el-button>
         </div>
         <el-table 
           :data="customerList" 

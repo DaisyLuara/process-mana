@@ -1,9 +1,9 @@
 let router = {
   path: 'company',
   redirect: 'company/customers',
-  name: '商户',
+  name: '公司',
   meta: {
-    title: '商户',
+    title: '公司',
     permission: 'company'
   },
   component: () =>
@@ -11,19 +11,19 @@ let router = {
   children: [
     {
       path: 'customers',
-      name: '商户管理',
+      name: '公司管理',
       redirect: 'customers',
       meta: {
-        title: '商户管理'
+        title: '公司管理'
       },
       component: () =>
         import(/* webpackChunkName: "page/company/customers/routerView" */ 'page/company/customers/routerView'),
       children: [
         {
           path: '/',
-          name: '商户管理列表',
+          name: '公司管理列表',
           meta: {
-            title: '商户管理列表'
+            title: '公司管理列表'
           },
           component: () =>
             import(/* webpackChunkName: "page/company/customers/index" */ 'page/company/customers/index')
@@ -32,14 +32,14 @@ let router = {
           path: 'add',
           component: () =>
             import(/* webpackChunkName: "page/company/customers/customerSave" */ 'page/company/customers/customerSave'),
-          name: '新增商户',
+          name: '新增公司',
           meta: {}
         },
         {
           path: 'edit/:uid',
           component: () =>
             import(/* webpackChunkName: "page/company/customers/customerSave" */ 'page/company/customers/customerSave'),
-          name: '修改商户',
+          name: '修改公司',
           meta: {}
         },
         {
