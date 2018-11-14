@@ -327,7 +327,7 @@ export default {
             this.setting.loading = false
           })
       } else {
-        this.auditingDialog = true
+        this.dialogFormVisible = true
         this.rejectStatus = false
         this.agreeStatus = true
       }
