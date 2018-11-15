@@ -1,6 +1,6 @@
 @sidebar_w_1: 90px;
 @sidebar_w_2: 110px;
-@sidebar_w_3: 160px;
+@sidebar_w_3: 170px;
 @topbar_h: 76px;
 @blue: #20a0ff;
 
@@ -95,7 +95,7 @@ body {
   position: fixed;
   top: 120px;
   left: @sidebar_w_1 - 40px;
-  width: @sidebar_w_2;
+  width: @sidebar_w_2 + 10px;
   height: 100%;
   background-color: #fff;
   border-right: 1px solid #d3dce6;
@@ -154,7 +154,7 @@ body {
 .modules {
   position: relative;
   width: 100%;
-  padding-left: @sidebar_w_1 + @sidebar_w_2 - 40px;
+  padding-left: @sidebar_w_1 + @sidebar_w_2 - 30px;
   padding-top: 120px;
 
   .content {

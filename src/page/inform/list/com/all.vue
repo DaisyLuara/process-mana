@@ -71,7 +71,8 @@ import {
   Pagination,
   Button
 } from 'element-ui'
-import notice from 'service/notice'
+import { getNoticeList, notificationStats, readNotifications } from 'service'
+
 import { mapState } from 'vuex'
 export default {
   components: {
@@ -133,8 +134,7 @@ export default {
         page: pageNum
       }
       this.setting.loadingText = '拼命加载中'
-      return notice
-        .getNoticeList(this, args)
+      getNoticeList(this, args)
         .then(response => {
           this.noticeList = response.data
           this.pagination.total = response.meta.pagination.total
@@ -145,8 +145,7 @@ export default {
         })
     },
     notificationStats() {
-      return notice
-        .notificationStats(this)
+      notificationStats(this)
         .then(response => {
           this.$store.commit('saveNotificationState', response)
           this.getNoticeList()
@@ -156,8 +155,7 @@ export default {
         })
     },
     readNotifications() {
-      return notice
-        .readNotifications(this)
+      readNotifications(this)
         .then(response => {
           this.notificationStats()
         })
