@@ -265,7 +265,8 @@ import {
   receiveInvoice,
   handleDateTransform,
   getInvoiceList,
-  Cookies
+  Cookies,
+  getAuditingCount
 } from 'service'
 
 export default {
@@ -403,6 +404,15 @@ export default {
     this.getInvoiceList()
   },
   methods: {
+    getAuditingCount() {
+      getAuditingCount(this)
+        .then(res => {
+          this.$store.commit('saveProcessState', res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     receiveInvoice(data) {
       let id = data.id
       this.$confirm('确认认领此票据?', '提示', {
@@ -496,6 +506,7 @@ export default {
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
+          this.getAuditingCount()
           this.setting.loading = false
         })
         .catch(err => {

@@ -10,7 +10,7 @@
         :index="getPath(item)" >
           {{ item.meta.title  }}
         <span 
-         v-if="item.meta.title === '消息管理'"
+         v-if="item.meta.title === '消息管理' && noticeCount > 0"
          style="color: #03A9F4;">
           ({{ noticeCount > 99 ? '99+' : noticeCount }})
          </span>
