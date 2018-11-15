@@ -124,7 +124,7 @@
                   <span>{{ scope.row.handler_name }}</span> 
                 </el-form-item>
                 <el-form-item
-                  v-if="scope.row.status === '已开票'" 
+                  v-if="scope.row.status === '已开票' || scope.row.status === '已认领'" 
                   label="开票人:">
                   <span>{{ scope.row.drawer }}</span> 
                 </el-form-item>
