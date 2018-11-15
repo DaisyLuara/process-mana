@@ -206,6 +206,7 @@ export default {
       })
     },
     getContactDetial() {
+      this.setting.loading = true
       let uid = this.$route.query.uid
       if (uid) {
         company

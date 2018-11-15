@@ -17,7 +17,7 @@
          <span 
          v-if="item.meta.title === '合同管理' && contractCount > 0"
          style="color: #03A9F4;">
-          ({{ contractCount > 0 ? '99+' : '99+' }})
+          ({{ contractCount > 99 ? '99+' : contractCount }})
          </span>
          <span 
          v-if="item.meta.title === '开票管理' && invoiceCount > 0"
