@@ -85,7 +85,7 @@
               v-if="addButtonShow" 
               size="small" 
               type="success"
-              @click="addContract">新建合同</el-button>
+              @click="addContract">新增合同</el-button>
           </div>
         </div>
         <el-table 
