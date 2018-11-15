@@ -150,15 +150,11 @@ export default {
     }
   },
   created: function() {
-    if (this.setting.loading == true) {
-      return false
-    }
     this.contactID = this.$route.query.uid
     this.pid = this.$route.query.pid
     this.contactName = this.$route.query.name
     this.getContactDetial()
     this.setting.loadingText = '拼命加载中'
-    this.setting.loading = false
   },
   methods: {
     onSubmit(formName) {
