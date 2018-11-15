@@ -149,34 +149,6 @@ export default {
           reject(error)
         })
     })
-  },
-
-  // 获取图形验证码
-  getImageCaptcha(context, args) {
-    let promise = new Promise((resolve, reject) => {
-      context.$http
-        .post(HOST + IMAGE_CAPTCHA, args)
-        .then(result => {
-          resolve(result.data)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-    return promise
-  },
-  sendSmsCaptcha(context, args) {
-    let promise = new Promise((resolve, reject) => {
-      context.$http
-        .post(HOST + SMS_CAPTCHA, args)
-        .then(response => {
-          resolve(response.data)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
-    return promise
   }
 }
 

@@ -164,6 +164,11 @@
                   <span>{{ scope.row.handler_name }}</span> 
                 </el-form-item>
                 <el-form-item 
+                  v-if="scope.row.status === '已付款'"
+                  label="付款人:">
+                  <span>{{ scope.row.payer }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="申请时间:">
                   <span>{{ scope.row.created_at }}</span> 
                 </el-form-item>

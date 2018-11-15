@@ -123,6 +123,11 @@
                   label="待处理人:">
                   <span>{{ scope.row.handler_name }}</span> 
                 </el-form-item>
+                <el-form-item
+                  v-if="scope.row.status === '已开票'" 
+                  label="开票人:">
+                  <span>{{ scope.row.drawer }}</span> 
+                </el-form-item>
                 <el-form-item 
                   label="申请时间:">
                   <span>{{ scope.row.created_at }}</span> 

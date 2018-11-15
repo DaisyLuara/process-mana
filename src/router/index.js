@@ -2,7 +2,6 @@ import Vue from 'vue'
 import auth from 'service/auth'
 import Router from 'vue-router'
 import { Message } from 'element-ui'
-import login from 'page/login'
 import logout from 'page/logout'
 import store from 'store'
 import pRouter from 'router/pRouter'
@@ -15,10 +14,6 @@ var router = new Router({
   mode: 'history',
   routes: [
     pRouter,
-    // {
-    //   path: '/login',
-    //   component: login
-    // },
     {
       path: '/logout',
       component: logout

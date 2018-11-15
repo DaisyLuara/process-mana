@@ -11,30 +11,50 @@
         router>
         <el-menu-item
           v-for="m in modules"
-          v-if="m.path != 'inform'"
           :key="m.path"
           :index="'/' + m.path"
-          class="menu-item"
+          class="menu-no-icon-item"
           @click="handleMenuHide">
+           <el-badge
+            v-if="m.path === 'contract'"
+            :is-dot="m.path === 'contract' && contractCount > 0">
+            <img
+              :src="m.src"
+              class="first-sidebar-icon">
+            {{ m.meta.title }}
+          </el-badge>
+          <el-badge
+            v-if="m.path === 'invoice'"
+            :is-dot="m.path === 'invoice' && invoiceCount > 0">
+            <img
+              :src="m.src"
+              class="first-sidebar-icon">
+            {{ m.meta.title }}
+          </el-badge>
+          <el-badge
+            v-if="m.path === 'payment'"
+            :is-dot="m.path === 'payment' && paymentCount > 0">
+            <img
+              :src="m.src"
+              class="first-sidebar-icon">
+            {{ m.meta.title }}
+          </el-badge>
+          <el-badge
+            v-if="m.path === 'inform'"
+            :is-dot="m.path === 'inform' && noticeCount > 0">
+            <img
+              :src="m.src"
+              class="first-sidebar-icon">
+            {{ m.meta.title }}
+          </el-badge>
           <img
+            v-if="m.path !== 'contract' && m.path !== 'invoice' && m.path !== 'payment' && m.path !== 'inform'"
             :src="m.src"
             class="first-sidebar-icon">
-          {{ m.meta.title }}
-        </el-menu-item>
-        <el-menu-item
-          class=" menu-no-icon-item"
-          index="/inform"
-          @click="handleMenuHide">
-          <el-badge
-            :value="noticeCount"
-            :max="99"
-            class="item">
-            <img
-              src="../assets/images/icons/notification-icon.png"
-              class="first-sidebar-icon"
-              style="padding-right: 3px;">
-            通知
-          </el-badge>
+            <span
+              v-if="m.path !== 'contract' && m.path !== 'invoice' && m.path !== 'payment' && m.path !== 'inform'">
+              {{ m.meta.title }}
+            </span>
         </el-menu-item>
       </el-menu>
       <div class="menu-show">
@@ -52,26 +72,41 @@
         router>
         <el-menu-item
           v-for="m in modules"
-          v-if="m.path != 'inform'"
           :key="m.path"
           :index="'/' + m.path"
-          class="menu-item">
+          class="menu-item menu-icon-item">
+          <el-badge
+            v-if="m.path === 'contract'"
+            :is-dot="m.path === 'contract' && contractCount > 0">
+            <img
+              :src="m.src"
+              class="first-sidebar-icon">
+          </el-badge>
+          <el-badge
+            v-if="m.path === 'invoice'"
+            :is-dot="m.path === 'invoice' && invoiceCount > 0">
+            <img
+              :src="m.src"
+              class="first-sidebar-icon">
+          </el-badge>
+          <el-badge
+            v-if="m.path === 'payment'"
+            :is-dot="m.path === 'payment' && paymentCount > 0">
+            <img
+              :src="m.src"
+              class="first-sidebar-icon">
+          </el-badge>
+          <el-badge
+            v-if="m.path === 'inform'"
+            :is-dot="m.path === 'inform' && noticeCount > 0">
+            <img
+              :src="m.src"
+              class="first-sidebar-icon">
+          </el-badge>
           <img
+            v-if="m.path !== 'contract' && m.path !== 'invoice' && m.path !== 'payment' && m.path !== 'inform'"
             :src="m.src"
             class="first-sidebar-icon">
-        </el-menu-item>
-        <el-menu-item
-          class="menu-item menu-icon-item"
-          index="/inform">
-          <el-badge
-            :value="noticeCount"
-            :max="99"
-            class="item">
-            <img
-              src="../assets/images/icons/notification-icon.png"
-              class="first-sidebar-icon"
-              style="padding-right: 3px;">
-          </el-badge>
         </el-menu-item>
       </el-menu>
       <div class="menu-icon-show">
@@ -99,8 +134,7 @@
 <script>
 import { Menu, MenuItem, Button, Badge, Icon } from 'element-ui'
 import auth from 'service/auth'
-import { Cookies } from 'service'
-import notice from 'service/notice'
+import { Cookies, getAuditingCount, notificationStats } from 'service'
 
 const CDN_URL = process.env.CDN_URL
 const NODE_ENV = process.env.NODE_ENV
@@ -154,6 +188,9 @@ export default {
               case 'payment':
                 m.src = this.CDN_URL + 'payment_icon.png'
                 break
+              case 'inform':
+                m.src = this.CDN_URL + 'notification-icon.png'
+                break
               default:
                 m.src = ''
                 break
@@ -175,15 +212,25 @@ export default {
     },
     noticeCount() {
       return this.$store.state.notificationCount.noticeCount
+    },
+    contractCount() {
+      return this.$store.state.processState.contractCount
+    },
+    invoiceCount() {
+      return this.$store.state.processState.invoiceCount
+    },
+    paymentCount() {
+      return this.$store.state.processState.paymentCount
     }
   },
   created() {
     let userInfo = JSON.parse(Cookies.get('user_info'))
     this.$store.commit('setCurUserInfo', userInfo)
     this.notificationStats()
+    this.getAuditingCount()
   },
   methods: {
-    leaveIcon(){
+    leaveIcon() {
       this.iconMenuShow = true
     },
     iconEnter() {
@@ -227,9 +274,17 @@ export default {
         '&jwt_begin_time=' +
         jwt_begin_time
     },
+    getAuditingCount() {
+      getAuditingCount(this)
+        .then(res => {
+          this.$store.commit('saveProcessState', res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     notificationStats() {
-      return notice
-        .notificationStats(this)
+      notificationStats(this)
         .then(response => {
           response.setIntervalValue = this.setIntervalValue
           this.$store.commit('saveNotificationState', response)
