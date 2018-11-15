@@ -16,34 +16,34 @@
         label-width="100px">
         <el-form-item 
           label="公司名称" 
-          prop="customer.name">
+          prop="name">
           <el-input 
-            v-model="customerForm.customer.name" 
+            v-model="customerForm.name" 
             :maxlength="50"
             class="customer-form-input"/>
         </el-form-item>
         <el-form-item 
           label="公司地址" 
-          prop="customer.address">
+          prop="address">
           <el-input 
-            v-model="customerForm.customer.address" 
+            v-model="customerForm.address" 
             :maxlength="60"
             class="customer-form-input" />
         </el-form-item>
         <el-form-item 
           label="公司详情" 
-          prop="customer.description">
+          prop="description">
           <el-input 
             type="textarea"
-            v-model="customerForm.customer.description" 
+            v-model="customerForm.description" 
             :maxlength="1000"
             class="customer-form-input" />
         </el-form-item>
         <el-form-item 
           label="公司logo" 
-          prop="customer.logo">
+          prop="logo">
           <el-input 
-            v-model="customerForm.customer.logo" 
+            v-model="customerForm.logo" 
             :maxlength="150"
             class="customer-form-input" />
         </el-form-item>
@@ -61,6 +61,51 @@
               :value="item.value"/>
           </el-select>
         </el-form-item>
+        <div v-if="!customerID">
+          <el-form-item 
+          label="联系人名称" 
+          prop="customer_name">
+          <el-input 
+            v-model="customerForm.customer_name" 
+            :maxlength="50"
+            class="customer-form-input"/>
+        </el-form-item>
+        <el-form-item 
+          label="联系人职务" 
+          prop="position">
+          <el-input 
+            v-model="customerForm.position" 
+            :maxlength="50"
+            class="customer-form-input"/>
+        </el-form-item>
+        <el-form-item 
+          label="手机号码" 
+          prop="phone">
+          <el-input 
+            v-model="customerForm.phone" 
+            :maxlength="11"
+            class="customer-form-input"/>
+        </el-form-item>
+        <el-form-item 
+          label="座机电话" 
+          prop="telephone">
+          <el-input 
+            v-model="customerForm.telephone" 
+            :maxlength="20"
+            class="customer-form-input"/>
+            <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
+        </el-form-item>
+        <el-form-item 
+          label="密码" 
+          prop="password">
+          <el-input 
+            v-model="customerForm.password" 
+            :maxlength="30"
+            type="password"
+            class="customer-form-input"/>
+        </el-form-item>
+        </div>
+        
         <el-form-item>
           <el-button 
             :loading="loading"  
@@ -99,12 +144,15 @@ export default {
         loadingText: '拼命加载中'
       },
       customerForm: {
-        customer: {
-          name: '',
-          address: '',
-          description: '',
-          logo: ''
-        },
+        name: '',
+        address: '',
+        description: '',
+        logo: '',
+        customer_name: '',
+        phone: '',
+        position: '',
+        password: '',
+        telephone: '',
         selectedStatus: ''
       },
       statusFlag: false,
@@ -124,15 +172,51 @@ export default {
       ],
       customerID: '',
       rules: {
-        'customer.name': [
-          { message: '请输入公司名称', trigger: 'blur', required: true }
-        ],
-        'customer.address': [
+        name: [{ message: '请输入公司名称', trigger: 'blur', required: true }],
+        address: [
           { message: '请输入公司地址', trigger: 'blur', required: true }
         ],
-        'customer.description': [
+        description: [
           { message: '请输入公司详情', trigger: 'blur', required: true }
-        ]
+        ],
+        phone: [
+          {
+            validator: (rule, value, callback) => {
+              if (/^\s*$/.test(value)) {
+                callback('请输入手机号')
+              } else if (!/^1[3456789]\d{9}$/.test(value)) {
+                callback('手机格式不正确,请重新输入')
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur',
+            required: true
+          }
+        ],
+        telephone: [
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback()
+                return
+              }
+              if (!/^0\d{2,3}-\d{7,8}|0\d{2,3}-\d{7,8}-\d{1,4}$/.test(value)) {
+                callback('座机电话格式不正确,请重新输入')
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
+          }
+        ],
+        customer_name: [
+          { message: '请输入联系人名称', trigger: 'blur', required: true }
+        ],
+        position: [
+          { message: '请输入联系人职务', trigger: 'blur', required: true }
+        ],
+        password: [{ message: '请输入密码', trigger: 'submit', required: true }]
       },
       loading: false
     }
@@ -149,19 +233,25 @@ export default {
         if (valid) {
           this.setting.loading = true
           let args = {
-            name: this.customerForm.customer.name,
-            address: this.customerForm.customer.address,
-            description: this.customerForm.customer.description,
-            logo: this.customerForm.customer.logo
+            name: this.customerForm.name,
+            address: this.customerForm.address,
+            description: this.customerForm.description,
+            logo: this.customerForm.logo
           }
           if (this.customerID) {
-            this[formName].customer.status = this[formName].selectedStatus
+            this[formName].status = this[formName].selectedStatus
+          } else {
+            args.customer_name = this.customerForm.customer_name
+            args.phone = this.customerForm.phone
+            args.telephone = this.customerForm.telephone
+            args.position = this.customerForm.position
+            args.password = this.customerForm.password
           }
-          if (this.customerForm.customer.logo === '') {
-            delete args.logo
-          }
+          // if (this.customerForm.logo === '') {
+          //   delete args.logo
+          // }
           company
-            .saveCustomer(this, this[formName].customer, this.customerID)
+            .saveCustomer(this, args, this.customerID)
             .then(result => {
               this.setting.loading = false
               this.$message({
@@ -186,16 +276,22 @@ export default {
       })
     },
     getCustomerDetial() {
+      this.setting.loading = true
       if (this.customerID) {
+        this.rules.customer_name[0].required = false
+        this.rules.phone[0].required = false
+        this.rules.position[0].required = false
+        this.rules.password[0].required = false
+
         company
           .getCustomerDetial(this, this.customerID)
           .then(result => {
             this.statusFlag = true
-            this.customerForm.customer.name = result.name
-            this.customerForm.customer.address = result.address
-            this.customerForm.customer.description = result.description
+            this.customerForm.name = result.name
+            this.customerForm.address = result.address
+            this.customerForm.description = result.description
             this.customerForm.selectedStatus = result.status
-            this.customerForm.customer.logo = result.logo
+            this.customerForm.logo = result.logo
             this.setting.loading = false
           })
           .catch(err => {
