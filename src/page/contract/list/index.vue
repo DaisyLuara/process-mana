@@ -85,7 +85,7 @@
               v-if="addButtonShow" 
               size="small" 
               type="success"
-              @click="addContract">新建合同</el-button>
+              @click="addContract">新增合同</el-button>
           </div>
         </div>
         <el-table 
@@ -274,7 +274,8 @@ import {
   handleDateTransform,
   deleteContract,
   specialAuditingContract,
-  Cookies
+  Cookies,
+  getAuditingCount
 } from 'service'
 
 export default {
@@ -408,6 +409,15 @@ export default {
     this.roles = user_info.roles.data[0]
   },
   methods: {
+    getAuditingCount() {
+      getAuditingCount(this)
+        .then(res => {
+          this.$store.commit('saveProcessState', res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     specialAuditingContract(data) {
       let id = data.id
       this.$confirm('确认特批此合同?', '提示', {
@@ -502,6 +512,7 @@ export default {
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
+          this.getAuditingCount()
           this.setting.loading = false
         })
         .catch(err => {

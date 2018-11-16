@@ -3,8 +3,8 @@ import Vuex from 'vuex'
 import appSetting from './modules/appSetting'
 import curUserInfo from './modules/curUserInfo'
 import notificationCount from './modules/notificationCount'
+import processState from './modules/processState'
 import getters from './getters'
-// import actions from './actions'
 import mutations from './mutations'
 import appState from './modules/appState'
 Vue.use(Vuex)
@@ -14,15 +14,16 @@ export default new Vuex.Store({
     page: null,
     components: [],
     store: {},
-    comments: {},
+    comments: {}
   },
   modules: {
     appSetting,
     curUserInfo,
     appState,
-    notificationCount
+    notificationCount,
+    processState
   },
   getters,
   // actions,
-  mutations,
+  mutations
 })

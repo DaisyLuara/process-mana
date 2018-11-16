@@ -164,6 +164,11 @@
                   <span>{{ scope.row.handler_name }}</span> 
                 </el-form-item>
                 <el-form-item 
+                  v-if="scope.row.status === '已付款'"
+                  label="付款人:">
+                  <span>{{ scope.row.payer }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="申请时间:">
                   <span>{{ scope.row.created_at }}</span> 
                 </el-form-item>
@@ -305,7 +310,8 @@ import {
   handleDateTransform,
   receivePayment,
   deletePayment,
-  Cookies
+  Cookies,
+  getAuditingCount
 } from 'service'
 
 export default {
@@ -450,6 +456,15 @@ export default {
     this.roles = user_info.roles.data[0]
   },
   methods: {
+    getAuditingCount() {
+      getAuditingCount(this)
+        .then(res => {
+          this.$store.commit('saveProcessState', res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     receivePayment(data) {
       let id = data.id
       this.$confirm('确认收到票据?', '提示', {
@@ -545,6 +560,7 @@ export default {
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
+          this.getAuditingCount()
           this.setting.loading = false
         })
         .catch(err => {

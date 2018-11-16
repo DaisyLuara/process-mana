@@ -104,6 +104,10 @@
                   <span>{{ scope.row.claim_status }}</span> 
                 </el-form-item>
                 <el-form-item 
+                  label="收款创建人:">
+                  <span>{{ scope.row.creator }}</span> 
+                </el-form-item>
+                <el-form-item 
                   label="合同编号:">
                   <span>
                     {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : ''}}
@@ -133,6 +137,11 @@
             prop="receipt_date"
             label="到账日期"
             min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="creator"
+            label="收款创建人"
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="claim_status"

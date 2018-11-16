@@ -123,6 +123,11 @@
                   label="待处理人:">
                   <span>{{ scope.row.handler_name }}</span> 
                 </el-form-item>
+                <el-form-item
+                  v-if="scope.row.status === '已开票' || scope.row.status === '已认领'" 
+                  label="开票人:">
+                  <span>{{ scope.row.drawer }}</span> 
+                </el-form-item>
                 <el-form-item 
                   label="申请时间:">
                   <span>{{ scope.row.created_at }}</span> 
@@ -260,7 +265,8 @@ import {
   receiveInvoice,
   handleDateTransform,
   getInvoiceList,
-  Cookies
+  Cookies,
+  getAuditingCount
 } from 'service'
 
 export default {
@@ -398,6 +404,15 @@ export default {
     this.getInvoiceList()
   },
   methods: {
+    getAuditingCount() {
+      getAuditingCount(this)
+        .then(res => {
+          this.$store.commit('saveProcessState', res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     receiveInvoice(data) {
       let id = data.id
       this.$confirm('确认认领此票据?', '提示', {
@@ -491,6 +506,7 @@ export default {
         .then(res => {
           this.tableData = res.data
           this.pagination.total = res.meta.pagination.total
+          this.getAuditingCount()
           this.setting.loading = false
         })
         .catch(err => {

@@ -7,7 +7,30 @@
       <el-menu-item 
         v-for="item in items" 
         :key="item.path" 
-        :index="getPath(item)" >{{ item.meta.title }}</el-menu-item>
+        :index="getPath(item)" >
+          {{ item.meta.title  }}
+        <span 
+         v-if="item.meta.title === '消息管理' && noticeCount > 0"
+         style="color: #03A9F4;">
+          ({{ noticeCount > 99 ? '99+' : noticeCount }})
+         </span>
+         <span 
+         v-if="item.meta.title === '合同管理' && contractCount > 0"
+         style="color: #03A9F4;">
+          ({{ contractCount > 99 ? '99+' : contractCount }})
+         </span>
+         <span 
+         v-if="item.meta.title === '开票管理' && invoiceCount > 0"
+         style="color: #03A9F4;">
+          ({{ invoiceCount > 99 ? '99+' : invoiceCount }})
+         </span>
+         <span 
+         v-if="item.meta.title === '付款管理' && paymentCount > 0"
+         style="color: #03A9F4;">
+          ({{ paymentCount > 99 ? '99+' : paymentCount}})
+         </span>
+         
+        </el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -63,6 +86,18 @@ export default {
         }
       }
       return ret
+    },
+    noticeCount() {
+      return this.$store.state.notificationCount.noticeCount
+    },
+    contractCount() {
+      return this.$store.state.processState.contractCount
+    },
+    invoiceCount() {
+      return this.$store.state.processState.invoiceCount
+    },
+    paymentCount() {
+      return this.$store.state.processState.paymentCount
     }
   },
   methods: {
