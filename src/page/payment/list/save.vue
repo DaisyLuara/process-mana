@@ -22,7 +22,7 @@
               <el-select 
                 v-model="paymentForm.contract_id"
                 :loading="searchLoading" 
-                placeholder="请选择" 
+                placeholder="请选择合同编号" 
                 filterable 
                 clearable>
                 <el-option
@@ -52,6 +52,7 @@
               prop="amount" >
               <el-input 
                 v-model="paymentForm.amount" 
+                placeholder="请填写申请金额（大写)" 
                 :maxlength="50"
                 class="item-input"/>
             </el-form-item>
@@ -75,6 +76,7 @@
               prop="reason" >
               <el-input 
                 v-model="paymentForm.reason" 
+                placeholder="请填写申请事由" 
                 :maxlength="200"
                 :autosize="{ minRows: 2, maxRows: 4}"
                 type="textarea"
@@ -88,7 +90,7 @@
               <el-select 
                 v-model="paymentForm.payment_payee_id"
                 :loading="searchLoading" 
-                placeholder="请选择" 
+                placeholder="请选择收款人" 
                 filterable 
                 clearable
                 @change="paymentPayeeHandle">
@@ -110,6 +112,7 @@
                 v-model="paymentPayee.account_bank"
                 :disabled="true"
                 :maxlength="50"
+                placeholder="收款人开户行" 
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -121,6 +124,7 @@
                 v-model="paymentPayee.account_number"
                 :disabled="true"
                 :maxlength="20"
+                placeholder="收款人账号" 
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -133,7 +137,7 @@
             :autosize="{ minRows: 2, maxRows: 4}"
             :maxlength="180"
             type="textarea"
-            placeholder="请输入内容"
+            placeholder="请填写备注"
             class="text-input"/>
         </el-form-item>
         <el-form-item>

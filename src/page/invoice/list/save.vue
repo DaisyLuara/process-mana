@@ -23,7 +23,7 @@
               <el-select 
                 v-model="invoiceForm.contract_id" 
                 :loading="searchLoading"
-                placeholder="请选择" 
+                placeholder="请选择合同编号" 
                 filterable 
                 clearable>
                 <el-option
@@ -64,7 +64,7 @@
               <el-select 
                 v-model="invoiceForm.invoice_company_id" 
                 :loading="searchLoading"
-                placeholder="请选择" 
+                placeholder="请选择开票公司" 
                 filterable 
                 clearable
                 @change="invoiceCompanyHandle">
@@ -86,6 +86,7 @@
                 v-model="invoiceCompany.telephone" 
                 :maxlength="20"
                 :disabled="true"
+                placeholder="请填写座机电话" 
                 class="item-input"/>
               <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
             </el-form-item>
@@ -98,6 +99,7 @@
                 v-model="invoiceCompany.taxpayer_num" 
                 :disabled="true"
                 :maxlength="50"
+                placeholder="XXXXXX-XXsXXXXXX-XXss" 
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -111,6 +113,7 @@
                 v-model="invoiceCompany.phone" 
                 :maxlength="11"
                 :disabled="true"
+                placeholder="请填写手机号"
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -122,6 +125,7 @@
                 v-model="invoiceCompany.address"
                 :disabled="true"
                 :maxlength="11"
+                placeholder="上海浦东新区某某某"
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -135,6 +139,7 @@
                 v-model="invoiceCompany.account_bank"
                 :disabled="true"
                 :maxlength="50"
+                placeholder="某某银行"
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -146,6 +151,7 @@
                 v-model="invoiceCompany.account_number"
                 :disabled="true"
                 :maxlength="20"
+                placeholder="66333XXXXXXXXXXXXX"
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -286,7 +292,7 @@
             :autosize="{ minRows: 2, maxRows: 4}"
             :maxlength="180"
             type="textarea"
-            placeholder="请输入内容"
+            placeholder="请填写备注"
             class="text-input"/>
         </el-form-item>
         <el-form-item>

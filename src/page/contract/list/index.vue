@@ -35,7 +35,7 @@
               <el-input 
                 v-model="searchForm.name" 
                 clearable
-                placeholder="公司名称"
+                placeholder="请输入公司名称"
                 class="item-input"/>
             </el-form-item>
             <el-form-item 
@@ -44,7 +44,7 @@
               <el-input 
                 v-model="searchForm.contract_number" 
                 clearable
-                placeholder="合同编号"
+                placeholder="请输入合同编号"
                 class="item-input"/>
             </el-form-item>
             <el-form-item 

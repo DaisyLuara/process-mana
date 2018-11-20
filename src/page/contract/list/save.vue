@@ -22,7 +22,7 @@
               <el-select 
                 v-model="contractForm.company_id" 
                 :loading="searchLoading"
-                placeholder="请选择" 
+                placeholder="请选择公司名称" 
                 filterable 
                 clearable>
                 <el-option
@@ -53,6 +53,7 @@
               <el-input 
                 v-model="contractForm.name" 
                 :maxlength="50"
+                placeholder="请填写合同编号" 
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -107,6 +108,7 @@
               <el-input 
                 v-model="contractForm.amount"
                 :maxlength="7"
+                placeholder="请填写合同总额" 
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -128,7 +130,7 @@
             :span="12">
             <el-form-item 
               v-if="this.roles.name == 'legal-affairs' || this.roles.name == 'legal-affairs-manager'"
-              label="合同编号" 
+              label="合同编号"
               prop="contract_number" >
               <el-input 
                 v-model="contractForm.contract_number" 
@@ -146,7 +148,7 @@
             :autosize="{ minRows: 2, maxRows: 4}"
             :maxlength="180"
             type="textarea"
-            placeholder="请输入内容"
+            placeholder="请填写备注"
             class="text-input"/>
         </el-form-item>
         <el-form-item>
