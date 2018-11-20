@@ -102,6 +102,18 @@
               {{ invoiceForm.kind }}
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item
+              label="附件内容:" 
+              prop="content" >
+            <div 
+              v-for="item in fileList" 
+              :key="item.id">{{ item.name }}
+              <span 
+                class="download" 
+                @click="handlePreview(item)">下载</span></div>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-table
           :data="tableData"
@@ -273,6 +285,7 @@ export default {
         address: '',
         name: ''
       },
+      fileList: [],
       invoiceForm: {
         applicant_name: '',
         applicant: '',
@@ -308,9 +321,23 @@ export default {
     this.invoiceDetail()
   },
   methods: {
+    handlePreview(file) {
+      let url = file.url
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', url, true)
+      xhr.responseType = 'blob'
+      xhr.onload = () => {
+        var urlObject = window.URL || window.webkitURL || window
+        let a = document.createElement('a')
+        a.href = urlObject.createObjectURL(new Blob([xhr.response]))
+        a.download = file.name
+        a.click()
+      }
+      xhr.send()
+    },
     invoiceDetail() {
       let params = {
-        include: 'invoice_content.goodsService,invoice_company'
+        include: 'invoice_content.goodsService,invoice_company,media'
       }
       invoiceDetail(this, this.invoiceID, params)
         .then(res => {
@@ -329,6 +356,8 @@ export default {
             this.invoiceForm.bd_ma_message = res.bd_ma_message
             this.invoiceForm.legal_ma_message = res.legal_ma_message
           }
+          let mediaData = res.media.data
+          this.fileList = mediaData
           invoice_content.map(r => {
             let data = {
               name: r.goodsService.name,
@@ -515,6 +544,15 @@ export default {
     }
     .upload-demo {
       width: 400px;
+    }
+    .download {
+      color: #fff;
+      font-size: 10px;
+      padding: 3px 5px;
+      background: #77a245;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
     }
     .pane-title {
       padding-bottom: 20px;

@@ -101,6 +101,16 @@
           prop="auditor_message">
           {{ paymentForm.auditor_message }}
         </el-form-item>
+        <el-form-item
+          label="合同内容:" 
+          prop="content" >
+          <div 
+            v-for="item in fileList" 
+            :key="item.id">{{ item.name }}
+            <span 
+              class="download" 
+              @click="handlePreview(item)">下载</span></div>
+        </el-form-item>
         <el-form-item 
           label="备注:" 
           prop="remark">
@@ -142,6 +152,7 @@ export default {
         account_bank: '',
         name: ''
       },
+      fileList: [],
       paymentForm: {
         applicant: '',
         type: 1,
@@ -167,10 +178,24 @@ export default {
     this.paymentDetail()
   },
   methods: {
+    handlePreview(file) {
+      let url = file.url
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', url, true)
+      xhr.responseType = 'blob'
+      xhr.onload = () => {
+        var urlObject = window.URL || window.webkitURL || window
+        let a = document.createElement('a')
+        a.href = urlObject.createObjectURL(new Blob([xhr.response]))
+        a.download = file.name
+        a.click()
+      }
+      xhr.send()
+    },
     paymentDetail() {
       this.setting.loading = true
       let args = {
-        include: 'contract,payment_payee'
+        include: 'contract,payment_payee,media'
       }
       paymentDetail(this, this.paymentID, args)
         .then(res => {
@@ -188,6 +213,9 @@ export default {
             this.paymentPayee.account_bank = res.payment_payee.account_bank
             this.paymentPayee.account_number = res.payment_payee.account_number
           }
+          let mediaIds = []
+          let mediaData = res.media.data
+          this.fileList = mediaData
           this.paymentForm.reason = res.reason
           this.paymentForm.handler = res.handler
           this.paymentForm.status = res.status
@@ -220,6 +248,15 @@ export default {
     .payment-time,
     .el-date-editor.el-input {
       width: 330px;
+    }
+    .download {
+      color: #fff;
+      font-size: 10px;
+      padding: 3px 5px;
+      background: #77a245;
+      border-radius: 5px;
+      margin-left: 5px;
+      cursor: pointer;
     }
     .upload-demo {
       width: 400px;
