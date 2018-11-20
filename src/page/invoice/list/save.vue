@@ -174,6 +174,36 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item 
+              label="附件内容" 
+              prop="ids" >
+              <el-upload
+                ref="upload"
+                :action="SERVER_URL + '/api/media'" 
+                :data="{type: 'file'}"
+                :headers="formHeader"
+                :before-upload="beforeUpload" 
+                :on-success="handleSuccess" 
+                :on-remove="handleRemove"
+                :on-preview="handlePreview"
+                :before-remove="beforeRemove"
+                :file-list="fileList"
+                class="upload-demo">
+                <el-button 
+                  size="small" 
+                  type="primary">点击上传</el-button>
+                <div 
+                  slot="tip" 
+                  style="display:inline-block"
+                  class="el-upload__tip">上传文件仅支持png、jpg、jpeg、pdf格式!</div>
+                <div 
+                  v-if="fileList.length !==0"
+                  slot="tip" 
+                  style="color: #ff5722;font-size: 12px;" >点击文件名称可以下载</div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-button
           size="small" 
@@ -333,8 +363,12 @@ import {
   Radio,
   Col,
   Table,
-  TableColumn
+  TableColumn,
+  Upload
 } from 'element-ui'
+import auth from 'service/auth'
+
+const SERVER_URL = process.env.SERVER_URL
 
 export default {
   components: {
@@ -349,7 +383,8 @@ export default {
     ElRadioGroup: RadioGroup,
     ElRadio: Radio,
     ElTable: Table,
-    ElTableColumn: TableColumn
+    ElTableColumn: TableColumn,
+    ElUpload: Upload
   },
   data() {
     let checkNumber = (rule, value, callback) => {
@@ -371,6 +406,11 @@ export default {
       }
     }
     return {
+      SERVER_URL: SERVER_URL,
+      formHeader: {
+        Authorization: 'Bearer ' + auth.getToken()
+      },
+      fileList: [],
       contractList: [],
       searchLoading: false,
       setting: {
@@ -433,6 +473,7 @@ export default {
         type: 0,
         contract_id: '',
         remark: '',
+        ids: '',
         invoice_company_id: '',
         kind: ''
       },
@@ -486,6 +527,52 @@ export default {
     }
   },
   methods: {
+    handleRemove(file, fileList) {
+      this.fileList = fileList
+    },
+    handlePreview(file) {
+      let url = file.url
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', url, true)
+      xhr.responseType = 'blob'
+      xhr.onload = () => {
+        var urlObject = window.URL || window.webkitURL || window
+        let a = document.createElement('a')
+        a.href = urlObject.createObjectURL(new Blob([xhr.response]))
+        a.download = file.name
+        a.click()
+      }
+      xhr.send()
+    },
+    beforeRemove(file, fileList) {
+      if (file.type) {
+        return this.$confirm(`确定移除 ${file.name}？`)
+      } else {
+        const isFile =
+          file.raw.type === 'application/pdf' ||
+          file.raw.type === 'image/png' ||
+          file.raw.type === 'image/jpeg'
+        if (!isFile) {
+          return true
+        } else {
+          return this.$confirm(`确定移除 ${file.name}？`)
+        }
+      }
+    },
+    beforeUpload(file) {
+      const isFile =
+        file.type === 'application/pdf' ||
+        file.type === 'image/png' ||
+        file.type === 'image/jpeg'
+      if (!isFile) {
+        this.$message.error('上传文件仅支持png、jpg、jpeg、pdf格式!')
+        return isFile
+      }
+    },
+    // 上传成功后的处理
+    handleSuccess(response, file, fileList) {
+      this.fileList.push(response)
+    },
     invoiceCompanyHandle(obj) {
       let invoiceCompany = this.invoiceCompanyList.find(r => {
         return r.id === obj
@@ -501,7 +588,7 @@ export default {
     },
     invoiceDetail() {
       let params = {
-        include: 'invoice_content.goodsService,invoice_company'
+        include: 'invoice_content.goodsService,invoice_company,media'
       }
       invoiceDetail(this, this.invoiceID, params)
         .then(res => {
@@ -516,6 +603,15 @@ export default {
             this.invoiceCompany.address = res.invoice_company.address
             this.invoiceForm.invoice_company_id = res.invoice_company.id
           }
+          let mediaIds = []
+          let mediaData = res.media.data
+          if(mediaData.length>0){
+            mediaData.map(r => {
+              mediaIds.push(r.id)
+            })
+          }
+          this.invoiceForm.ids = mediaIds
+          this.fileList = mediaData
           this.invoiceForm.type = res.type === '专票' ? 0 : 1
           this.invoiceForm.applicant_name = res.applicant_name
           this.invoiceForm.applicant = res.applicant
@@ -624,6 +720,13 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setting.loading = true
+          let mediaIds = []
+          if (this.fileList.length > 0) {
+            this.fileList.map(r => {
+              mediaIds.push(r.id)
+            })
+          }
+          this.invoiceForm.ids = mediaIds.join(',')
           delete this.invoiceForm.applicant_name
           let length = this.tableData.length
           let invoice_content = []
