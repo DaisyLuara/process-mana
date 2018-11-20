@@ -21,6 +21,7 @@
           <el-input 
             v-model="invoiceCompanyForm.name" 
             :maxlength="50"
+            placeholder="请填写开票公司"
             class="item-input"/>
         </el-form-item>
         <el-form-item 
@@ -29,6 +30,7 @@
           <el-input 
             v-model="invoiceCompanyForm.address"
             :maxlength="50"
+            placeholder="请填写地址"
             class="item-input"/>
         </el-form-item>
         <el-form-item 
@@ -36,6 +38,7 @@
           prop="taxpayer_num" >
           <el-input 
             v-model="invoiceCompanyForm.taxpayer_num" 
+            placeholder="请填写纳税人识别号"
             :maxlength="50"
             class="item-input"/>
         </el-form-item>
@@ -44,6 +47,7 @@
           prop="phone" >
           <el-input 
             v-model="invoiceCompanyForm.phone" 
+            placeholder="请填写手机号"
             :maxlength="11"
             class="item-input"/>
         </el-form-item>
@@ -52,6 +56,7 @@
           prop="telephone">
           <el-input 
             v-model="invoiceCompanyForm.telephone" 
+            placeholder="请填写座机电话"
             :maxlength="20"
             class="item-input"/>
           <div style="color: #999;font-size:12px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
@@ -61,6 +66,7 @@
           prop="account_bank" >
           <el-input 
             v-model="invoiceCompanyForm.account_bank"
+            placeholder="请填写开户银行"
             :maxlength="50"
             class="item-input"/>
         </el-form-item>
@@ -69,6 +75,7 @@
           prop="account_number" >
           <el-input 
             v-model="invoiceCompanyForm.account_number"
+            placeholder="请填写开户行账号"
             :maxlength="20"
             class="item-input"/>
         </el-form-item>

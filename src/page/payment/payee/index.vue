@@ -21,7 +21,7 @@
               <el-input 
                 v-model="searchForm.name"
                 clearable 
-                placeholder="收款人"
+                placeholder="请输入收款人"
                 class="item-input"/>
             </el-form-item>
             <el-form-item 
