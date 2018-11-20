@@ -61,7 +61,7 @@
                   <el-input 
                     v-model="searchForm.payment_payee_name"
                     clearable 
-                    placeholder="收款人"
+                    placeholder="请输入收款人"
                     class="item-input"/>
                 </el-form-item>
               </el-col>
@@ -76,7 +76,7 @@
                   <el-input 
                     v-model="searchForm.contract_number"
                     clearable 
-                    placeholder="合同编号"
+                    placeholder="请输入合同编号"
                     class="item-input"/>
                 </el-form-item>
               </el-col>

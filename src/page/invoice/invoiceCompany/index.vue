@@ -20,7 +20,7 @@
               <el-input 
                 v-model="searchForm.name"
                 clearable 
-                placeholder="开票公司"
+                placeholder="请输入开票公司"
                 class="item-input"/>
             </el-form-item>
             <el-form-item 
