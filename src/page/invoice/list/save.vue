@@ -163,7 +163,7 @@
               prop="kind" >
               <el-select 
                 v-model="invoiceForm.kind" 
-                placeholder="请选择审批状态" 
+                placeholder="请选择开票种类" 
                 filterable 
                 clearable>
                 <el-option

@@ -53,7 +53,7 @@
               <el-input 
                 v-model="contractForm.name" 
                 :maxlength="50"
-                placeholder="请填写合同编号" 
+                placeholder="请填写合同名称" 
                 class="item-input"/>
             </el-form-item>
           </el-col>
