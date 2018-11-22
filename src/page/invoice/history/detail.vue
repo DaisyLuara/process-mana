@@ -267,7 +267,7 @@ export default {
     },
     invoiceDetail() {
       let params = {
-        include: 'invoice_content.goodsService,invoice_company,meida'
+        include: 'invoice_content.goodsService,invoice_company,media'
       }
       invoiceDetail(this, this.invoiceID, params)
         .then(res => {
