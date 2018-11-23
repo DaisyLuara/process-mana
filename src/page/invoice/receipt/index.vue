@@ -431,6 +431,8 @@ export default {
     },
     handleReceipt(obj) {
       this.id = obj.id
+      this.claimReceiptForm.contract_id = ''
+      this.claimReceiptForm.dateId = ''
       this.dialogFormVisible = true
     },
     getReceiptList() {
