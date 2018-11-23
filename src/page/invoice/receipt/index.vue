@@ -107,6 +107,9 @@
                   label="收款创建人:">
                   <span>{{ scope.row.creator }}</span> 
                 </el-form-item>
+                <el-form-item>
+                  {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.receive_date  : '' }}
+                </el-form-item>
                 <el-form-item 
                   label="合同编号:">
                   <span>
@@ -147,6 +150,15 @@
             prop="claim_status"
             label="认领状态"
             min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="receive_data"
+            label="预估收款时间"
+            min-width="80">
+            <template slot-scope="scope">
+              {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.receive_date  : '' }}
+            </template>
+          </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="contract_number"
