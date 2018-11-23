@@ -168,7 +168,7 @@
           <el-table-column 
             label="操作" 
             min-width="200"
-            v-if="roles.name === 'finance' || roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'">
+            v-if="roles.name === 'finance' || roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager' || roles.name == 'operation'">
             <template 
               slot-scope="scope">
               <el-button
@@ -177,7 +177,7 @@
                 type="primary"
                 @click="editReceipt(scope.row)">编辑</el-button>
               <el-button
-                v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'"
+                v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager' || roles.name == 'operation'"
                 size="mini" 
                 type="warning"
                 @click="handleReceipt(scope.row)">认领收款</el-button>
