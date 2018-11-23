@@ -107,6 +107,9 @@
                   label="收款创建人:">
                   <span>{{ scope.row.creator }}</span> 
                 </el-form-item>
+                <el-form-item>
+                  {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.receive_date  : '' }}
+                </el-form-item>
                 <el-form-item 
                   label="合同编号:">
                   <span>
@@ -149,6 +152,15 @@
             min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
+            prop="receive_data"
+            label="预估收款时间"
+            min-width="80">
+            <template slot-scope="scope">
+              {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.receive_date  : '' }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            :show-overflow-tooltip="true"
             prop="contract_number"
             label="合同编号"
             min-width="80">
@@ -168,7 +180,7 @@
           <el-table-column 
             label="操作" 
             min-width="200"
-            v-if="roles.name === 'finance' || roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'">
+            v-if="roles.name === 'finance' || roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager' || roles.name == 'operation'">
             <template 
               slot-scope="scope">
               <el-button
@@ -177,7 +189,7 @@
                 type="primary"
                 @click="editReceipt(scope.row)">编辑</el-button>
               <el-button
-                v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager'"
+                v-if="(roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager' || roles.name == 'operation') && scope.row.claim_status === '未认领'"
                 size="mini" 
                 type="warning"
                 @click="handleReceipt(scope.row)">认领收款</el-button>
@@ -419,6 +431,8 @@ export default {
     },
     handleReceipt(obj) {
       this.id = obj.id
+      this.claimReceiptForm.contract_id = ''
+      this.claimReceiptForm.dateId = ''
       this.dialogFormVisible = true
     },
     getReceiptList() {
