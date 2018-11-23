@@ -189,7 +189,7 @@
                 type="primary"
                 @click="editReceipt(scope.row)">编辑</el-button>
               <el-button
-                v-if="roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager' || roles.name == 'operation'"
+                v-if="(roles.name === 'legal-affairs' || roles.name == 'legal-affairs-manager' || roles.name == 'operation') && scope.row.claim_status === '未认领'"
                 size="mini" 
                 type="warning"
                 @click="handleReceipt(scope.row)">认领收款</el-button>
