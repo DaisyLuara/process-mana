@@ -48,6 +48,14 @@
             class="customer-form-input" />
         </el-form-item>
         <el-form-item 
+          label="内部名称" 
+          prop="internal_name">
+          <el-input 
+            v-model="customerForm.internal_name" 
+            :maxlength="150"
+            class="customer-form-input" />
+        </el-form-item>
+        <el-form-item 
           v-if="statusFlag"
           label="状态" 
           prop="selectedStatus">
@@ -147,6 +155,7 @@ export default {
         name: '',
         address: '',
         description: '',
+        internal_name: '',
         logo: '',
         customer_name: '',
         phone: '',
@@ -236,7 +245,8 @@ export default {
             name: this.customerForm.name,
             address: this.customerForm.address,
             description: this.customerForm.description,
-            logo: this.customerForm.logo
+            logo: this.customerForm.logo,
+            internal_name: this.customerForm.internal_name
           }
           if (this.customerID) {
             this[formName].status = this[formName].selectedStatus
@@ -282,7 +292,6 @@ export default {
         this.rules.phone[0].required = false
         this.rules.position[0].required = false
         this.rules.password[0].required = false
-
         company
           .getCustomerDetial(this, this.customerID)
           .then(result => {
@@ -292,6 +301,7 @@ export default {
             this.customerForm.description = result.description
             this.customerForm.selectedStatus = result.status
             this.customerForm.logo = result.logo
+            this.customerForm.internal_name = result.internal_name
             this.setting.loading = false
           })
           .catch(err => {

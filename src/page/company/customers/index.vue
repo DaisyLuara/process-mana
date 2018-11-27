@@ -58,6 +58,12 @@
             min-width="100"
           />
           <el-table-column
+            :show-overflow-tooltip="true"
+            prop="internal_name"
+            label="内部名称"
+            min-width="80"
+          />
+          <el-table-column
             prop="status"
             label="状态"
           >
