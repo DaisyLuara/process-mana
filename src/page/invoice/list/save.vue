@@ -217,8 +217,8 @@
           style="width: 100%;margin-bottom: 20px;">
           <el-table-column
             prop="name"
-            label="货物或应税劳务·服务名称"
-            min-width="150"
+            label="开票种类"
+            min-width="100"
             align="center"
             header-align="center">
             <template 
@@ -241,6 +241,31 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="name"
+            label="货物或应税劳务·服务名称"
+            min-width="150"
+            align="center"
+            header-align="center">
+            <template 
+              slot-scope="scope">
+              <el-select
+                v-if="scope.$index !== tableData.length-1" 
+                v-model="scope.row.name" 
+                :loading="searchLoading"
+                placeholder="请选择" 
+                filterable 
+                clearable
+                @change="googsServiceHandle($event,scope.$index)">
+                <el-option
+                  v-for="item in goodsServiceList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
+              <!-- <span v-if="scope.$index === tableData.length-1">¥：{{ scope.row.name }}</span> -->
+            </template>
+          </el-table-column>
+          <el-table-column
             prop=""
             label="规格型号"
             width="100"
@@ -255,7 +280,7 @@
           <el-table-column
             prop="unit"
             label="单位"
-            min-width="120"
+            min-width="80"
             align="center"
             header-align="center">
             <template 
@@ -266,7 +291,7 @@
           <el-table-column
             prop="num"
             label="数量"
-            min-width="120"
+            min-width="80"
             align="center"
             header-align="center">
             <template 
@@ -423,6 +448,7 @@ export default {
       invoiceCompanyList: [],
       tableData: [
         {
+          kind: '',
           name: '开票总计（大写）：',
           spec_type: '',
           amount1: '',
@@ -605,7 +631,7 @@ export default {
           }
           let mediaIds = []
           let mediaData = res.media.data
-          if(mediaData.length>0){
+          if (mediaData.length > 0) {
             mediaData.map(r => {
               mediaIds.push(r.id)
             })
@@ -707,6 +733,7 @@ export default {
     },
     cargoAdd() {
       let td = {
+        kind: '',
         name: '',
         spec_type: '',
         unit: '',
