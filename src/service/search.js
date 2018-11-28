@@ -4,12 +4,26 @@ const INVOICE_COMPANY_QUERY_API = '/api/invoice_company/query'
 const PAYMENT_PAYEE_QUERY_API = '/api/payment_payee/query'
 const GOODS_SERVICE_QUERY_API = '/api/goods_service/query'
 const RECEIVE_DATE_QUERY_API = '/api/receive_date/query'
+const INVOICE_KIND_API = '/api/invoice_kind/query'
 const HOST = process.env.SERVER_URL
 
 const getCompanyList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + COMPANY_QUERY_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+const getInvoiceKindList = context => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + INVOICE_KIND_API)
       .then(response => {
         resolve(response.data)
       })
@@ -33,10 +47,10 @@ const getContract = (context, params) => {
 }
 
 // 货物服务下拉列表
-const goodsService = context => {
+const goodsService = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + GOODS_SERVICE_QUERY_API)
+      .get(HOST + GOODS_SERVICE_QUERY_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -93,5 +107,6 @@ export {
   goodsService,
   getInvoiceCompany,
   getPaymentPayee,
-  getReceiveDate
+  getReceiveDate,
+  getInvoiceKindList
 }

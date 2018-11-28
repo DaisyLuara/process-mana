@@ -159,23 +159,6 @@
         <el-row>
           <el-col :span="12">
             <el-form-item 
-              label="开票种类" 
-              prop="kind" >
-              <el-select 
-                v-model="invoiceForm.kind" 
-                placeholder="请选择开票种类" 
-                filterable 
-                clearable>
-                <el-option
-                  v-for="item in invoiceSpeciesList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item 
               label="附件内容" 
               prop="ids" >
               <el-upload
@@ -216,6 +199,32 @@
           border
           style="width: 100%;margin-bottom: 20px;">
           <el-table-column
+            prop="kind"
+            label="开票种类"
+            min-width="100"
+            align="center"
+            header-align="center">
+            <template 
+              slot-scope="scope">
+              <el-select
+                v-if="scope.$index !== tableData.length-1" 
+                v-model="scope.row.kind" 
+                :loading="searchLoading"
+                placeholder="请选择" 
+                filterable 
+                clearable
+                style="width: 100%"
+                @change="invoiceKindHandle($event,scope.$index)">
+                <el-option
+                  v-for="item in invoiceKindList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"/>
+              </el-select>
+              <span v-if="scope.$index === tableData.length-1">¥：{{ scope.row.kind }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="name"
             label="货物或应税劳务·服务名称"
             min-width="150"
@@ -237,25 +246,20 @@
                   :label="item.name"
                   :value="item.id"/>
               </el-select>
-              <span v-if="scope.$index === tableData.length-1">¥：{{ scope.row.name }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop=""
-            label="规格型号"
-            width="100"
-            align="center"
-            header-align="center">
-            <template 
-              slot-scope="scope">
-              <span v-if="scope.$index !== tableData.length-1">{{ scope.row.spec_type }}</span>
               <span v-if="scope.$index === tableData.length-1">¥：{{ total }}</span>
             </template>
           </el-table-column>
           <el-table-column
+            prop="spec_type"
+            label="规格型号"
+            width="100"
+            align="center"
+            header-align="center">
+          </el-table-column>
+          <el-table-column
             prop="unit"
             label="单位"
-            min-width="120"
+            min-width="80"
             align="center"
             header-align="center">
             <template 
@@ -266,7 +270,7 @@
           <el-table-column
             prop="num"
             label="数量"
-            min-width="120"
+            min-width="80"
             align="center"
             header-align="center">
             <template 
@@ -348,6 +352,7 @@ import {
   goodsService,
   invoiceDetail,
   getInvoiceCompany,
+  getInvoiceKindList,
   Cookies
 } from 'service'
 import {
@@ -423,39 +428,14 @@ export default {
       invoiceCompanyList: [],
       tableData: [
         {
-          name: '开票总计（大写）：',
+          kind: '开票总计（大写）：',
+          name: '',
           spec_type: '',
           amount1: '',
           amount2: '',
           amount3: '',
           amount4: '',
           amount5: ''
-        }
-      ],
-      invoiceSpeciesList: [
-        {
-          id: '硬件销售：星视度智能互动屏',
-          name: '硬件销售：星视度智能互动屏'
-        },
-        {
-          id: '节目定制：*软件*星视度智能互动软件V1.0',
-          name: '节目定制：*软件*星视度智能互动软件V1.0'
-        },
-        {
-          id: '节目定制：*信息技术服务*星视度智能互动软件V1.0服务费',
-          name: '节目定制：*信息技术服务*星视度智能互动软件V1.0服务费'
-        },
-        {
-          id: '活动租赁：*信息技术服务*星视度智能互动软件V1.0服务费',
-          name: '活动租赁：*信息技术服务*星视度智能互动软件V1.0服务费'
-        },
-        {
-          id: '体验营销：*软件*星视度管理软件V1.0',
-          name: '体验营销：*软件*星视度管理软件V1.0'
-        },
-        {
-          id: '体验影响：*信息技术服务*星视度管理软件V1.0服务费',
-          name: '体验影响：*信息技术服务*星视度管理软件V1.0服务费'
         }
       ],
       invoiceID: '',
@@ -474,18 +454,15 @@ export default {
         contract_id: '',
         remark: '',
         ids: '',
-        invoice_company_id: '',
-        kind: ''
+        invoice_company_id: ''
       },
+      invoiceKindList: [],
       rules: {
         invoice_company_id: [
           { required: true, message: '请输入开票名称', trigger: 'submit' }
         ],
         type: [
           { required: true, message: '请选择开票类型', trigger: 'submit' }
-        ],
-        kind: [
-          { required: true, message: '请选择开票种类', trigger: 'submit' }
         ],
         contract_id: [
           { required: true, message: '请选择合同编号', trigger: 'submit' }
@@ -499,7 +476,7 @@ export default {
       handler: function(val, oldVal) {
         let sum = 0
         val.map(r => {
-          if (String(r.name).indexOf('开票总计（大写）：') === -1) {
+          if (String(r.kind).indexOf('开票总计（大写）：') === -1) {
             sum += parseFloat(r.price) * parseInt(r.num)
           }
         })
@@ -507,7 +484,7 @@ export default {
         this.total_text = formatMoneylowercase(sum)
         let length = this.tableData.length
         let data = this.tableData[length - 1]
-        data.name = '开票总计（大写）：' + this.total_text
+        data.kind = '开票总计（大写）：' + this.total_text
       },
       deep: true
     }
@@ -515,8 +492,8 @@ export default {
   created() {
     this.invoiceID = this.$route.params.uid
     this.getContract()
-    this.goodsService()
     this.getInvoiceCompany()
+    this.getInvoiceKindList()
     if (this.invoiceID) {
       this.setting.loading = true
       this.invoiceDetail()
@@ -527,6 +504,12 @@ export default {
     }
   },
   methods: {
+    invoiceKindHandle(val, index) {
+      this.tableData[index].name = ''
+      this.tableData[index].spec_type = ''
+      this.tableData[index].unit = ''
+      this.goodsService(val)
+    },
     handleRemove(file, fileList) {
       this.fileList = fileList
     },
@@ -588,7 +571,8 @@ export default {
     },
     invoiceDetail() {
       let params = {
-        include: 'invoice_content.goodsService,invoice_company,media'
+        include:
+          'invoice_content.invoiceKind,invoice_content.goodsService,invoice_company,media'
       }
       invoiceDetail(this, this.invoiceID, params)
         .then(res => {
@@ -605,7 +589,7 @@ export default {
           }
           let mediaIds = []
           let mediaData = res.media.data
-          if(mediaData.length>0){
+          if (mediaData.length > 0) {
             mediaData.map(r => {
               mediaIds.push(r.id)
             })
@@ -617,9 +601,9 @@ export default {
           this.invoiceForm.applicant = res.applicant
           this.invoiceForm.contract_id = res.contract_id
           this.invoiceForm.remark = res.remark
-          this.invoiceForm.kind = res.kind
           invoice_content.map(r => {
             let data = {
+              kind: r.invoiceKind ? r.invoiceKind.id : '',
               name: r.goodsService.id,
               spec_type: r.goodsService.spec_type,
               unit: r.goodsService.unit,
@@ -627,14 +611,17 @@ export default {
               price: r.price,
               money: r.money
             }
+            if (r.invoiceKind) {
+              this.goodsService(r.invoiceKind.id)
+            }
             this.tableData.unshift(data)
           })
           let length = this.tableData.length
           this.total_text = res.$total_text
           this.total = res.total
-          this.tableData[length - 1].name =
+          this.tableData[length - 1].kind =
             '开票总计（大写）：' + res.$total_text
-          this.tableData[length - 1].spec_type = '(小写) ¥：' + res.total + '元'
+          this.tableData[length - 1].name = '(小写) ¥：' + res.total + '元'
           this.setting.loading = false
         })
         .catch(err => {
@@ -666,9 +653,12 @@ export default {
       this.tableData[index].spec_type = goodService.spec_type
       this.tableData[index].unit = goodService.unit
     },
-    goodsService() {
+    goodsService(id) {
       this.searchLoading = true
-      goodsService(this)
+      let args = {
+        invoice_kind_id: id
+      }
+      goodsService(this, args)
         .then(res => {
           this.goodsServiceList = res.data
           this.searchLoading = false
@@ -695,7 +685,7 @@ export default {
     arraySpanMethod({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === this.tableData.length - 1) {
         if (columnIndex === 1) {
-          return [5, 6]
+          return [6, 7]
         }
       }
     },
@@ -707,6 +697,7 @@ export default {
     },
     cargoAdd() {
       let td = {
+        kind: '',
         name: '',
         spec_type: '',
         unit: '',
@@ -715,6 +706,18 @@ export default {
         money: ''
       }
       this.tableData.unshift(td)
+    },
+    getInvoiceKindList() {
+      getInvoiceKindList(this)
+        .then(res => {
+          this.invoiceKindList = res.data
+        })
+        .catch(err => {
+          this.$message({
+            type: 'warning',
+            message: err.response.data.message
+          })
+        })
     },
     submit(formName) {
       this.$refs[formName].validate(valid => {
@@ -733,6 +736,7 @@ export default {
           for (let i = 0; i < length; i++) {
             let content = {}
             if (i !== length - 1) {
+              content.invoice_kind_id = this.tableData[i].kind
               content.goods_service_id = this.tableData[i].name
               content.num = parseFloat(this.tableData[i].num)
               content.price = parseFloat(this.tableData[i].price)
@@ -782,7 +786,7 @@ export default {
     .text-input,
     .payment-time,
     .el-date-editor.el-input {
-      width: 330px;
+      width: 300px;
     }
     .upload-demo {
       width: 400px;

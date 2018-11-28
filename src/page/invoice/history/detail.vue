@@ -96,8 +96,10 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
-            <el-form-item 
+          <el-col 
+            v-if="invoiceForm.kind" 
+            :span="12">
+            <el-form-item
               label="开票种类:" 
               prop="kind" >
               {{ invoiceForm.kind }}
@@ -122,11 +124,17 @@
           border
           style="width: 100%;margin-bottom: 10px;">
           <el-table-column
+            prop="kind"
+            align="center"
+            header-align="center"
+            label="开票种类"
+            min-width="200"/>
+          <el-table-column
             prop="name"
             align="center"
             header-align="center"
             label="货物或应税劳务·服务名称"
-            width="250"/>
+            min-width="200"/>
           <el-table-column
             align="center"
             header-align="center"
@@ -235,7 +243,8 @@ export default {
       },
       tableData: [
         {
-          name: '开票总计（大写）：',
+          kind: '开票总计（大写）：',
+          name: '',
           spec_type: '',
           unit: '',
           num: '',
@@ -267,7 +276,8 @@ export default {
     },
     invoiceDetail() {
       let params = {
-        include: 'invoice_content.goodsService,invoice_company,media'
+        include:
+          'invoice_content.invoiceKind,invoice_content.goodsService,invoice_company,media'
       }
       invoiceDetail(this, this.invoiceID, params)
         .then(res => {
@@ -290,6 +300,7 @@ export default {
           this.fileList = mediaData
           invoice_content.map(r => {
             let data = {
+              kind: r.invoiceKind ? r.invoiceKind.name : '',
               name: r.goodsService.name,
               spec_type: r.goodsService.spec_type,
               unit: r.goodsService.unit,
@@ -300,9 +311,9 @@ export default {
             this.tableData.unshift(data)
           })
           let length = this.tableData.length
-          this.tableData[length - 1].name =
+          this.tableData[length - 1].kind =
             '开票总计（大写）：' + res.$total_text
-          this.tableData[length - 1].spec_type = '(小写) ¥：' + res.total + '元'
+          this.tableData[length - 1].name = '(小写) ¥：' + res.total + '元'
           this.setting.loading = false
         })
         .catch(err => {
@@ -316,7 +327,7 @@ export default {
     arraySpanMethod({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === this.tableData.length - 1) {
         if (columnIndex === 1) {
-          return [4, 5]
+          return [5, 6]
         }
       }
     },
