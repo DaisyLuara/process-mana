@@ -239,9 +239,9 @@
                 placeholder="请选择" 
                 filterable 
                 clearable
-                @change="googsServiceHandle($event,scope.$index)">
+                @change="googsServiceHandle($event,scope.$index,scope.row.kind)">
                 <el-option
-                  v-for="item in goodsServiceList"
+                  v-for="item in scope.row.kind === 1 ? goodsServiceList.hardware : scope.row.kind === 2 ? goodsServiceList.software : scope.row.kind === 3 ? goodsServiceList.service : [] "
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"/>
@@ -459,7 +459,7 @@ export default {
       invoiceKindList: [],
       rules: {
         invoice_company_id: [
-          { required: true, message: '请输入开票名称', trigger: 'submit' }
+          { required: true, message: '请输入开票公司', trigger: 'submit' }
         ],
         type: [
           { required: true, message: '请选择开票类型', trigger: 'submit' }
@@ -468,7 +468,7 @@ export default {
           { required: true, message: '请选择合同编号', trigger: 'submit' }
         ]
       },
-      goodsServiceList: []
+      goodsServiceList: {}
     }
   },
   watch: {
@@ -508,7 +508,15 @@ export default {
       this.tableData[index].name = ''
       this.tableData[index].spec_type = ''
       this.tableData[index].unit = ''
-      this.goodsService(val)
+      if (val === 1 && !this.goodsServiceList.hardware) {
+        this.goodsService(val)
+      }
+      if (val === 2 && !this.goodsServiceList.software) {
+        this.goodsService(val)
+      }
+      if (val === 3 && !this.goodsServiceList.service) {
+        this.goodsService(val)
+      }
     },
     handleRemove(file, fileList) {
       this.fileList = fileList
@@ -646,8 +654,16 @@ export default {
           })
         })
     },
-    googsServiceHandle(obj, index) {
-      var goodService = this.goodsServiceList.find(r => {
+    googsServiceHandle(obj, index, kind_id) {
+      let goodsServiceObj =
+        kind_id === 1
+          ? this.goodsServiceList.hardware
+          : kind_id === 2
+            ? this.goodsServiceList.software
+            : kind_id === 3
+              ? this.goodsServiceList.service
+              : []
+      var goodService = goodsServiceObj.find(r => {
         return r.id === obj
       })
       this.tableData[index].spec_type = goodService.spec_type
@@ -660,7 +676,17 @@ export default {
       }
       goodsService(this, args)
         .then(res => {
-          this.goodsServiceList = res.data
+          switch (id) {
+            case 1:
+              this.goodsServiceList.hardware = res.data
+              break
+            case 2:
+              this.goodsServiceList.software = res.data
+              break
+            case 3:
+              this.goodsServiceList.service = res.data
+              break
+          }
           this.searchLoading = false
         })
         .catch(err => {
