@@ -459,7 +459,7 @@ export default {
       invoiceKindList: [],
       rules: {
         invoice_company_id: [
-          { required: true, message: '请输入开票名称', trigger: 'submit' }
+          { required: true, message: '请输入开票公司', trigger: 'submit' }
         ],
         type: [
           { required: true, message: '请选择开票类型', trigger: 'submit' }
