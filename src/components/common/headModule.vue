@@ -21,9 +21,27 @@
           class="avatar">
       </div>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item><span @click="handleUser">账号设置</span></el-dropdown-item>
-        <!-- <el-dropdown-item divided><span @click="intoCenter">个人中心</span></el-dropdown-item> -->
-        <el-dropdown-item divided><span @click="logout">退出</span></el-dropdown-item>
+        <el-dropdown-item>
+          <span 
+            @click="handleUser"
+            class="item-info">
+              账号设置
+            </span>
+        </el-dropdown-item>
+        <el-dropdown-item divided>
+          <span 
+            @click="intoCenter"
+            class="item-info">
+            个人中心
+          </span>
+        </el-dropdown-item>
+        <el-dropdown-item divided>
+          <span 
+            @click="logout"
+            class="item-info">
+            退出
+          </span>
+        </el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -59,12 +77,12 @@ export default {
       this.$router.push({
         path: '/account/account'
       })
+    },
+    intoCenter() {
+      this.$router.push({
+        path: '/account/center'
+      })
     }
-    // intoCenter() {
-    //   this.$router.push({
-    //     path: '/account/center'
-    //   })
-    // }
   }
 }
 </script>
