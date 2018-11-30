@@ -107,7 +107,8 @@
                   label="收款创建人:">
                   <span>{{ scope.row.creator }}</span> 
                 </el-form-item>
-                <el-form-item>
+                <el-form-item
+                  label="预估收款时间:">
                   {{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.receive_date  : '' }}
                 </el-form-item>
                 <el-form-item 

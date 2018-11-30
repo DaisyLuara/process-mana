@@ -309,6 +309,7 @@ export default {
           })
       } else {
         this.statusFlag = false
+        this.setting.loading = false
       }
     },
     resetForm(formName) {},
