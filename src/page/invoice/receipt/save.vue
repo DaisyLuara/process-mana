@@ -83,8 +83,8 @@ export default {
   },
   data() {
     let checkNumber = (rule, value, callback) => {
-      if (!/^\d*$/.test(value)) {
-        callback(new Error('必须是数字'))
+      if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+        callback(new Error('必须是整数或是小数'))
       } else {
         callback()
       }
