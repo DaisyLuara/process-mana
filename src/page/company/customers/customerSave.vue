@@ -234,7 +234,6 @@ export default {
     this.setting.loadingText = '拼命加载中'
     this.customerID = this.$route.params.uid
     this.getCustomerDetial()
-    this.setting.loading = false
   },
   methods: {
     onSubmit(formName) {
@@ -249,7 +248,7 @@ export default {
             internal_name: this.customerForm.internal_name
           }
           if (this.customerID) {
-            this[formName].status = this[formName].selectedStatus
+            args.status = this[formName].selectedStatus
           } else {
             args.customer_name = this.customerForm.customer_name
             args.phone = this.customerForm.phone
