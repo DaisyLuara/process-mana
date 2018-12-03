@@ -150,7 +150,7 @@
               <el-input 
                 v-model="invoiceCompany.account_number"
                 :disabled="true"
-                :maxlength="20"
+                :maxlength="30"
                 placeholder="66333XXXXXXXXXXXXX"
                 class="item-input"/>
             </el-form-item>

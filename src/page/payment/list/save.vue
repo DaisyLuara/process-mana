@@ -123,7 +123,7 @@
               <el-input 
                 v-model="paymentPayee.account_number"
                 :disabled="true"
-                :maxlength="20"
+                :maxlength="30"
                 placeholder="收款人账号" 
                 class="item-input"/>
             </el-form-item>
