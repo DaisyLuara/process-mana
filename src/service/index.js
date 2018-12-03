@@ -20,3 +20,6 @@ export * from './promptBadge'
 
 // 消息
 export * from './notice'
+
+// 个人中心
+export * from './account'

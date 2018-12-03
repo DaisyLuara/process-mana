@@ -38,7 +38,7 @@
           <el-input 
             v-model="payeeForm.account_number"
             placeholder="请填写收款人账号"
-            :maxlength="20"
+            :maxlength="30"
             class="item-input"/>
         </el-form-item>
         <el-form-item>
