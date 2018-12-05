@@ -243,6 +243,7 @@ export default {
       })
     },
     changePage(currentPage) {
+      console.log(currentPage)
       this.pagination.currentPage = currentPage
       this.getRemindContractList()
     },

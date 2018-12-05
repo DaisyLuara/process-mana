@@ -340,7 +340,7 @@ export default {
       searchLoading: false,
       pagination: {
         total: 0,
-        pageSize: 10,
+        pageSize: 2,
         currentPage: 1
       },
       tableData: []
@@ -392,6 +392,7 @@ export default {
       })
     },
     changePage(currentPage) {
+      console.log(currentPage)
       this.pagination.currentPage = currentPage
       this.contractHistory()
     },

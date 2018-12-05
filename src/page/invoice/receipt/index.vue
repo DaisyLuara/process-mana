@@ -439,6 +439,7 @@ export default {
     getReceiptList() {
       this.setting.loading = true
       let args = {
+        page: this.pagination.currentPage,
         include: 'receiveDate.contract',
         name: this.searchForm.name,
         claim_status: this.searchForm.claim_status,

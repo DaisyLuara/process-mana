@@ -217,10 +217,10 @@ const modifyReceipt = (context, receiptId, params) => {
   })
 }
 
-const invoicetHistory = context => {
+const invoicetHistory = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVOICE_HISTORY_API)
+      .get(HOST + INVOICE_HISTORY_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
