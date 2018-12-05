@@ -340,7 +340,7 @@ export default {
       searchLoading: false,
       pagination: {
         total: 0,
-        pageSize: 2,
+        pageSize: 10,
         currentPage: 1
       },
       tableData: []
