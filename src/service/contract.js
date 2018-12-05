@@ -108,10 +108,10 @@ const specialAuditingContract = (context, contractId) => {
   })
 }
 
-const contractHistory = context => {
+const contractHistory = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + CONTRACT_HISTORY_API)
+      .get(HOST + CONTRACT_HISTORY_API, { params: params })
       .then(response => {
         resolve(response.data)
       })

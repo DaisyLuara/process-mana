@@ -148,10 +148,10 @@ const modifyPayee = (context, payeeId, params) => {
   })
 }
 
-const paymentHistory = context => {
+const paymentHistory = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + PAYMENT_HISTORY_API)
+      .get(HOST + PAYMENT_HISTORY_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
