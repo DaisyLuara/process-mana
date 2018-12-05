@@ -221,6 +221,7 @@ export default {
     getInvoiceCompanyList() {
       this.setting.loading = true
       let args = {
+        page: this.pagination.currentPage,
         name: this.searchForm.name
       }
       if (!this.searchForm.name) {
