@@ -28,13 +28,13 @@
               账号设置
             </span>
         </el-dropdown-item>
-        <!-- <el-dropdown-item divided>
+        <el-dropdown-item divided>
           <span 
             @click="intoCenter"
             class="item-info">
             个人中心
           </span>
-        </el-dropdown-item> -->
+        </el-dropdown-item>
         <el-dropdown-item divided>
           <span 
             @click="logout"
