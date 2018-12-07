@@ -52,14 +52,14 @@ export default {
       component: () =>
         import(/* webpackChunkName: "page/contract/collection/routerView" */ 'page/contract/collection/routerView'),
       meta: {
-        title: '收款提示'
+        title: '收款合同'
       },
       children: [
         {
           path: '/',
           component: () =>
             import(/* webpackChunkName: "page/contract/collection/index" */ 'page/contract/collection/index'),
-          name: '收款提示列表',
+          name: '收款合同列表',
           meta: {}
         }
       ]
