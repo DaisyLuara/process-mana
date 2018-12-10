@@ -168,7 +168,7 @@
           prop="contact_number">
          <el-input
             v-model="contractForm.contract_number"
-            :maxlength="40"
+            :maxlength="80"
             :disabled="roles.name !== 'legal-affairs-manager' && roles.name !== 'legal-affairs'"
             placeholder="请输入合同编号"
             class="text-input"/>
@@ -181,7 +181,6 @@
           <el-input
             v-model="contractForm.legal_ma_message"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="150"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
@@ -194,7 +193,6 @@
           <el-input
             v-model="contractForm.legal_message"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="150"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
@@ -207,7 +205,6 @@
           <el-input
             v-model="contractForm.bd_ma_message"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="150"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>

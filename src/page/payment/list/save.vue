@@ -137,7 +137,6 @@
               <el-input
                 v-model="paymentForm.remark"
                 :autosize="{ minRows: 2, maxRows: 4}"
-                :maxlength="180"
                 type="textarea"
                 placeholder="请填写备注"
                 class="text-input"/>
