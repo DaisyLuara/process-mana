@@ -134,7 +134,7 @@
               prop="contract_number" >
               <el-input 
                 v-model="contractForm.contract_number" 
-                :maxlength="50"
+                :maxlength="80"
                 placeholder="请输入合同编号"
                 class="item-input"/>
             </el-form-item>
@@ -146,7 +146,6 @@
           <el-input
             v-model="contractForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
             type="textarea"
             placeholder="请填写备注"
             class="text-input"/>

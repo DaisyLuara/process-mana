@@ -208,7 +208,6 @@
           <el-input
             v-model="invoiceForm.legal_ma_message"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
@@ -221,7 +220,6 @@
           <el-input
             v-model="invoiceForm.bd_ma_message"
             :autosize="{ minRows: 2, maxRows: 4}"
-            :maxlength="180"
             type="textarea"
             placeholder="请输入内容"
             class="text-input"/>
