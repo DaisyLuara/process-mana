@@ -224,12 +224,6 @@ export default {
           if (this.customerForm.telephone === "") {
             delete args.telephone;
           }
-          if (this.customerForm.logo === "") {
-            delete args.logo;
-          }
-          if (this.customerForm.internal_name === "") {
-            delete args.internal_name;
-          }
           company
             .saveCustomer(this, args, this.customerID)
             .then(result => {
