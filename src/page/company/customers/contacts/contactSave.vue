@@ -202,9 +202,9 @@ export default {
       })
     },
     getContactDetial() {
-      this.setting.loading = true
       let uid = this.$route.query.uid
       if (uid) {
+        this.setting.loading = true
         company
           .getContactDetial(this, this.pid, uid)
           .then(result => {
