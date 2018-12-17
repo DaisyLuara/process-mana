@@ -1,69 +1,49 @@
 <template>
-  <div 
-    class="add-customer-wrap">
-    <div
-      v-loading="setting.loading" 
-      :element-loading-text="setting.loadingText">
-      <div 
-        class="customer-title">
-        {{ $route.name }}
-      </div>
-      <el-form 
-        ref="contactForm" 
-        :model="contactForm" 
-        :rules="rules" 
-        label-width="100px">
-        <el-form-item 
-          label="联系人名称" 
-          prop="contact.name">
-          <el-input 
-            v-model="contactForm.contact.name" 
-            :maxlength="50"
-            class="customer-form-input"/>
+  <div class="add-customer-wrap">
+    <div v-loading="setting.loading" :element-loading-text="setting.loadingText">
+      <div class="customer-title">{{ $route.name }}</div>
+      <el-form ref="contactForm" :model="contactForm" :rules="rules" label-width="100px">
+        <el-form-item label="联系人名称" prop="contact.name">
+          <el-input v-model="contactForm.contact.name" :maxlength="50" class="customer-form-input"/>
         </el-form-item>
-        <el-form-item 
-          label="联系人职务" 
-          prop="contact.position">
-          <el-input 
-            v-model="contactForm.contact.position" 
+        <el-form-item label="联系人职务" prop="contact.position">
+          <el-input
+            v-model="contactForm.contact.position"
             :maxlength="50"
-            class="customer-form-input"/>
+            class="customer-form-input"
+          />
         </el-form-item>
-        <el-form-item 
-          label="手机号码" 
-          prop="contact.phone">
-          <el-input 
-            v-model="contactForm.contact.phone" 
+        <el-form-item label="手机号码" prop="contact.phone">
+          <el-input
+            v-model="contactForm.contact.phone"
             :maxlength="11"
-            class="customer-form-input"/>
+            class="customer-form-input"
+          />
         </el-form-item>
-        <el-form-item 
-          label="座机电话" 
-          prop="contact.telephone">
-          <el-input 
-            v-model="contactForm.contact.telephone" 
+        <el-form-item label="座机电话" prop="contact.telephone">
+          <el-input
+            v-model="contactForm.contact.telephone"
             :maxlength="20"
-            class="customer-form-input"/>
-            <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
+            class="customer-form-input"
+          />
+          <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
         </el-form-item>
-        <el-form-item 
-          label="密码" 
-          prop="contact.password">
-          <el-input 
-            v-model="contactForm.contact.password" 
+        <el-form-item label="密码" prop="contact.password">
+          <el-input
+            v-model="contactForm.contact.password"
             :maxlength="30"
             type="password"
-            class="customer-form-input"/>
+            class="customer-form-input"
+          />
         </el-form-item>
         <el-form-item>
-          <el-button 
-            :loading="loading"  
+          <el-button
+            :loading="loading"
             type="primary"
             size="small"
-            @click="onSubmit('contactForm')">保存</el-button>
-          <el-button 
-            size="small"
-            @click="resetForm('contactForm')">取消</el-button>
+            @click="onSubmit('contactForm')"
+          >保存</el-button>
+          <el-button size="small" @click="resetForm('contactForm')">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -71,160 +51,173 @@
 </template>
 
 <script>
-import company from 'service/company'
-import { historyBack } from 'service'
-import { Select, Option, Button, Input, Form, FormItem } from 'element-ui'
+import company from "service/company";
+import { historyBack } from "service";
+import { Select, Option, Button, Input, Form, FormItem } from "element-ui";
 
 export default {
-  name: 'AddContact',
+  name: "AddContact",
   components: {
-    'el-select': Select,
-    'el-option': Option,
-    'el-button': Button,
-    'el-input': Input,
-    'el-form': Form,
-    'el-form-item': FormItem
+    "el-select": Select,
+    "el-option": Option,
+    "el-button": Button,
+    "el-input": Input,
+    "el-form": Form,
+    "el-form-item": FormItem
   },
   data() {
     return {
       setting: {
         isOpenSelectAll: true,
         loading: false,
-        loadingText: '拼命加载中'
+        loadingText: "拼命加载中"
       },
       contactForm: {
         contact: {
-          name: '',
-          phone: '',
-          position: '',
-          password: '',
-          telephone: ''
+          name: "",
+          phone: "",
+          position: "",
+          password: "",
+          telephone: ""
         }
       },
-      pid: '',
-      contactID: '',
+      pid: "",
+      contactID: "",
       rules: {
-        'contact.phone': [
+        "contact.phone": [
           {
             validator: (rule, value, callback) => {
               if (/^\s*$/.test(value)) {
-                callback('请输入手机号')
+                callback("请输入手机号");
               } else if (!/^1[3456789]\d{9}$/.test(value)) {
-                callback('手机格式不正确,请重新输入')
+                callback("手机格式不正确,请重新输入");
               } else {
-                callback()
+                callback();
               }
             },
-            trigger: 'blur',
+            trigger: "blur",
             required: true
           }
         ],
-        'contact.telephone': [
+        "contact.telephone": [
           {
             validator: (rule, value, callback) => {
               if (!value) {
-                callback()
-                return
+                callback();
+                return;
               }
               if (!/^0\d{2,3}-\d{7,8}|0\d{2,3}-\d{7,8}-\d{1,4}$/.test(value)) {
-                callback('座机电话格式不正确,请重新输入')
+                callback("座机电话格式不正确,请重新输入");
               } else {
-                callback()
+                callback();
               }
             },
-            trigger: 'blur'
+            trigger: "blur"
           }
         ],
-        'contact.name': [
-          { message: '请输入联系人名称', trigger: 'blur', required: true }
+        "contact.name": [
+          { message: "请输入联系人名称", trigger: "blur", required: true }
         ],
-        'contact.position': [
-          { message: '请输入联系人职务', trigger: 'blur', required: true }
+        "contact.position": [
+          { message: "请输入联系人职务", trigger: "blur", required: true }
         ],
-        'contact.password': [
-          { message: '请输入密码', trigger: 'submit', required: true }
+        "contact.password": [
+          {
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback("请输入密码");
+                return;
+              }
+              if (value.length < 8) {
+                callback("密码长度不能小于8位");
+              } else {
+                callback();
+              }
+            },
+            trigger: "submit"
+          }
         ]
       },
-      contactName: '',
+      contactName: "",
       loading: false
-    }
+    };
   },
   created: function() {
-    this.contactID = this.$route.query.uid
-    this.pid = this.$route.query.pid
-    this.contactName = this.$route.query.name
-    this.getContactDetial()
-    this.setting.loadingText = '拼命加载中'
+    this.contactID = this.$route.query.uid;
+    this.pid = this.$route.query.pid;
+    this.contactName = this.$route.query.name;
+    this.getContactDetial();
+    this.setting.loadingText = "拼命加载中";
   },
   methods: {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.setting.loading = true
-          let pid = this.pid
-          let name = this.contactName
-          let uid = this.$route.query.uid
+          this.setting.loading = true;
+          let pid = this.pid;
+          let name = this.contactName;
+          let uid = this.$route.query.uid;
           let args = {
             name: this.contactForm.contact.name,
             phone: this.contactForm.contact.phone,
             position: this.contactForm.contact.position,
             password: this.contactForm.contact.password,
             telephone: this.contactForm.contact.telephone
+          };
+          if (this.contactForm.contact.password === "") {
+            delete args.password;
           }
-          if (this.contactForm.contact.password === '') {
-            delete args.password
-          }
-          if (this.contactForm.contact.telephone === '') {
-            delete args.telephone
+          if (this.contactForm.contact.telephone === "") {
+            delete args.telephone;
           }
           company
             .saveContact(this, pid, args, uid)
             .then(result => {
-              this.setting.loading = false
+              this.setting.loading = false;
               this.$message({
-                message: uid ? '修改成功' : '添加成功',
-                type: 'success'
-              })
+                message: uid ? "修改成功" : "添加成功",
+                type: "success"
+              });
               this.$router.push({
-                path: '/company/customers/contacts?id=' + pid + '&name=' + name
-              })
+                path: "/company/customers/contacts?id=" + pid + "&name=" + name
+              });
             })
             .catch(error => {
-              this.setting.loading = false
+              this.setting.loading = false;
               this.$message({
                 message: error.response.message.data,
-                type: 'error'
-              })
-            })
+                type: "error"
+              });
+            });
         } else {
-          return
+          return;
         }
-      })
+      });
     },
     getContactDetial() {
-      let uid = this.$route.query.uid
+      let uid = this.$route.query.uid;
       if (uid) {
-        this.setting.loading = true
+        this.setting.loading = true;
         company
           .getContactDetial(this, this.pid, uid)
           .then(result => {
-            this.contactForm.contact = result
-            this.setting.loading = false
+            this.contactForm.contact = result;
+            this.setting.loading = false;
           })
           .catch(err => {
-            this.setting.loading = false
+            this.setting.loading = false;
             this.$message({
               message: error.response.message.data,
-              type: 'error'
-            })
-          })
+              type: "error"
+            });
+          });
       }
     },
     resetForm(formName) {
-      historyBack()
+      historyBack();
     }
   }
-}
+};
 </script>
 <style scoped lang="less">
 .add-customer-wrap {
