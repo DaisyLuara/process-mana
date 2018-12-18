@@ -24,6 +24,15 @@
                 class="item-input"/>
             </el-form-item>
             <el-form-item 
+              label="" 
+              prop="contract_number">
+              <el-input 
+                v-model="searchForm.contract_number" 
+                clearable
+                placeholder="请输入合同编号"
+                class="item-input"/>
+            </el-form-item>
+            <el-form-item 
               label="">
               <el-button 
                 type="primary" 
