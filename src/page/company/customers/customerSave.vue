@@ -221,7 +221,7 @@ export default {
             args.position = this.customerForm.position;
             args.password = this.customerForm.password;
           }
-          if (this.customerForm.telephone === "") {
+          if (!this.customerForm.telephone) {
             delete args.telephone;
           }
           company
