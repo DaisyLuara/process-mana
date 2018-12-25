@@ -64,9 +64,49 @@ let router = {
             import(/* webpackChunkName: "page/company/customers/contacts/contactSave" */ 'page/company/customers/contacts/contactSave'),
           name: '修改联系人',
           meta: {}
+        },
+        {
+          path: 'perms/add',
+          component: () =>
+            import(/* webpackChunkName: "page/company/customers/contacts/contactSave" */ 'page/company/customers/contacts/contactSave'),
+          name: '新增权限',
+          meta: {}
+        },
+        {
+          path: 'perms/edit',
+          component: () =>
+            import(/* webpackChunkName: "page/company/customers/contacts/contactSave" */ 'page/company/customers/contacts/contactSave'),
+          name: '修改权限',
+          meta: {}
         }
       ]
-    }
+    },
+    {
+      path: 'perms',
+      redirect: 'perms',
+      meta: {
+        title: ''
+      },
+      component: () =>
+        import(/* webpackChunkName: "page/company/customers/routerView" */ 'page/company/customers/routerView'),
+      children: [
+        {
+          path: 'add',
+          component: () =>
+            import(/* webpackChunkName: "page/company/customers/perms" */ 'page/company/customers/perms'),
+          name: '新增权限',
+          meta: {}
+        },
+        {
+          path: 'edit/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/company/customers/perms" */ 'page/company/customers/perms'),
+          name: '修改权限',
+          meta: {}
+        }
+      ]
+    },
+
   ]
 }
 
