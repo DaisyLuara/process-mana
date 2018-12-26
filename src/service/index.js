@@ -23,3 +23,6 @@ export * from './notice'
 
 // 个人中心
 export * from './account'
+
+// 采购
+export * from './purchase'

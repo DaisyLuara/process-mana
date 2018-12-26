@@ -13,7 +13,15 @@
               <el-input
                 v-model="searchForm.name"
                 clearable
-                placeholder="请输入收款人"
+                placeholder="请输入硬件名称"
+                class="item-input"
+              />
+            </el-form-item>
+            <el-form-item label prop="factory">
+              <el-input
+                v-model="searchForm.factory"
+                clearable
+                placeholder="请输入所属工厂"
                 class="item-input"
               />
             </el-form-item>
@@ -27,50 +35,77 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button
-              v-if="bd || bdManager || legalAffairs || legalAffairsManager"
-              size="small"
-              type="success"
-              @click="addPayee"
-            >新增收款人</el-button>
+            <!-- v-if="purchase"  -->
+            <el-button size="small" type="success" @click="addHardware">新增硬件</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
               <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="收款人:">
+                <el-form-item label="硬件名称:">
                   <span>{{ scope.row.name }}</span>
                 </el-form-item>
-                <el-form-item label="收款人开户行:">
-                  <span>{{ scope.row.account_bank }}</span>
+                <el-form-item label="硬件型号:">
+                  <span>{{ scope.row.model }}</span>
                 </el-form-item>
-                <el-form-item label="收款人账号:">
-                  <span>{{ scope.row.account_number }}</span>
+                <el-form-item label="所属工厂:">
+                  <span>{{ scope.row.factory }}</span>
+                </el-form-item>
+                <el-form-item label="工厂库存数:">
+                  <span>{{ scope.row.factory_amount }}</span>
+                </el-form-item>
+                <el-form-item label="仓库库存数:">
+                  <span>{{ scope.row.store_amount }}</span>
+                </el-form-item>
+                <el-form-item label="公司库存数:">
+                  <span>{{ scope.row.company_amount }}</span>
+                </el-form-item>
+                <el-form-item label="总库存数:">
+                  <span>{{ scope.row.total_amount }}</span>
                 </el-form-item>
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="收款人" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="name" label="硬件名称" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="150"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="account_number"
-            label="收款人账号"
-            min-width="280"
+            prop="factory"
+            label="所属工厂"
+            min-width="150"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="account_bank"
-            label="收款人开户行"
-            min-width="180"
+            prop="factory_amount"
+            label="工厂库存数"
+            min-width="150"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="store_amount"
+            label="仓库库存数"
+            min-width="150"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="company_amount"
+            label="公司库存数"
+            min-width="150"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="total_amount"
+            label="总库存数"
+            min-width="150"
           />
           <el-table-column label="操作" min-width="200">
             <template slot-scope="scope">
               <el-button
-                v-if="bd || bdManager || legalAffairs || legalAffairsManager"
+                v-if="purchase"
                 size="mini"
                 type="primary"
-                @click="editPayee(scope.row)"
+                @click="editHardware(scope.row)"
               >编辑</el-button>
             </template>
           </el-table-column>
@@ -100,13 +135,7 @@ import {
   FormItem,
   MessageBox
 } from "element-ui";
-import {
-  getPayeeList,
-  handleDateTransform,
-  receivePayment,
-  deletePayment,
-  Cookies
-} from "service";
+import { getPurchaseList, Cookies } from "service";
 
 export default {
   components: {
@@ -121,7 +150,8 @@ export default {
   data() {
     return {
       searchForm: {
-        name: ""
+        name: "",
+        factory: ""
       },
       roles: {},
       setting: {
@@ -137,38 +167,20 @@ export default {
     };
   },
   computed: {
-    // BD
-    bd: function() {
+    // 采购
+    purchase: function() {
       return this.roles.find(r => {
-        return r.name === "user";
-      });
-    },
-    // bd主管
-    bdManager: function() {
-      return this.roles.find(r => {
-        return r.name === "bd-manager";
-      });
-    },
-    // 法务
-    legalAffairs: function() {
-      return this.roles.find(r => {
-        return r.name === "legal-affairs";
-      });
-    },
-    // 法务主管
-    legalAffairsManager: function() {
-      return this.roles.find(r => {
-        return r.name === "legal-affairs-manager";
+        return r.name === "purchase";
       });
     }
   },
   created() {
-    this.getPayeeList();
+    // this.getPurchaseList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
   },
   methods: {
-    getPayeeList() {
+    getPurchaseList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
@@ -177,7 +189,7 @@ export default {
       if (!this.searchForm.name) {
         delete args.name;
       }
-      getPayeeList(this, args)
+      getPurchaseList(this, args)
         .then(res => {
           this.tableData = res.data;
           this.pagination.total = res.meta.pagination.total;
@@ -187,28 +199,28 @@ export default {
           this.setting.loading = false;
         });
     },
-    addPayee() {
+    addHardware() {
       this.$router.push({
-        path: "/payment/payee/add"
+        path: "/purchase/list/add"
       });
     },
-    editPayee(data) {
+    editHardware(data) {
       this.$router.push({
-        path: "/payment/payee/edit/" + data.id
+        path: "/purchase/list/edit/" + data.id
       });
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage;
-      this.getPayeeList();
+      this.getPurchaseList();
     },
     search() {
       this.pagination.currentPage = 1;
-      this.getPayeeList();
+      this.getPurchaseList();
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
-      this.getPayeeList();
+      this.getPurchaseList();
     }
   }
 };

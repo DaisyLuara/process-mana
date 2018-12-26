@@ -133,7 +133,7 @@
       <el-form >
         <el-form-item
           :rules="[{ required: true, message: '请上传合同内容', trigger: 'submit' }]"
-          v-if="!hide && roles.name === 'legal-affairs'&& rejectStatus"
+          v-if="!hide && legalAffairs && rejectStatus"
           label="合同内容" 
           prop="ids">
           <el-upload
@@ -162,19 +162,19 @@
           </el-upload>
         </el-form-item>
         <el-form-item
-          v-if="(roles.name === 'legal-affairs-manager' || roles.name === 'legal-affairs') && agreeStatus"
+          v-if="(legalAffairsManager || legalAffairs) && agreeStatus"
           :rules="[{ required: true, message: '请填写合同编号', trigger: 'submit' }]"
           label="合同编号" 
           prop="contact_number">
          <el-input
             v-model="contractForm.contract_number"
             :maxlength="80"
-            :disabled="roles.name !== 'legal-affairs-manager' && roles.name !== 'legal-affairs'"
+            :disabled="!legalAffairsManager && !legalAffairs"
             placeholder="请输入合同编号"
             class="text-input"/>
         </el-form-item>
         <el-form-item
-          v-if="roles.name === 'legal-affairs-manager'"
+          v-if="legalAffairsManager"
           :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
           label="意见" 
           prop="legal_ma_message">
@@ -186,7 +186,7 @@
             class="text-input"/>
         </el-form-item>
         <el-form-item
-          v-if="roles.name === 'legal-affairs'"
+          v-if="legalAffairs"
           :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
           label="意见" 
           prop="legal_message">
@@ -198,7 +198,7 @@
             class="text-input"/>
         </el-form-item>
         <el-form-item
-          v-if="roles.name === 'bd-manager'"
+          v-if="bdManager"
           :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
           label="意见" 
           prop="bd_ma_message">
@@ -293,11 +293,31 @@ export default {
       hide: null
     }
   },
+  computed: {
+    // bd主管
+    bdManager: function() {
+      return this.roles.find(r => {
+        return r.name === "bd-manager";
+      });
+    },
+    // 法务
+    legalAffairs: function() {
+      return this.roles.find(r => {
+        return r.name === "legal-affairs";
+      });
+    },
+    // 法务主管
+    legalAffairsManager: function() {
+      return this.roles.find(r => {
+        return r.name === "legal-affairs-manager";
+      });
+    }
+  },
   created() {
     this.contractID = this.$route.params.uid
     this.hide = this.$route.query.hide
     let user_info = JSON.parse(Cookies.get('user_info'))
-    this.roles = user_info.roles.data[0]
+    this.roles = user_info.roles.data
     this.contractDetail()
   },
   methods: {
@@ -396,7 +416,7 @@ export default {
       let args = {}
       // 法务主管
       if (
-        this.rolesJudge('legal-affairs-manager') &&
+        this.legalAffairsManager &&
         !this.contractForm.legal_ma_message
       ) {
         this.warningInfo()
@@ -408,7 +428,7 @@ export default {
       }
       // 法务
       if (
-        this.rolesJudge('legal-affairs') &&
+        this.legalAffairs &&
         !this.contractForm.legal_message
       ) {
         this.warningInfo()
@@ -419,7 +439,7 @@ export default {
         }
       }
       // bd主管
-      if (this.rolesJudge('bd-manager') && !this.contractForm.bd_ma_message) {
+      if (this.bdManager && !this.contractForm.bd_ma_message) {
         this.warningInfo()
         return
       } else {
@@ -445,7 +465,7 @@ export default {
       if (this.rejectStatus) {
         this.setting.loading = true
         // 法务
-        if (this.rolesJudge('legal-affairs')) {
+        if (this.legalAffairs) {
           let mediaIds = []
           if (this.fileList.length > 0) {
             this.fileList.map(r => {
@@ -485,14 +505,6 @@ export default {
         return
       }
     },
-    // 角色判断
-    rolesJudge(role) {
-      if (this.roles.name === role) {
-        return true
-      } else {
-        return false
-      }
-    },
     warningInfo() {
       this.$message({
         type: 'warning',
@@ -525,13 +537,13 @@ export default {
     // 管理弹窗
     cancel() {
       this.dialogFormVisible = false
-      if (this.rolesJudge('legal-affairs-manager')) {
+      if (this.legalAffairsManager) {
         this.contractForm.legal_ma_message = ''
       }
-      if (this.rolesJudge('legal-affairs')) {
+      if (this.legalAffairs) {
         this.contractForm.legal_message = ''
       }
-      if (this.rolesJudge('bd-manager')) {
+      if (this.bdManager) {
         this.contractForm.bd_ma_message = ''
       }
       this.setting.loading = false
