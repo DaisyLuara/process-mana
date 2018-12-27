@@ -53,13 +53,13 @@
                   <span>{{ scope.row.factory }}</span>
                 </el-form-item>
                 <el-form-item label="工厂库存数:">
-                  <span>{{ scope.row.factory_amount }}</span>
+                  <span>{{ scope.row.factory_stock }}</span>
                 </el-form-item>
                 <el-form-item label="仓库库存数:">
-                  <span>{{ scope.row.store_amount }}</span>
+                  <span>{{ scope.row.warehouse_stock }}</span>
                 </el-form-item>
                 <el-form-item label="公司库存数:">
-                  <span>{{ scope.row.company_amount }}</span>
+                  <span>{{ scope.row.company_stock }}</span>
                 </el-form-item>
                 <el-form-item label="总库存数:">
                   <span>{{ scope.row.total_amount }}</span>
@@ -77,25 +77,25 @@
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="factory_amount"
+            prop="factory_stock"
             label="工厂库存数"
             min-width="150"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="store_amount"
+            prop="warehouse_stock"
             label="仓库库存数"
             min-width="150"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="company_amount"
+            prop="company_stock"
             label="公司库存数"
             min-width="150"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="total_amount"
+            prop="total_stock"
             label="总库存数"
             min-width="150"
           />

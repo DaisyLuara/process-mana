@@ -27,25 +27,25 @@
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="工厂库存数" prop="factory_amount">
+        <el-form-item label="工厂库存数" prop="factory_stock">
           <el-input
-            v-model="purchaseForm.factory_amount"
+            v-model="purchaseForm.factory_stock"
             placeholder="请填写工厂库存数"
             :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="仓库库存数" prop="store_amount">
+        <el-form-item label="仓库库存数" prop="warehouse_stock">
           <el-input
-            v-model="purchaseForm.store_amount"
+            v-model="purchaseForm.warehouse_stock"
             placeholder="请填写仓库库存数"
             :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="公司库存数" prop="company_amount">
+        <el-form-item label="公司库存数" prop="company_stock">
           <el-input
-            v-model="purchaseForm.company_amount"
+            v-model="purchaseForm.company_stock"
             placeholder="请填写公司库存数"
             :maxlength="30"
             class="item-input"
@@ -97,20 +97,20 @@ export default {
         name: "",
         model: "",
         factory: "",
-        factory_amount: "",
-        store_amount: "",
-        company_amount: ""
+        factory_stock: "",
+        warehouse_stock: "",
+        company_stock: ""
       },
       rules: {
-        factory_amount: [
+        factory_stock: [
           { required: true, message: "请输入工厂库存数", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
-        store_amount: [
+        warehouse_stock: [
           { required: true, message: "请输入仓库库存数", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
-        company_amount: [
+        company_stock: [
           { required: true, message: "请输入公司库存数", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
@@ -128,7 +128,7 @@ export default {
     this.setting.loading = true;
     this.purchaseID = this.$route.params.uid;
     if (this.purchaseID) {
-      // this.purchaseDetail()
+      this.purchaseDetail()
     } else {
       this.setting.loading = false;
     }
@@ -140,9 +140,9 @@ export default {
           this.purchaseForm.name = res.name;
           this.purchaseForm.model = res.model;
           this.purchaseForm.factory = res.factory;
-          this.purchaseForm.factory_amount = res.factory_amount;
-          this.purchaseForm.store_amount = res.store_amount;
-          this.purchaseForm.company_amount = res.company_amount;
+          this.purchaseForm.factory_stock = res.factory_stock;
+          this.purchaseForm.warehouse_stock = res.warehouse_stock;
+          this.purchaseForm.company_stock = res.company_stock;
           this.setting.loading = false;
         })
         .catch(err => {
