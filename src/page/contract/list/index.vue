@@ -214,27 +214,46 @@
       </div>
     </div>
     <el-dialog title="硬件出厂" :visible.sync="dialogFormVisible" label-width="80px">
-      <el-form :model="hardwareForm">
-        <el-form-item
-          :rules="[{ required: true, message: '请选择硬件出处', trigger: 'submit' }]"
+      <el-button
+        size="small"
+        type="success"
+        style="margin-bottom: 20px;"
+        @click="hardwareAdd"
+      >新增硬件信息</el-button>
+      <el-table :data="hardwareTableData" border style="width: 100%;margin-bottom: 20px;">
+        <el-table-column
+          prop="origin"
           label="硬件出处"
+          min-width="80"
+          align="center"
+          header-align="center"
         >
-          <el-select v-model="hardwareForm.origin" placeholder="请选择硬件出处" class="store">
-            <el-option
-              v-for="item in originList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          :rules="[{ required: true, message: '请填写硬件数量', trigger: 'submit' }]"
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.origin" type="tel" placeholder="请输入硬件出处"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="amount"
           label="硬件数量"
+          min-width="100"
+          align="center"
+          header-align="center"
         >
-          <el-input v-model="hardwareForm.amount" placeholder="请填写硬件数量" class="amount-input"/>
-        </el-form-item>
-      </el-form>
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.amount" placeholder="请输入硬件数量"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" min-width="100">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              @click="deleteHardware(scope.$index)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
@@ -395,7 +414,8 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: []
+      tableData: [],
+      hardwareTableData: []
     };
   },
   computed: {
@@ -437,6 +457,16 @@ export default {
     this.role = user_info.roles.data;
   },
   methods: {
+    deleteHardware(index){
+      this.hardwareTableData.splice(index, 1)
+    },
+    hardwareAdd() {
+      let td = {
+        origin: "",
+        amount: ""
+      };
+      this.hardwareTableData.unshift(td);
+    },
     hardwareHandle() {
       this.dialogFormVisible = true;
     },
