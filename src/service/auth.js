@@ -57,6 +57,7 @@ export default {
     context.$cookie.delete('user_info', { domain: DOMAIN })
     context.$cookie.delete('jwt_ttl', { domain: DOMAIN })
     context.$cookie.delete('jwt_begin_time', { domain: DOMAIN })
+    localStorage.removeItem('permissions')
     context.$cookie.delete('permissions', { domain: DOMAIN })
     let setIntervalValue =
       context.$store.state.notificationCount.setIntervalValue
@@ -73,7 +74,9 @@ export default {
   },
 
   getUserInfo() {
-    let permissions = Cookies.get('permissions')
+    // let permissions = Cookies.get('permissions')
+    localStorage.getItem('permissions')
+
     if (permissions) {
       return JSON.parse(permissions)
     }
@@ -92,6 +95,24 @@ export default {
     return this.checkPermission(route.meta.permission)
   },
 
+  refreshUserInfo(context) {
+    return new Promise((resolve, reject) => {
+      context.$http
+        .get(HOST + USERINFO_API)
+        .then(response => {
+          localStorage.removeItem('permissions')
+          context.$cookie.delete('permissions', { domain: DOMAIN })
+          let result = response.data
+          localStorage.setItem('permissions', result.permissions)
+
+          //context.$store.commit('setCurUserInfo', result.data)
+          resolve(result.data)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
   checkPermission(name) {
     return hasPermission(name, this.getPermission())
   },

@@ -3,7 +3,7 @@
     <div v-loading="setting.loading" :element-loading-text="setting.loadingText">
       <div class="perms-title">{{ $route.name }}</div>
       <el-form ref="permsForm" :model="permsForm" label-width="120px" class="permsForm">
-        <el-form-item label="">
+        <el-form-item label>
           <el-table :data="allPerms" border ref="permsTable" class="perms-table">
             <el-table-column label="一级">
               <template slot-scope="scope">
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { historyBack, saveRole, getRoleInfoByRid } from "service";
+import { historyBack } from "service";
 import {
   Button,
   Form,
@@ -370,17 +370,8 @@ export default {
       ]
     };
   },
-  created: function() {
+  created() {
     this.permsID = this.$route.params.uid;
-  },
-  getRoleInfoByRid() {
-    getRoleInfoByRid(this, this.permsID)
-      .then(res => {
-        this.permsForm = res;
-      })
-      .catch(err => {
-        console.log(err);
-      });
   },
   methods: {
     selectChildPerm(checkedPerm, type) {
