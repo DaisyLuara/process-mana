@@ -207,7 +207,6 @@ export default {
       this.active = item.id;
       switch (item.id) {
         case "zhongtai":
-          localStorage.removeItem("permissions");
           this.linkRedirect("ad");
           break;
         case "liucheng":
@@ -216,6 +215,7 @@ export default {
       }
     },
     linkRedirect(type) {
+      localStorage.removeItem("permissions");
       // let permissions = this.$cookie.get('permissions')
       let userInfo = this.$cookie.get("user_info");
       let jwt_ttl = this.$cookie.get("jwt_ttl");

@@ -1,13 +1,13 @@
 import { Message, MessageBox } from 'element-ui'
 import { Cookies } from 'service'
+import app from '../main'
+import axios from 'axios'
 const HOST = process.env.SERVER_URL
 const DOMAIN = process.env.DOMAIN
 const LOGIN_URL = process.env.LOGIN_URL
+const USERINFO_API = '/api/user?include=roles'
 const LOGOUT_API = '/api/authorizations/current'
-const IMAGE_CAPTCHA = '/api/captchas'
 const USER_API = '/api/user'
-const SMS_CAPTCHA = '/api/verificationCodes'
-const TOWER_OUTH_TOKEN = '/api/oauth/token?include=permissions,roles'
 export default {
   checkFacility() {
     if (
@@ -75,8 +75,7 @@ export default {
 
   getUserInfo() {
     // let permissions = Cookies.get('permissions')
-    localStorage.getItem('permissions')
-
+    let permissions = localStorage.getItem('permissions')
     if (permissions) {
       return JSON.parse(permissions)
     }
@@ -89,22 +88,27 @@ export default {
   },
 
   checkPathPermission(route) {
-    if (!route.meta || !route.meta.permission) {
-      return true
+    console.log(localStorage.getItem('permissions'))
+    if (!localStorage.getItem('permissions')) {
+      console.log(22)
+      this.refreshUserInfo(app)
     }
-    return this.checkPermission(route.meta.permission)
+      if (!route.meta || !route.meta.permission) {
+        return true
+      }
+      return this.checkPermission(route.meta.permission)
   },
 
   refreshUserInfo(context) {
     return new Promise((resolve, reject) => {
-      context.$http
+      axios
         .get(HOST + USERINFO_API)
         .then(response => {
-          localStorage.removeItem('permissions')
-          context.$cookie.delete('permissions', { domain: DOMAIN })
           let result = response.data
-          localStorage.setItem('permissions', result.permissions)
-
+          localStorage.setItem(
+            'permissions',
+            JSON.stringify(result.permissions)
+          )
           //context.$store.commit('setCurUserInfo', result.data)
           resolve(result.data)
         })
@@ -157,19 +161,6 @@ export default {
           reject(error)
         })
     })
-  },
-
-  refreshTowerOuthToken(context) {
-    return new Promise((resolve, reject) => {
-      context.$http
-        .post(HOST + TOWER_OUTH_TOKEN)
-        .then(result => {
-          resolve(result.data)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
   }
 }
 
@@ -177,8 +168,8 @@ function hasPermission(name, perms) {
   if (!perms) {
     return false
   }
-  for (let i in perms.data) {
-    if (name == perms.data[i]['name']) {
+  for (let i in perms) {
+    if (name == perms[i]['name']) {
       return true
     }
   }
