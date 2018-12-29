@@ -94,6 +94,12 @@
           <el-table-column :show-overflow-tooltip="true" prop="form" label="调整形式" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
+            prop="amount"
+            label="调整数量"
+            min-width="100"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
             prop="old_stock"
             label="原总库存"
             min-width="100"

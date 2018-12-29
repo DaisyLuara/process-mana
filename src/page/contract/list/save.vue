@@ -187,17 +187,6 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="origin"
-              label="硬件出处"
-              min-width="80"
-              align="center"
-              header-align="center"
-            >
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.origin" type="tel" placeholder="请输入硬件出处"/>
-              </template>
-            </el-table-column>
-            <el-table-column
               prop="amount"
               label="硬件数量"
               min-width="100"
@@ -366,7 +355,6 @@ export default {
       let td = {
         model_id: "",
         color_id: "",
-        origin: "",
         amount: ""
       };
       this.hardwareTableData.unshift(td);
