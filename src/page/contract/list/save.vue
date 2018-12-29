@@ -129,44 +129,96 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <el-col v-if="hardwareFlag" :span="12">
-              <!-- :rules="[{ required: true, message: "请选择合同类型", trigger: "submit" }]" -->
-            <el-form-item
-              label="硬件名称" 
-              prop="hardware_id">
-              <el-select v-model="contractForm.hardware_id" placeholder="请选择硬件名称">
-                <el-option
-                  v-for="item in hardwareList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
         </el-row>
-        <el-row v-if="hardwareFlag">
-          <el-col :span="12">
-            <el-form-item label="硬件型号" prop="hardware_model">
-              <el-select v-model="contractForm.hardware_model" placeholder="请选择硬件型号">
-                <el-option
-                  v-for="item in modelList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="硬件数量" prop="amount">
-              <el-input
-                v-model="contractForm.hardware_amount"
-                placeholder="请选择硬件数量"
-                class="text-input"
-              />
-            </el-form-item>
-          </el-col>
+        <el-row>
+          <el-button
+            size="small"
+            type="success"
+            style="margin-bottom: 20px;"
+            @click="hardwareAdd"
+          >新增硬件信息</el-button>
+          <el-table :data="hardwareTableData" border style="width: 100%;margin-bottom: 20px;">
+            <el-table-column
+              prop="model"
+              label="硬件型号"
+              min-width="80"
+              align="center"
+              header-align="center"
+            >
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.model_id"
+                  :loading="searchLoading"
+                  placeholder="请选择硬件型号"
+                  filterable
+                  clearable
+                >
+                  <el-option
+                    v-for="item in modelList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="color"
+              label="硬件颜色"
+              min-width="80"
+              align="center"
+              header-align="center"
+            >
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.color_id"
+                  :loading="searchLoading"
+                  placeholder="请选择硬件颜色"
+                  filterable
+                  clearable
+                >
+                  <el-option
+                    v-for="item in colorList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="origin"
+              label="硬件出处"
+              min-width="80"
+              align="center"
+              header-align="center"
+            >
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.origin" type="tel" placeholder="请输入硬件出处"/>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="amount"
+              label="硬件数量"
+              min-width="100"
+              align="center"
+              header-align="center"
+            >
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.amount" placeholder="请输入硬件数量"/>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" min-width="100">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="danger"
+                  icon="el-icon-delete"
+                  @click="deleteHardware(scope.$index)"
+                />
+              </template>
+            </el-table-column>
+          </el-table>
         </el-row>
         <el-form-item label="备注" prop="remark">
           <el-input
@@ -210,7 +262,9 @@ import {
   RadioGroup,
   Radio,
   Col,
-  Upload
+  Upload,
+  Table,
+  TableColumn
 } from "element-ui";
 
 const SERVER_URL = process.env.SERVER_URL;
@@ -227,17 +281,20 @@ export default {
     ElDatePicker: DatePicker,
     ElRadioGroup: RadioGroup,
     ElRadio: Radio,
-    ElUpload: Upload
+    ElUpload: Upload,
+    ElTable: Table,
+    ElTableColumn: TableColumn
   },
   data() {
     return {
+      hardwareTableData: [],
       SERVER_URL: SERVER_URL,
       formHeader: {
         Authorization: "Bearer " + auth.getToken()
       },
       companyList: [],
       modelList: [],
-      hardwareList: [],
+      colorList: [],
       fileList: [],
       searchLoading: false,
       setting: {
@@ -249,7 +306,6 @@ export default {
       hardwareFlag: false,
       contractID: "",
       contractForm: {
-        hardware_id: "",
         company_id: "",
         applicant_name: "",
         contract_number: "",
@@ -303,6 +359,18 @@ export default {
     }
   },
   methods: {
+    deleteHardware(index) {
+      this.hardwareTableData.splice(index, 1);
+    },
+    hardwareAdd() {
+      let td = {
+        model_id: "",
+        color_id: "",
+        origin: "",
+        amount: ""
+      };
+      this.hardwareTableData.unshift(td);
+    },
     hardwareHandle(val) {
       if (val === 1) {
         this.hardwareFlag = true;

@@ -14,7 +14,7 @@ export default {
       component: () =>
         import(/* webpackChunkName: "page/purchase/list/routerView" */ 'page/purchase/list/routerView'),
       meta: {
-        title: '采购管理'
+        title: '采购库存'
       },
       children: [
         {
@@ -38,13 +38,27 @@ export default {
           name: '修改硬件',
           meta: {}
         },
-        // {
-        //   path: 'detail/:uid',
-        //   component: () =>
-        //     import(/* webpackChunkName: "page/purchase/list/detail" */ 'page/purchase/list/detail'),
-        //   name: '付款详情',
-        //   meta: {}
-        // }
+        {
+          path: 'detail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/purchase/list/detail/detail" */ 'page/purchase/list/detail/detail'),
+          name: '采购明细',
+          meta: {}
+        },
+        {
+          path: 'saveDetail',
+          component: () =>
+            import(/* webpackChunkName: "page/purchase/list/detail/save" */ 'page/purchase/list/detail/save'),
+          name: '明细保存',
+          meta: {}
+        },
+        {
+          path: 'saveDetail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/purchase/list/detail/save" */ 'page/purchase/list/detail/save'),
+          name: '明细修改',
+          meta: {}
+        }
       ]
     }
   ]

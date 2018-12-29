@@ -222,6 +222,54 @@
       >新增硬件信息</el-button>
       <el-table :data="hardwareTableData" border style="width: 100%;margin-bottom: 20px;">
         <el-table-column
+          prop="model"
+          label="硬件型号"
+          min-width="80"
+          align="center"
+          header-align="center"
+        >
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.model_id"
+              :loading="searchLoading"
+              placeholder="请选择硬件型号"
+              filterable
+              clearable
+            >
+              <el-option
+                v-for="item in modelList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="color"
+          label="硬件颜色"
+          min-width="80"
+          align="center"
+          header-align="center"
+        >
+          <template slot-scope="scope">
+            <el-select
+              v-model="scope.row.color_id"
+              :loading="searchLoading"
+              placeholder="请选择硬件颜色"
+              filterable
+              clearable
+            >
+              <el-option
+                v-for="item in colorList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="origin"
           label="硬件出处"
           min-width="80"
@@ -306,6 +354,8 @@ export default {
   },
   data() {
     return {
+      modelList: [],
+      colorList: [],
       searchForm: {
         dataValue: [],
         name: "",
@@ -457,11 +507,13 @@ export default {
     this.role = user_info.roles.data;
   },
   methods: {
-    deleteHardware(index){
-      this.hardwareTableData.splice(index, 1)
+    deleteHardware(index) {
+      this.hardwareTableData.splice(index, 1);
     },
     hardwareAdd() {
       let td = {
+        model_id: "",
+        color_id: "",
         origin: "",
         amount: ""
       };

@@ -3,14 +3,6 @@
     <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
       <div class="pane-title">{{ purchaseID ? '修改硬件' : '新增硬件' }}</div>
       <el-form ref="purchaseForm" :model="purchaseForm" :rules="rules" label-width="130px">
-        <el-form-item label="硬件名称" prop="name">
-          <el-input
-            v-model="purchaseForm.name"
-            :maxlength="150"
-            placeholder="请填写硬件名称"
-            class="item-input"
-          />
-        </el-form-item>
         <el-form-item label="硬件型号" prop="model">
           <el-input
             v-model="purchaseForm.model"
@@ -19,34 +11,58 @@
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="所属工厂" prop="factory">
+        <el-form-item label="硬件颜色" prop="color">
           <el-input
-            v-model="purchaseForm.factory"
-            placeholder="请填写所属工厂"
+            v-model="purchaseForm.color"
+            placeholder="请填写硬件颜色"
             :maxlength="100"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="工厂库存数" prop="factory_stock">
+        <el-form-item label="申悦库存" prop="shenyue_stock">
           <el-input
-            v-model="purchaseForm.factory_stock"
-            placeholder="请填写工厂库存数"
+            v-model="purchaseForm.shenyue_stock"
+            placeholder="请填写申悦库存"
             :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="仓库库存数" prop="warehouse_stock">
+        <el-form-item label="域展库存" prop="yuezhan_stock">
+          <el-input
+            v-model="purchaseForm.yuezhan_stock"
+            placeholder="请填写域展库存"
+            :maxlength="30"
+            class="item-input"
+          />
+        </el-form-item>
+        <el-form-item label="卓有库存" prop="zhouyou_stock">
+          <el-input
+            v-model="purchaseForm.zhouyou_stock"
+            placeholder="请填写卓有库存"
+            :maxlength="30"
+            class="item-input"
+          />
+        </el-form-item>
+        <el-form-item label="仓库库存" prop="warehouse_stock">
           <el-input
             v-model="purchaseForm.warehouse_stock"
-            placeholder="请填写仓库库存数"
+            placeholder="请填写仓库库存"
             :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="公司库存数" prop="company_stock">
+        <el-form-item label="公司库存" prop="company_stock">
           <el-input
             v-model="purchaseForm.company_stock"
-            placeholder="请填写公司库存数"
+            placeholder="请填写公司库存"
+            :maxlength="30"
+            class="item-input"
+          />
+        </el-form-item>
+        <el-form-item label="返修库存" prop="back_amount">
+          <el-input
+            v-model="purchaseForm.back_amount"
+            placeholder="请填写返修库存"
             :maxlength="30"
             class="item-input"
           />
@@ -94,33 +110,46 @@ export default {
       },
       purchaseID: "",
       purchaseForm: {
-        name: "",
         model: "",
-        factory: "",
-        factory_stock: "",
+        color: "",
+        shenyue_stock: "",
+        yuezhan_stock: "",
+        zhouyou_stock: "",
         warehouse_stock: "",
-        company_stock: ""
+        company_stock: "",
+        back_amount: ""
       },
       rules: {
-        factory_stock: [
-          { required: true, message: "请输入工厂库存数", trigger: "submit" },
+        shenyue_stock: [
+          { required: true, message: "请填写申悦库存", trigger: "submit" },
+          { validator: checkNumber, trigger: "submit" }
+        ],
+        yuezhan_stock: [
+          { required: true, message: "请填写域展库存", trigger: "submit" },
+          { validator: checkNumber, trigger: "submit" }
+        ],
+        zhouyou_stock: [
+          { required: true, message: "请填写卓有库存", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
         warehouse_stock: [
-          { required: true, message: "请输入仓库库存数", trigger: "submit" },
+          { required: true, message: "请填写仓库库存", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
         company_stock: [
-          { required: true, message: "请输入公司库存数", trigger: "submit" },
+          { required: true, message: "请填写公司库存", trigger: "submit" },
+          { validator: checkNumber, trigger: "submit" }
+        ],
+        back_amount: [
+          { required: true, message: "请填写返修库存", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
         model: [
           { required: true, message: "请输入硬件型号", trigger: "submit" }
         ],
-        factory: [
-          { required: true, message: "请输入所属工厂", trigger: "submit" }
-        ],
-        name: [{ required: true, message: "请输入硬件名称", trigger: "submit" }]
+        color: [
+          { required: true, message: "请填写硬件颜色", trigger: "submit" }
+        ]
       }
     };
   },
@@ -128,7 +157,7 @@ export default {
     this.setting.loading = true;
     this.purchaseID = this.$route.params.uid;
     if (this.purchaseID) {
-      this.purchaseDetail()
+      this.purchaseDetail();
     } else {
       this.setting.loading = false;
     }
@@ -137,12 +166,15 @@ export default {
     purchaseDetail() {
       purchaseDetail(this, this.purchaseID)
         .then(res => {
-          this.purchaseForm.name = res.name;
           this.purchaseForm.model = res.model;
-          this.purchaseForm.factory = res.factory;
-          this.purchaseForm.factory_stock = res.factory_stock;
+          this.purchaseForm.color = res.color;
+          this.purchaseForm.shenyue_stock = res.shenyue_stock;
+          this.purchaseForm.yuezhan_stock = res.yuezhan_stock;
+          this.purchaseForm.zhouyou_stock = res.zhouyou_stock;
           this.purchaseForm.warehouse_stock = res.warehouse_stock;
           this.purchaseForm.company_stock = res.company_stock;
+          this.purchaseForm.back_amount = res.back_amount;
+
           this.setting.loading = false;
         })
         .catch(err => {

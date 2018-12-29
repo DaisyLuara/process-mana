@@ -5,24 +5,29 @@
       :element-loading-text="setting.loadingText"
       class="item-list-wrap"
     >
-      <h4>采购库存</h4>
-      <div class="item-content-wrap">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item :to="{ path: '/purchase/list' }">
+          <span>采购库存</span>
+        </el-breadcrumb-item>
+        <el-breadcrumb-item>库存明细</el-breadcrumb-item>
+      </el-breadcrumb>
+      <div class="item-purchase-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="model">
-              <el-input
-                v-model="searchForm.model"
-                clearable
-                placeholder="请输入硬件型号"
-                class="item-input"
-              />
-            </el-form-item>
             <el-form-item label prop="color">
               <el-input
                 v-model="searchForm.color"
                 clearable
                 placeholder="请输入硬件颜色"
+                class="item-input"
+              />
+            </el-form-item>
+            <el-form-item label prop="quality">
+              <el-input
+                v-model="searchForm.quality"
+                clearable
+                placeholder="请输入硬件性质"
                 class="item-input"
               />
             </el-form-item>
@@ -37,7 +42,7 @@
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
             <!-- v-if="purchase"  -->
-            <el-button size="small" type="success" @click="addHardware">新增硬件</el-button>
+            <el-button size="small" type="success" @click="addDetail">新增库存明细</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
@@ -53,74 +58,56 @@
                 <el-form-item label="硬件颜色:">
                   <span>{{ scope.row.color }}</span>
                 </el-form-item>
-                <el-form-item label="申悦:">
-                  <span>{{ scope.row.shenyue }}</span>
+                <el-form-item label="硬件性质:">
+                  <span>{{ scope.row.quality }}</span>
                 </el-form-item>
-                <el-form-item label="域展:">
-                  <span>{{ scope.row.yuezhan }}</span>
+                <el-form-item label="调整出处:">
+                  <span>{{ scope.row.source }}</span>
                 </el-form-item>
-                <el-form-item label="卓有:">
-                  <span>{{ scope.row.zhuoyou }}</span>
+                <el-form-item label="调整形式:">
+                  <span>{{ scope.row.form }}</span>
                 </el-form-item>
-                <el-form-item label="仓库:">
-                  <span>{{ scope.row.warehouse_stock }}</span>
+                <el-form-item label="调整数量:">
+                  <span>{{ scope.row.amount }}</span>
                 </el-form-item>
-                <el-form-item label="公司:">
-                  <span>{{ scope.row.company_stock }}</span>
+                <el-form-item label="原总库存:">
+                  <span>{{ scope.row.old_stock }}</span>
                 </el-form-item>
-                <el-form-item label="返修:">
-                  <span>{{ scope.row.back_amount }}</span>
+                <el-form-item label="现总库存:">
+                  <span>{{ scope.row.new_stock }}</span>
                 </el-form-item>
-                <el-form-item label="可用库存:">
-                  <span>{{ scope.row.use_amount }}</span>
-                </el-form-item>
-                <el-form-item label="总库存:">
-                  <span>{{ scope.row.total_amount }}</span>
+                <el-form-item label="时间:">
+                  <span>{{ scope.row.created_at }}</span>
                 </el-form-item>
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="color" label="硬件颜色" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="shenyue" label="申悦" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="yuezhan" label="域展" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="zhuoyou" label="卓有" min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="warehouse_stock"
-            label="仓库"
+            prop="quality"
+            label="硬件性质"
             min-width="80"
           />
+          <el-table-column :show-overflow-tooltip="true" prop="form" label="调整形式" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="company_stock"
-            label="公司"
-            min-width="80"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="back_amount"
-            label="返修"
-            min-width="80"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="use_amount"
-            label="可用库存"
+            prop="old_stock"
+            label="原总库存"
             min-width="100"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="total_amount"
-            label="总库存"
+            prop="new_stock"
+            label="现总库存"
             min-width="100"
           />
           <el-table-column label="操作" min-width="200">
             <template slot-scope="scope">
               <!-- v-if="purchase" -->
-              <el-button size="mini" type="primary" @click="editHardware(scope.row)">编辑</el-button>
-              <el-button size="mini" @click="detailsHardware(scope.row)">明细</el-button>
+              <el-button size="mini" type="primary" @click="editDetail(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -147,12 +134,16 @@ import {
   Pagination,
   Form,
   FormItem,
-  MessageBox
+  MessageBox,
+  Breadcrumb,
+  BreadcrumbItem
 } from "element-ui";
-import { getPurchaseList, Cookies } from "service";
+import { getDetialsList, Cookies } from "service";
 
 export default {
   components: {
+    "el-breadcrumb": Breadcrumb,
+    "el-breadcrumb-item": BreadcrumbItem,
     "el-table": Table,
     "el-table-column": TableColumn,
     "el-button": Button,
@@ -164,7 +155,7 @@ export default {
   data() {
     return {
       searchForm: {
-        model: "",
+        quality: "",
         color: ""
       },
       roles: {},
@@ -177,19 +168,23 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
+      parentInfo: {
+        model: "",
+        color: "",
+        detailId: ""
+      },
       tableData: [
         {
           id: 1,
-          model: "3.0版大K双屏机器",
+          model: "2.5版单屏机器",
           color: "红色",
-          shenyue: 12,
-          yuezhan: 10,
-          zhuoyou: 1,
-          warehouse_stock: 10,
-          company_stock: 20,
-          back_amount: 30,
-          use_amount: 10,
-          total_amount: 20
+          quality: "出厂",
+          source: "仓库",
+          form: "减少",
+          amount: 10,
+          old_stock: 20,
+          new_stock: 30,
+          created_at: "2018-12-12 16:01:01"
         }
       ]
     };
@@ -203,25 +198,24 @@ export default {
     }
   },
   created() {
-    // this.getPurchaseList();
+    // this.getDetialsList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
+    this.parentInfo.color = this.$route.query.color;
+    this.parentInfo.model = this.$route.query.model;
+    this.parentInfo.detailId = this.$route.params.uid;
   },
   methods: {
-    getPurchaseList() {
+    getDetialsList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        model: this.searchForm.model,
-        color: this.searchForm.color
+        name: this.searchForm.name
       };
-      if (!this.searchForm.model) {
-        delete args.model;
+      if (!this.searchForm.name) {
+        delete args.name;
       }
-      if (!this.searchForm.color) {
-        delete args.color;
-      }
-      getPurchaseList(this, args)
+      getDetialsList(this, args)
         .then(res => {
           this.tableData = res.data;
           this.pagination.total = res.meta.pagination.total;
@@ -231,37 +225,38 @@ export default {
           this.setting.loading = false;
         });
     },
-    detailsHardware(data) {
+    addDetail() {
       this.$router.push({
-        path: "/purchase/list/detail/" + data.id,
+        path: "/purchase/list/saveDetail",
         query: {
-          model: data.model,
-          color: data.color
+          model: this.parentInfo.model,
+          color: this.parentInfo.color,
+          pid: this.parentInfo.detailId
         }
       });
     },
-    addHardware() {
+    editDetail(data) {
+      console.log(this.parentInfo.detailId);
+      let _this = this;
       this.$router.push({
-        path: "/purchase/list/add"
-      });
-    },
-    editHardware(data) {
-      this.$router.push({
-        path: "/purchase/list/edit/" + data.id
+        path: "/purchase/list/saveDetail/" + data.id,
+        query: {
+          pid: _this.parentInfo.detailId
+        }
       });
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage;
-      this.getPurchaseList();
+      this.getDetialsList();
     },
     search() {
       this.pagination.currentPage = 1;
-      this.getPurchaseList();
+      this.getDetialsList();
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
-      this.getPurchaseList();
+      this.getDetialsList();
     }
   }
 };
@@ -278,8 +273,9 @@ export default {
     .el-form-item {
       margin-bottom: 0;
     }
-    .item-content-wrap {
+    .item-purchase-wrap {
       margin-top: 10px;
+
       .demo-table-expand {
         font-size: 0;
       }
