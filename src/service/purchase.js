@@ -1,11 +1,12 @@
-const PURCHASE_API = '/api/purchase'
+const PURCHASE_API = '/api/hardware'
+const INVENTORY_DETAIL_API = '/api/hardwarechange'
 
 const HOST = process.env.SERVER_URL
 // 采购库存列表
 const getPurchaseList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + PURCHASE_API, { params: params })
+      .get(HOST + PURCHASE_API + '/list', { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -18,7 +19,7 @@ const getPurchaseList = (context, params) => {
 const savePurchase = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + PURCHASE_API, params)
+      .post(HOST + PURCHASE_API + '/create', params)
       .then(response => {
         resolve(response.data)
       })
@@ -58,7 +59,7 @@ const modifyPurchase = (context, purchaseId, params) => {
 const getDetialsList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + PURCHASE_API, { params: params })
+      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -72,7 +73,7 @@ const getDetialsList = (context, params) => {
 const saveDetails = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + PURCHASE_API, params)
+      .post(HOST + INVENTORY_DETAIL_API + '/create', params)
       .then(response => {
         resolve(response.data)
       })
@@ -81,32 +82,34 @@ const saveDetails = (context, params) => {
       })
   })
 }
+
+
 // 库存明细详情
-const storeDetail = (context, detailsId, params) => {
-  return new Promise(function(resolve, reject) {
-    context.$http
-      .get(HOST + PURCHASE_API + '/' + detailsId, { params: params })
-      .then(response => {
-        resolve(response.data)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
-// 库存明细修改
-const modifyDetails = (context, detailsId, params) => {
-  return new Promise(function(resolve, reject) {
-    context.$http
-      .patch(HOST + PURCHASE_API + '/' + detailsId, params)
-      .then(response => {
-        resolve(response.data)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
+// const storeDetail = (context, detailsId, params) => {
+//   return new Promise(function(resolve, reject) {
+//     context.$http
+//       .get(HOST + PURCHASE_API + '/' + detailsId, { params: params })
+//       .then(response => {
+//         resolve(response.data)
+//       })
+//       .catch(error => {
+//         reject(error)
+//       })
+//   })
+// }
+// // 库存明细修改
+// const modifyDetails = (context, detailsId, params) => {
+//   return new Promise(function(resolve, reject) {
+//     context.$http
+//       .patch(HOST + PURCHASE_API + '/' + detailsId, params)
+//       .then(response => {
+//         resolve(response.data)
+//       })
+//       .catch(error => {
+//         reject(error)
+//       })
+//   })
+// }
 export {
   modifyPurchase,
   purchaseDetail,

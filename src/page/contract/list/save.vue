@@ -147,17 +147,18 @@
             >
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.model_id"
+                  v-model="scope.row.hardware_model"
                   :loading="searchLoading"
                   placeholder="请选择硬件型号"
                   filterable
                   clearable
+                  @change="handleHardware"
                 >
                   <el-option
                     v-for="item in modelList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
+                    :key="item.model"
+                    :label="item.model"
+                    :value="item.model"
                   />
                 </el-select>
               </template>
@@ -171,7 +172,7 @@
             >
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.color_id"
+                  v-model="scope.row.hardware_color"
                   :loading="searchLoading"
                   placeholder="请选择硬件颜色"
                   filterable
@@ -179,22 +180,22 @@
                 >
                   <el-option
                     v-for="item in colorList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
+                    :key="item.color"
+                    :label="item.color"
+                    :value="item.color"
                   />
                 </el-select>
               </template>
             </el-table-column>
             <el-table-column
-              prop="amount"
+              prop="hardware_color"
               label="硬件数量"
               min-width="100"
               align="center"
               header-align="center"
             >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.amount" placeholder="请输入硬件数量"/>
+                <el-input v-model="scope.row.hardware_stock" placeholder="请输入硬件数量"/>
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="100">
@@ -235,7 +236,9 @@ import {
   modifyContract,
   historyBack,
   contractDetail,
-  Cookies
+  Cookies,
+  hardwareColorByModel,
+  hardwareModel
 } from "service";
 import auth from "service/auth";
 import {
@@ -337,6 +340,7 @@ export default {
     this.setting.loading = true;
     this.contractID = this.$route.params.uid;
     this.getCompany();
+    this.hardwareModel();
     if (this.contractID) {
       this.contractDetail();
     } else {
@@ -353,12 +357,46 @@ export default {
     },
     hardwareAdd() {
       let td = {
-        model_id: "",
-        color_id: "",
-        amount: ""
+        hardware_model: "",
+        hardware_color: "",
+        hardware_stock: ""
       };
       this.hardwareTableData.unshift(td);
     },
+    handleHardware(val) {
+      this.hardwareColorByModel(val);
+    },
+    hardwareColorByModel(val) {
+      this.searchLoading = true;
+      let args = {
+        model: val
+      };
+      hardwareColorByModel(this, args)
+        .then(res => {
+          this.colorList = res.data;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "warning"
+          });
+        });
+    },
+    hardwareModel() {
+      hardwareModel(this)
+        .then(res => {
+          this.modelList = res;
+        })
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: "warning"
+          });
+        });
+    },
+
     hardwareHandle(val) {
       if (val === 1) {
         this.hardwareFlag = true;

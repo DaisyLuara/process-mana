@@ -27,17 +27,17 @@
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="域展库存" prop="yuezhan_stock">
+        <el-form-item label="域展库存" prop="yuzhan_stock">
           <el-input
-            v-model="purchaseForm.yuezhan_stock"
+            v-model="purchaseForm.yuzhan_stock"
             placeholder="请填写域展库存"
             :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="卓有库存" prop="zhouyou_stock">
+        <el-form-item label="卓有库存" prop="zhuoyou_stock">
           <el-input
-            v-model="purchaseForm.zhouyou_stock"
+            v-model="purchaseForm.zhuoyou_stock"
             placeholder="请填写卓有库存"
             :maxlength="30"
             class="item-input"
@@ -59,11 +59,20 @@
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="返修库存" prop="back_amount">
+        <el-form-item label="返修库存" prop="fanxiu_stock">
           <el-input
-            v-model="purchaseForm.back_amount"
+            v-model="purchaseForm.fanxiu_stock"
             placeholder="请填写返修库存"
             :maxlength="30"
+            class="item-input"
+          />
+        </el-form-item>
+        <el-form-item label="备注" prop="remark">
+          <el-input
+            v-model="purchaseForm.remark"
+            placeholder="请填写备注"
+            :maxlength="1000"
+            type="textarea"
             class="item-input"
           />
         </el-form-item>
@@ -113,22 +122,23 @@ export default {
         model: "",
         color: "",
         shenyue_stock: "",
-        yuezhan_stock: "",
-        zhouyou_stock: "",
+        yuzhan_stock: "",
+        zhuoyou_stock: "",
         warehouse_stock: "",
         company_stock: "",
-        back_amount: ""
+        fanxiu_stock: "",
+        remark: ""
       },
       rules: {
         shenyue_stock: [
           { required: true, message: "请填写申悦库存", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
-        yuezhan_stock: [
+        yuzhan_stock: [
           { required: true, message: "请填写域展库存", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
-        zhouyou_stock: [
+        zhuoyou_stock: [
           { required: true, message: "请填写卓有库存", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
@@ -140,7 +150,7 @@ export default {
           { required: true, message: "请填写公司库存", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
-        back_amount: [
+        fanxiu_stock: [
           { required: true, message: "请填写返修库存", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
@@ -169,11 +179,12 @@ export default {
           this.purchaseForm.model = res.model;
           this.purchaseForm.color = res.color;
           this.purchaseForm.shenyue_stock = res.shenyue_stock;
-          this.purchaseForm.yuezhan_stock = res.yuezhan_stock;
-          this.purchaseForm.zhouyou_stock = res.zhouyou_stock;
+          this.purchaseForm.yuzhan_stock = res.yuzhan_stock;
+          this.purchaseForm.zhuoyou_stock = res.zhuoyou_stock;
           this.purchaseForm.warehouse_stock = res.warehouse_stock;
           this.purchaseForm.company_stock = res.company_stock;
-          this.purchaseForm.back_amount = res.back_amount;
+          this.purchaseForm.fanxiu_stock = res.fanxiu_stock;
+          this.purchaseForm.remark = res.remark;
 
           this.setting.loading = false;
         })

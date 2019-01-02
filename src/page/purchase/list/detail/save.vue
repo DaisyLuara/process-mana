@@ -21,37 +21,44 @@
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="硬件性质" prop="quality">
-          <el-radio-group v-model="detailsForm.quality">
-            <el-radio :label="1">出厂</el-radio>
-            <el-radio :label="2">返厂</el-radio>
-            <el-radio :label="3">购入</el-radio>
-            <el-radio :label="4">返修</el-radio>
-            <el-radio :label="5">其他</el-radio>
+        <el-form-item label="硬件性质" prop="action">
+          <el-radio-group v-model="detailsForm.action">
+            <el-radio :label="0">出厂</el-radio>
+            <el-radio :label="1">返厂</el-radio>
+            <el-radio :label="2">购入</el-radio>
+            <el-radio :label="3">返修</el-radio>
+            <el-radio :label="4">其他</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="调整出处" prop="source">
-          <el-select v-model="detailsForm.source" filterable clearable placeholder="请选择调整出处">
+          <el-select
+            v-model="detailsForm.source"
+            :loading="searchLoading"
+            filterable
+            clearable
+            placeholder="请选择调整出处"
+          >
             <el-option
               v-for="item in sourceList"
               :key="item.id"
-              :label="item.value"
+              :label="item.source"
               :value="item.id"
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="调整形式" prop="form">
-          <el-radio-group v-model="detailsForm.form">
-            <el-radio :label="1">增加</el-radio>
-            <el-radio :label="2">减少</el-radio>
-            <el-radio :label="3">不变</el-radio>
+        <el-form-item label="调整形式" prop="change">
+          <el-radio-group v-model="detailsForm.change" @change="adjustFormHandle">
+            <el-radio :label="0">增加</el-radio>
+            <el-radio :label="1">减少</el-radio>
+            <el-radio :label="2">不变</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="调整数量" prop="amount">
+        <el-form-item label="调整数量" prop="num">
           <el-input
-            v-model="detailsForm.amount"
-            placeholder="请填写调整数量"
+            v-model="detailsForm.num"
             :maxlength="30"
+            :disabled="numDisable"
+            placeholder="请填写调整数量"
             class="item-input"
           />
         </el-form-item>
@@ -79,7 +86,8 @@ import {
   modifyDetails,
   storeDetail,
   Cookies,
-  historyBack
+  historyBack,
+  hardwareSource
 } from "service";
 
 import {
@@ -107,41 +115,43 @@ export default {
   },
   data() {
     let checkNumber = (rule, value, callback) => {
-      if (typeof parseFloat(value) !== "number") {
-        callback(new Error("必须是数字"));
+      if (!/^\d+$/.test(value)) {
+        callback(new Error("必须是正整数 + 0"));
       } else {
         callback();
       }
     };
     return {
+      searchLoading: false,
       setting: {
         isOpenSelectAll: true,
         loading: false,
         loadingText: "拼命加载中"
       },
       detailsID: "",
+      numDisable: true,
       detailsForm: {
         model: "",
         color: "",
-        quality: 3,
+        action: 3,
         source: "",
-        form: "",
-        amount: "",
+        change: 2,
+        num: 0,
         remark: ""
       },
       pid: "",
-      sourceList: {},
+      sourceList: [],
       rules: {
-        quality: [
+        action: [
           { required: true, message: "请选择硬件性质", trigger: "submit" }
         ],
         source: [
           { required: true, message: "请选择调整出处", trigger: "submit" }
         ],
-        form: [
+        change: [
           { required: true, message: "请选择调整形式", trigger: "submit" }
         ],
-        amount: [
+        num: [
           { required: true, message: "请填写调整数量", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ]
@@ -154,6 +164,7 @@ export default {
     this.pid = this.$route.params.pid;
     this.detailsForm.model = this.$route.query.model;
     this.detailsForm.color = this.$route.query.color;
+    this.hardwareSource();
     if (this.detailsID) {
       this.storeDetail();
     } else {
@@ -161,6 +172,21 @@ export default {
     }
   },
   methods: {
+    hardwareSource() {
+      this.searchLoading = true;
+      hardwareSource(this)
+        .then(res => {
+          this.searchLoading = false;
+          this.sourceList = res.data;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "warning"
+          });
+        });
+    },
     storeDetail() {
       storeDetail(this, this.detailsID)
         .then(res => {
@@ -171,8 +197,7 @@ export default {
           this.detailsForm.zhouyou_stock = res.zhouyou_stock;
           this.detailsForm.warehouse_stock = res.warehouse_stock;
           this.detailsForm.company_stock = res.company_stock;
-          this.detailsForm.back_amount = res.back_amount;
-
+          this.detailsForm.back_num = res.back_num;
           this.setting.loading = false;
         })
         .catch(err => {
@@ -181,6 +206,14 @@ export default {
     },
     historyBack() {
       historyBack();
+    },
+    adjustFormHandle(val) {
+      if (val === 2) {
+        this.detailsForm.change = 0;
+        this.numDisable = true;
+      } else {
+        this.numDisable = false;
+      }
     },
     submit(formName) {
       this.$refs[formName].validate(valid => {
@@ -195,9 +228,6 @@ export default {
                   message: "修改成功",
                   type: "success"
                 });
-                // this.$router.push({
-                //   path: "/purchase/list"
-                // });
                 this.historyBack();
                 this.setting.loading = false;
               })
@@ -215,9 +245,6 @@ export default {
                   message: "添加成功",
                   type: "success"
                 });
-                // this.$router.push({
-                //   path: "/purchase/detail"
-                // });
                 this.historyBack();
                 this.setting.loading = false;
               })

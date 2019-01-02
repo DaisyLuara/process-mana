@@ -54,13 +54,13 @@
                   <span>{{ scope.row.color }}</span>
                 </el-form-item>
                 <el-form-item label="申悦:">
-                  <span>{{ scope.row.shenyue }}</span>
+                  <span>{{ scope.row.shenyue_stock }}</span>
                 </el-form-item>
                 <el-form-item label="域展:">
-                  <span>{{ scope.row.yuezhan }}</span>
+                  <span>{{ scope.row.yuzhan_stock }}</span>
                 </el-form-item>
                 <el-form-item label="卓有:">
-                  <span>{{ scope.row.zhuoyou }}</span>
+                  <span>{{ scope.row.zhuoyou_stock }}</span>
                 </el-form-item>
                 <el-form-item label="仓库:">
                   <span>{{ scope.row.warehouse_stock }}</span>
@@ -69,13 +69,13 @@
                   <span>{{ scope.row.company_stock }}</span>
                 </el-form-item>
                 <el-form-item label="返修:">
-                  <span>{{ scope.row.back_amount }}</span>
+                  <span>{{ scope.row.fanxiu_stock }}</span>
                 </el-form-item>
                 <el-form-item label="可用库存:">
-                  <span>{{ scope.row.use_amount }}</span>
+                  <span>{{ scope.row.canuse_stock }}</span>
                 </el-form-item>
                 <el-form-item label="总库存:">
-                  <span>{{ scope.row.total_amount }}</span>
+                  <span>{{ scope.row.total_stock }}</span>
                 </el-form-item>
               </el-form>
             </template>
@@ -83,9 +83,24 @@
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="color" label="硬件颜色" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="shenyue" label="申悦" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="yuezhan" label="域展" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="zhuoyou" label="卓有" min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="shenyue_stock"
+            label="申悦"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="yuzhan_stock"
+            label="域展"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="zhuoyou_stock"
+            label="卓有"
+            min-width="80"
+          />
           <el-table-column
             :show-overflow-tooltip="true"
             prop="warehouse_stock"
@@ -100,19 +115,19 @@
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="back_amount"
+            prop="fanxiu_stock"
             label="返修"
             min-width="80"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="use_amount"
+            prop="canuse_stock"
             label="可用库存"
             min-width="100"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="total_amount"
+            prop="total_stock"
             label="总库存"
             min-width="100"
           />
@@ -177,21 +192,7 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: [
-        {
-          id: 1,
-          model: "3.0版大K双屏机器",
-          color: "红色",
-          shenyue: 12,
-          yuezhan: 10,
-          zhuoyou: 1,
-          warehouse_stock: 10,
-          company_stock: 20,
-          back_amount: 30,
-          use_amount: 10,
-          total_amount: 20
-        }
-      ]
+      tableData: []
     };
   },
   computed: {
@@ -203,7 +204,7 @@ export default {
     }
   },
   created() {
-    // this.getPurchaseList();
+    this.getPurchaseList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
   },

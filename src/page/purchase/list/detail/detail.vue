@@ -23,9 +23,9 @@
                 class="item-input"
               />
             </el-form-item>
-            <el-form-item label prop="quality">
+            <el-form-item label prop="action">
               <el-input
-                v-model="searchForm.quality"
+                v-model="searchForm.action"
                 clearable
                 placeholder="请输入硬件性质"
                 class="item-input"
@@ -59,57 +59,62 @@
                   <span>{{ scope.row.color }}</span>
                 </el-form-item>
                 <el-form-item label="硬件性质:">
-                  <span>{{ scope.row.quality }}</span>
+                  <span>{{ scope.row.action }}</span>
                 </el-form-item>
                 <el-form-item label="调整出处:">
                   <span>{{ scope.row.source }}</span>
                 </el-form-item>
                 <el-form-item label="调整形式:">
-                  <span>{{ scope.row.form }}</span>
+                  <span>{{ scope.row.change }}</span>
                 </el-form-item>
                 <el-form-item label="调整数量:">
-                  <span>{{ scope.row.amount }}</span>
+                  <span>{{ scope.row.num }}</span>
                 </el-form-item>
                 <el-form-item label="原总库存:">
-                  <span>{{ scope.row.old_stock }}</span>
+                  <span>{{ scope.row.change === '增加'? (scope.row.total_stock - scope.row.num) : scope.row.change === '减少' ? (scope.row.total_stock + scope.row.num) : scope.row.total_stock}}</span>
                 </el-form-item>
                 <el-form-item label="现总库存:">
-                  <span>{{ scope.row.new_stock }}</span>
+                  <span>{{ scope.row.total_stock }}</span>
                 </el-form-item>
                 <el-form-item label="时间:">
                   <span>{{ scope.row.created_at }}</span>
                 </el-form-item>
+                <el-form-item label="备注:">
+                  <span>{{ scope.row.remark }}</span>
+                </el-form-item>
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="color" label="硬件颜色" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="action" label="硬件性质" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="source" label="调整出处" min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="quality"
-            label="硬件性质"
-            min-width="80"
-          />
-          <el-table-column :show-overflow-tooltip="true" prop="form" label="调整形式" min-width="100"/>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="amount"
-            label="调整数量"
+            prop="change"
+            label="调整形式"
             min-width="100"
           />
+          <el-table-column :show-overflow-tooltip="true" prop="num" label="调整数量" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="old_stock"
             label="原总库存"
             min-width="100"
-          />
+          >
+            <template
+              slot-scope="scope"
+            >{{ scope.row.change === '增加'? (scope.row.hardware.total_stock - scope.row.num) : scope.row.change === '减少' ? (scope.row.hardware.total_stock + scope.row.num) : scope.row.hardware.total_stock}}</template>
+          </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="new_stock"
+            prop="total_stock"
             label="现总库存"
             min-width="100"
-          />
+          >
+            <template slot-scope="scope">{{ scope.row.hardware.total_stock }}</template>
+          </el-table-column>
           <el-table-column label="操作" min-width="200">
             <template slot-scope="scope">
               <!-- v-if="purchase" -->
@@ -161,7 +166,7 @@ export default {
   data() {
     return {
       searchForm: {
-        quality: "",
+        action: "",
         color: ""
       },
       roles: {},
@@ -179,20 +184,7 @@ export default {
         color: "",
         detailId: ""
       },
-      tableData: [
-        {
-          id: 1,
-          model: "2.5版单屏机器",
-          color: "红色",
-          quality: "出厂",
-          source: "仓库",
-          form: "减少",
-          amount: 10,
-          old_stock: 20,
-          new_stock: 30,
-          created_at: "2018-12-12 16:01:01"
-        }
-      ]
+      tableData: []
     };
   },
   computed: {
@@ -204,7 +196,7 @@ export default {
     }
   },
   created() {
-    // this.getDetialsList();
+    this.getDetialsList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
     this.parentInfo.color = this.$route.query.color;
@@ -216,10 +208,15 @@ export default {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        name: this.searchForm.name
+        include: "hardware",
+        action: this.searchForm.action,
+        color: this.searchForm.color
       };
-      if (!this.searchForm.name) {
-        delete args.name;
+      if (!this.searchForm.action) {
+        delete args.action;
+      }
+      if (!this.searchForm.color) {
+        delete args.color;
       }
       getDetialsList(this, args)
         .then(res => {
@@ -242,7 +239,6 @@ export default {
       });
     },
     editDetail(data) {
-      console.log(this.parentInfo.detailId);
       let _this = this;
       this.$router.push({
         path: "/purchase/list/saveDetail/" + data.id,
