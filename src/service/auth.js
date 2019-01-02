@@ -75,7 +75,9 @@ export default {
 
   getUserInfo() {
     // let permissions = Cookies.get('permissions')
+    console.log(5)
     let permissions = localStorage.getItem('permissions')
+    console.log(permissions)
     if (permissions) {
       return JSON.parse(permissions)
     }
@@ -83,32 +85,30 @@ export default {
   },
 
   getPermission() {
+    console.log(4)
     let permissions = this.getUserInfo()
+    console.log(permissions)
     return permissions
   },
 
   checkPathPermission(route) {
-    console.log(localStorage.getItem('permissions'))
-    if (!localStorage.getItem('permissions')) {
-      console.log(22)
-      this.refreshUserInfo(app)
+    if (!route.meta || !route.meta.permission) {
+      return true
     }
-      if (!route.meta || !route.meta.permission) {
-        return true
-      }
-      return this.checkPermission(route.meta.permission)
+    return this.checkPermission(route.meta.permission)
   },
-
   refreshUserInfo(context) {
     return new Promise((resolve, reject) => {
       axios
         .get(HOST + USERINFO_API)
         .then(response => {
+          console.log(2)
           let result = response.data
           localStorage.setItem(
             'permissions',
             JSON.stringify(result.permissions)
           )
+          location.assign(window.location.href)
           //context.$store.commit('setCurUserInfo', result.data)
           resolve(result.data)
         })
@@ -117,7 +117,12 @@ export default {
         })
     })
   },
+  async init() {
+    await this.refreshUserInfo(app)
+    // await this.checkPermission(name)
+  },
   checkPermission(name) {
+    console.log(1)
     return hasPermission(name, this.getPermission())
   },
 
@@ -165,11 +170,13 @@ export default {
 }
 
 function hasPermission(name, perms) {
+  console.log(3)
   if (!perms) {
     return false
   }
   for (let i in perms) {
     if (name == perms[i]['name']) {
+      console.log(3)
       return true
     }
   }
