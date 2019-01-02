@@ -67,6 +67,7 @@ router.beforeEach((to, from, next) => {
   }
   if(!localStorage.getItem('permissions')){
     auth.init()
+    return
   }
   // // // 登录黑名单（登录状态下，不可再访问的路由）
   let unlessLogout = ['/login']

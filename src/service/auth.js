@@ -75,9 +75,7 @@ export default {
 
   getUserInfo() {
     // let permissions = Cookies.get('permissions')
-    console.log(5)
     let permissions = localStorage.getItem('permissions')
-    console.log(permissions)
     if (permissions) {
       return JSON.parse(permissions)
     }
@@ -85,9 +83,7 @@ export default {
   },
 
   getPermission() {
-    console.log(4)
     let permissions = this.getUserInfo()
-    console.log(permissions)
     return permissions
   },
 
@@ -102,7 +98,6 @@ export default {
       axios
         .get(HOST + USERINFO_API)
         .then(response => {
-          console.log(2)
           let result = response.data
           localStorage.setItem(
             'permissions',
@@ -119,10 +114,8 @@ export default {
   },
   async init() {
     await this.refreshUserInfo(app)
-    // await this.checkPermission(name)
   },
   checkPermission(name) {
-    console.log(1)
     return hasPermission(name, this.getPermission())
   },
 
@@ -170,13 +163,11 @@ export default {
 }
 
 function hasPermission(name, perms) {
-  console.log(3)
   if (!perms) {
     return false
   }
   for (let i in perms) {
     if (name == perms[i]['name']) {
-      console.log(3)
       return true
     }
   }
