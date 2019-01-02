@@ -179,7 +179,7 @@
                   clearable
                 >
                   <el-option
-                    v-for="item in colorList"
+                    v-for="item in colorList[scope.$index]"
                     :key="item.color"
                     :label="item.color"
                     :value="item.color"
@@ -354,6 +354,7 @@ export default {
   methods: {
     deleteHardware(index) {
       this.hardwareTableData.splice(index, 1);
+      this.colorList.splice(index, 1);
     },
     hardwareAdd() {
       let td = {
@@ -373,7 +374,7 @@ export default {
       };
       hardwareColorByModel(this, args)
         .then(res => {
-          this.colorList = res.data;
+          this.colorList.unshift(res.data);
           this.searchLoading = false;
         })
         .catch(err => {
