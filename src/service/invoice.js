@@ -5,7 +5,7 @@ const INVOICE_REJECT_API = '/api/invoice/reject'
 const INVOICE_RECEIPT_API = '/api/invoice_receipt'
 
 const HOST = process.env.SERVER_URL
-
+// 票据列表
 const getInvoiceList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -18,7 +18,7 @@ const getInvoiceList = (context, params) => {
       })
   })
 }
-
+// 保存票据
 const saveInvoice = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -31,7 +31,7 @@ const saveInvoice = (context, params) => {
       })
   })
 }
-
+// 票据详情
 const invoiceDetail = (context, invoiceId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -44,7 +44,7 @@ const invoiceDetail = (context, invoiceId, params) => {
       })
   })
 }
-
+// 修改票据
 const modifyInvoice = (context, invoiceId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -57,7 +57,7 @@ const modifyInvoice = (context, invoiceId, params) => {
       })
   })
 }
-
+// 删除票据
 const deleteInvoice = (context, invoiceId) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -110,7 +110,7 @@ const receiptInvoice = (context, receiptId, params) => {
       })
   })
 }
-
+// 票据公司列表
 const getInvoiceCompanyList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -123,7 +123,7 @@ const getInvoiceCompanyList = (context, params) => {
       })
   })
 }
-
+// 保存票据公司
 const saveInvoiceCompany = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -136,7 +136,7 @@ const saveInvoiceCompany = (context, params) => {
       })
   })
 }
-
+// 票据公司详情
 const invoiceCompanyDetail = (context, invoiceCompanyId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -151,7 +151,7 @@ const invoiceCompanyDetail = (context, invoiceCompanyId, params) => {
       })
   })
 }
-
+// 修改票据公司
 const modifyInvoiceCompany = (context, invoiceCompanyId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -164,7 +164,7 @@ const modifyInvoiceCompany = (context, invoiceCompanyId, params) => {
       })
   })
 }
-
+// 收据列表
 const getReceiptList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -177,7 +177,7 @@ const getReceiptList = (context, params) => {
       })
   })
 }
-
+// 保存收据
 const saveReceipt = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -190,7 +190,7 @@ const saveReceipt = (context, params) => {
       })
   })
 }
-
+// 收据详情
 const ReceiptDetail = (context, receiptId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -203,7 +203,7 @@ const ReceiptDetail = (context, receiptId, params) => {
       })
   })
 }
-
+// 修改收据
 const modifyReceipt = (context, receiptId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -216,7 +216,7 @@ const modifyReceipt = (context, receiptId, params) => {
       })
   })
 }
-
+// 票据历史记录
 const invoicetHistory = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -229,7 +229,7 @@ const invoicetHistory = (context, params) => {
       })
   })
 }
-
+// 驳回
 const rejectInvoice = (context, invoiceId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http

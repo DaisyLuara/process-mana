@@ -14,7 +14,7 @@ const getPersonRewardList = (context, params) => {
       })
   })
 }
-
+// 累记奖金
 const getPersonRewardTotal = context => {
   return new Promise(function(resolve, reject) {
     context.$http

@@ -10,7 +10,7 @@ const HARDWARE_COLOR_API = '/api/hardware_color/query'
 const HARDWARE_SOURCE_API = '/api/hardware_source/query'
 
 const HOST = process.env.SERVER_URL
-
+// 公司列表
 const getCompanyList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -23,7 +23,7 @@ const getCompanyList = (context, params) => {
       })
   })
 }
-
+// 货物种类列表
 const getInvoiceKindList = context => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -36,7 +36,7 @@ const getInvoiceKindList = context => {
       })
   })
 }
-
+// 根据不同参数获取合同列表
 const getContract = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
