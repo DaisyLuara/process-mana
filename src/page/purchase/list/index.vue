@@ -5,7 +5,7 @@
       :element-loading-text="setting.loadingText"
       class="item-list-wrap"
     >
-      <h4>采购库存</h4>
+    <h3>采购库存</h3>
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
@@ -274,7 +274,8 @@ export default {
   color: #5e6d82;
   .item-list-wrap {
     background: #fff;
-    padding: 30px;
+    padding: 10px 30px 30px;
+    
 
     .el-form-item {
       margin-bottom: 0;
