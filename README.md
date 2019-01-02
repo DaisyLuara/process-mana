@@ -1,4 +1,4 @@
-# xingstation_release
+# xingstation-process-mana
 
 > A Vue.js project
 
