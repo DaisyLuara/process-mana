@@ -4,6 +4,7 @@ const INVOICE_COMPANY_QUERY_API = '/api/invoice_company/query'
 const PAYMENT_PAYEE_QUERY_API = '/api/payment_payee/query'
 const GOODS_SERVICE_QUERY_API = '/api/goods_service/query'
 const RECEIVE_DATE_QUERY_API = '/api/receive_date/query'
+const PROJECT_API = '/api/projects/query'
 const INVOICE_KIND_API = '/api/invoice_kind/query'
 const HARDWARE_MODEL_API = '/api/hardware_model/query'
 const HARDWARE_COLOR_API = '/api/hardware_color/query'
@@ -146,6 +147,20 @@ const hardwareSource = context => {
   })
 }
 
+// 节目
+const getSearchProjectList = (context, args) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PROJECT_API, { params: args })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getCompanyList,
   getContract,
@@ -154,6 +169,7 @@ export {
   getPaymentPayee,
   getReceiveDate,
   getInvoiceKindList,
+  getSearchProjectList,
   hardwareModel,
   hardwareColorByModel,
   hardwareSource

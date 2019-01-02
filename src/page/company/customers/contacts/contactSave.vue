@@ -167,7 +167,7 @@ export default {
           if (this.contactForm.contact.password === "") {
             delete args.password;
           }
-          if (this.contactForm.contact.telephone === "") {
+          if (!this.contactForm.contact.telephone) {
             delete args.telephone;
           }
           company
