@@ -83,33 +83,19 @@ const saveDetails = (context, params) => {
   })
 }
 
-
-// 库存明细详情
-// const storeDetail = (context, detailsId, params) => {
-//   return new Promise(function(resolve, reject) {
-//     context.$http
-//       .get(HOST + PURCHASE_API + '/' + detailsId, { params: params })
-//       .then(response => {
-//         resolve(response.data)
-//       })
-//       .catch(error => {
-//         reject(error)
-//       })
-//   })
-// }
-// // 库存明细修改
-// const modifyDetails = (context, detailsId, params) => {
-//   return new Promise(function(resolve, reject) {
-//     context.$http
-//       .patch(HOST + PURCHASE_API + '/' + detailsId, params)
-//       .then(response => {
-//         resolve(response.data)
-//       })
-//       .catch(error => {
-//         reject(error)
-//       })
-//   })
-// }
+// 采购硬件出厂
+const leaveFactory = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + INVENTORY_DETAIL_API + '/chuchang', params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   modifyPurchase,
   purchaseDetail,
@@ -118,5 +104,6 @@ export {
   getDetialsList,
   saveDetails,
   storeDetail,
-  modifyDetails
+  modifyDetails,
+  leaveFactory
 }

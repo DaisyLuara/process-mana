@@ -15,11 +15,11 @@
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="color">
+            <el-form-item label prop="source">
               <el-input
-                v-model="searchForm.color"
+                v-model="searchForm.source"
                 clearable
-                placeholder="请输入硬件颜色"
+                placeholder="请输入出处"
                 class="item-input"
               />
             </el-form-item>
@@ -71,13 +71,16 @@
                   <span>{{ scope.row.num }}</span>
                 </el-form-item>
                 <el-form-item label="原总库存:">
-                  <span>{{ scope.row.change === '增加'? (scope.row.total_stock - scope.row.num) : scope.row.change === '减少' ? (scope.row.total_stock + scope.row.num) : scope.row.total_stock}}</span>
+                  <span>{{ scope.row.hardware.old_stock }}</span>
                 </el-form-item>
                 <el-form-item label="现总库存:">
-                  <span>{{ scope.row.total_stock }}</span>
+                  <span>{{ scope.row.hardware.now_stock }}</span>
                 </el-form-item>
-                <el-form-item label="时间:">
+                <el-form-item label="创建时间:">
                   <span>{{ scope.row.created_at }}</span>
+                </el-form-item>
+                <el-form-item label="更新时间:">
+                  <span>{{ scope.row.updated_at }}</span>
                 </el-form-item>
                 <el-form-item label="备注:">
                   <span>{{ scope.row.remark }}</span>
@@ -86,41 +89,34 @@
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="color" label="硬件颜色" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="color" label="硬件颜色" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="action" label="硬件性质" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="source" label="调整出处" min-width="80"/>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="change"
-            label="调整形式"
-            min-width="100"
-          />
+          <el-table-column :show-overflow-tooltip="true" prop="change" label="调整形式" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="num" label="调整数量" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="old_stock"
             label="原总库存"
-            min-width="100"
+            min-width="80"
           >
-            <template
-              slot-scope="scope"
-            >{{ scope.row.change === '增加'? (scope.row.hardware.total_stock - scope.row.num) : scope.row.change === '减少' ? (scope.row.hardware.total_stock + scope.row.num) : scope.row.hardware.total_stock}}</template>
+            <template slot-scope="scope">{{ scope.row.hardware.old_stock }}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="total_stock"
+            prop="now_stock"
             label="现总库存"
-            min-width="100"
+            min-width="80"
           >
-            <template slot-scope="scope">{{ scope.row.hardware.total_stock }}</template>
+            <template slot-scope="scope">{{ scope.row.hardware.now_stock }}</template>
           </el-table-column>
-          <el-table-column label="操作" min-width="200">
-            <template slot-scope="scope">
-              <!-- v-if="purchase" -->
-              <el-button size="mini" type="primary" @click="editDetail(scope.row)">编辑</el-button>
-            </template>
-          </el-table-column>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="created_at"
+            label="创建时间"
+            min-width="100"
+          />
         </el-table>
         <div class="pagination-wrap">
           <el-pagination
@@ -167,7 +163,7 @@ export default {
     return {
       searchForm: {
         action: "",
-        color: ""
+        source: ""
       },
       roles: {},
       setting: {
@@ -196,12 +192,12 @@ export default {
     }
   },
   created() {
-    this.getDetialsList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
     this.parentInfo.color = this.$route.query.color;
     this.parentInfo.model = this.$route.query.model;
     this.parentInfo.detailId = this.$route.params.uid;
+    this.getDetialsList();
   },
   methods: {
     getDetialsList() {
@@ -209,14 +205,15 @@ export default {
       let args = {
         page: this.pagination.currentPage,
         include: "hardware",
+        id: this.parentInfo.detailId,
         action: this.searchForm.action,
-        color: this.searchForm.color
+        source: this.searchForm.source
       };
       if (!this.searchForm.action) {
         delete args.action;
       }
-      if (!this.searchForm.color) {
-        delete args.color;
+      if (!this.searchForm.source) {
+        delete args.source;
       }
       getDetialsList(this, args)
         .then(res => {

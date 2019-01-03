@@ -122,15 +122,15 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="硬件合同" prop="hardware_type">
-              <el-radio-group v-model="contractForm.hardware_type" @change="hardwareHandle">
+            <el-form-item label="硬件合同" prop="hardware_status">
+              <el-radio-group v-model="contractForm.hardware_status" @change="hardwareHandle">
                 <el-radio :label="0">否</el-radio>
                 <el-radio :label="1">是</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="hardwareFlag">
           <el-button
             size="small"
             type="success"
@@ -196,6 +196,10 @@
             >
               <template slot-scope="scope">
                 <el-input v-model="scope.row.hardware_stock" placeholder="请输入硬件数量"/>
+                <!-- <div
+                  v-if=" colorList[scope.$index] && ((((colorList[scope.$index])[scope.$index]).canuse_stock)< scope.row.hardware_stock)"
+                  style="color:red;"
+                >库存不足</div>-->
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="100">
@@ -302,7 +306,7 @@ export default {
         applicant_name: "",
         contract_number: "",
         name: "",
-        hardware_type: 0,
+        hardware_status: 0,
         type: 0,
         applicant: 0,
         receive_date: [],
@@ -367,7 +371,7 @@ export default {
     handleHardware(val) {
       this.hardwareColorByModel(val);
     },
-    hardwareColorByModel(val) {
+    hardwareColorByModel(val, data) {
       this.searchLoading = true;
       let args = {
         model: val
@@ -376,6 +380,9 @@ export default {
         .then(res => {
           this.colorList.unshift(res.data);
           this.searchLoading = false;
+          if (data) {
+            this.hardwareTableData.unshift(data);
+          }
         })
         .catch(err => {
           this.searchLoading = false;
@@ -424,6 +431,21 @@ export default {
             : [];
           this.contractForm.remark = res.remark;
           this.contractForm.contract_number = res.contract_number;
+          this.contractForm.hardware_status =
+            res.hardware_status === "无硬件" ? 0 : 1;
+          this.hardwareFlag =
+            this.contractForm.hardware_status === 1 ? true : false;
+          let hardware_content = res.hardware_content;
+
+          hardware_content.map(r => {
+            let data = {
+              hardware_model: r.hardware_model,
+              hardware_color: r.hardware_color,
+              hardware_stock: r.hardware_stock
+            };
+            this.hardwareColorByModel(r.hardware_model, data);
+          });
+
           this.contractForm.amount = res.amount;
           mediaData.map(r => {
             mediaIds.push(r.id);
@@ -516,6 +538,7 @@ export default {
             applicant: this.contractForm.applicant,
             type: this.contractForm.type,
             ids: this.contractForm.ids,
+            hardware_status: this.contractForm.hardware_status,
             remark: this.contractForm.remark
           };
           if (this.contractForm.type === 0) {
@@ -556,6 +579,20 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number;
           }
+          if (this.contractForm.hardware_status === 1) {
+            let length = this.hardwareTableData.length;
+            if (length <= 0) {
+              this.$message({
+                message: "必须填写硬件信息,请点击新增硬件",
+                type: "warning"
+              });
+              this.setting.loading = false;
+              return;
+            }
+          } else {
+            this.hardwareTableData = [];
+          }
+          args.hardware_content = this.hardwareTableData;
           saveContract(this, args)
             .then(res => {
               this.$message({

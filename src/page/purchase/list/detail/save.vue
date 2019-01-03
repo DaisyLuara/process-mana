@@ -81,14 +81,7 @@
 </template>
 
 <script>
-import {
-  saveDetails,
-  modifyDetails,
-  storeDetail,
-  Cookies,
-  historyBack,
-  hardwareSource
-} from "service";
+import { saveDetails, Cookies, historyBack, hardwareSource } from "service";
 
 import {
   Form,
@@ -165,11 +158,7 @@ export default {
     this.detailsForm.model = this.$route.query.model;
     this.detailsForm.color = this.$route.query.color;
     this.hardwareSource();
-    if (this.detailsID) {
-      this.storeDetail();
-    } else {
-      this.setting.loading = false;
-    }
+    this.setting.loading = false;
   },
   methods: {
     hardwareSource() {
@@ -185,23 +174,6 @@ export default {
             message: err.response.data.message,
             type: "warning"
           });
-        });
-    },
-    storeDetail() {
-      storeDetail(this, this.detailsID)
-        .then(res => {
-          this.detailsForm.model = res.model;
-          this.detailsForm.color = res.color;
-          this.detailsForm.shenyue_stock = res.shenyue_stock;
-          this.detailsForm.yuezhan_stock = res.yuezhan_stock;
-          this.detailsForm.zhouyou_stock = res.zhouyou_stock;
-          this.detailsForm.warehouse_stock = res.warehouse_stock;
-          this.detailsForm.company_stock = res.company_stock;
-          this.detailsForm.back_num = res.back_num;
-          this.setting.loading = false;
-        })
-        .catch(err => {
-          this.setting.loading = false;
         });
     },
     historyBack() {
@@ -220,42 +192,22 @@ export default {
         if (valid) {
           this.setting.loading = true;
           let args = this.detailsForm;
-          if (this.detailsID) {
-            args.id = this.detailsID;
-            modifyDetails(this, this.detailsID, args)
-              .then(res => {
-                this.$message({
-                  message: "修改成功",
-                  type: "success"
-                });
-                this.historyBack();
-                this.setting.loading = false;
-              })
-              .catch(err => {
-                this.setting.loading = false;
-                this.$message({
-                  message: err.response.data.message,
-                  type: "warning"
-                });
+          saveDetails(this, args)
+            .then(res => {
+              this.$message({
+                message: "添加成功",
+                type: "success"
               });
-          } else {
-            saveDetails(this, args)
-              .then(res => {
-                this.$message({
-                  message: "添加成功",
-                  type: "success"
-                });
-                this.historyBack();
-                this.setting.loading = false;
-              })
-              .catch(err => {
-                this.setting.loading = false;
-                this.$message({
-                  message: err.response.data.message,
-                  type: "warning"
-                });
+              this.historyBack();
+              this.setting.loading = false;
+            })
+            .catch(err => {
+              this.setting.loading = false;
+              this.$message({
+                message: err.response.data.message,
+                type: "warning"
               });
-          }
+            });
         }
       });
     }

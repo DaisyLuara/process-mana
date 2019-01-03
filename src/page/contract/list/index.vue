@@ -197,8 +197,12 @@
                 @click="specialAuditingContract(scope.row)"
               >特批</el-button>
               <el-button size="mini" type="info" @click="detailContract(scope.row)">详情</el-button>
-              <!-- && purchase -->
-              <el-button v-if="scope.row.status === '已审批'" size="mini" @click="hardwareHandle">硬件</el-button>
+              <!-- && purchase && hardware_status 未出厂-->
+              <el-button
+                v-if="scope.row.status === '已审批'"
+                size="mini"
+                @click="hardwareHandle(scope.row)"
+              >硬件</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -213,7 +217,12 @@
         </div>
       </div>
     </div>
-    <el-dialog title="硬件出厂" :visible.sync="dialogFormVisible" label-width="80px">
+    <el-dialog
+      title="硬件出厂"
+      :show-close="false"
+      :visible.sync="dialogFormVisible"
+      label-width="80px"
+    >
       <el-button
         size="small"
         type="success"
@@ -230,17 +239,18 @@
         >
           <template slot-scope="scope">
             <el-select
-              v-model="scope.row.model_id"
+              v-model="scope.row.model"
               :loading="searchLoading"
               placeholder="请选择硬件型号"
               filterable
               clearable
+              @change="handleHardware"
             >
               <el-option
                 v-for="item in modelList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
+                :key="item.hardware_model"
+                :label="item.hardware_model"
+                :value="item.hardware_model"
               />
             </el-select>
           </template>
@@ -254,41 +264,54 @@
         >
           <template slot-scope="scope">
             <el-select
-              v-model="scope.row.color_id"
+              v-model="scope.row.color"
               :loading="searchLoading"
               placeholder="请选择硬件颜色"
               filterable
               clearable
             >
               <el-option
-                v-for="item in colorList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
+                v-for="item in colorList[scope.$index]"
+                :key="item.color"
+                :label="item.color"
+                :value="item.color"
               />
             </el-select>
           </template>
         </el-table-column>
         <el-table-column
-          prop="origin"
+          prop="source"
           label="硬件出处"
           min-width="80"
           align="center"
           header-align="center"
         >
           <template slot-scope="scope">
-            <el-input v-model="scope.row.origin" type="tel" placeholder="请输入硬件出处"/>
+            <el-select
+              v-model="scope.row.source"
+              :loading="searchLoading"
+              placeholder="请选择硬件出处"
+              filterable
+              clearable
+            >
+              <el-option
+                v-for="item in sourceList"
+                :key="item.id"
+                :label="item.source"
+                :value="item.id"
+              />
+            </el-select>
           </template>
         </el-table-column>
         <el-table-column
-          prop="amount"
+          prop="num"
           label="硬件数量"
           min-width="100"
           align="center"
           header-align="center"
         >
           <template slot-scope="scope">
-            <el-input v-model="scope.row.amount" placeholder="请输入硬件数量"/>
+            <el-input v-model="scope.row.num" placeholder="请输入硬件数量"/>
           </template>
         </el-table-column>
         <el-table-column label="操作" min-width="100">
@@ -304,7 +327,7 @@
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -333,7 +356,11 @@ import {
   deleteContract,
   specialAuditingContract,
   Cookies,
-  getAuditingCount
+  getAuditingCount,
+  getHardwareByContractId,
+  hardwareColorByModel,
+  hardwareSource,
+  leaveFactory
 } from "service";
 
 export default {
@@ -356,15 +383,12 @@ export default {
     return {
       modelList: [],
       colorList: [],
+      sourceList: [],
       searchForm: {
         dataValue: [],
         name: "",
         status: "",
         contract_number: ""
-      },
-      hardwareForm: {
-        origin: "",
-        amount: null
       },
       dialogFormVisible: false,
       role: [],
@@ -418,20 +442,6 @@ export default {
           }
         ]
       },
-      originList: [
-        {
-          id: 1,
-          name: "工厂库存"
-        },
-        {
-          id: 2,
-          name: "仓库库存"
-        },
-        {
-          id: 3,
-          name: "公司库存"
-        }
-      ],
       statusList: [
         {
           id: 1,
@@ -502,25 +512,100 @@ export default {
   },
   created() {
     this.getContractList();
+    this.hardwareSource();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.applicant = user_info.id;
     this.role = user_info.roles.data;
   },
   methods: {
+    submit() {
+      let args = this.hardwareTableData;
+      leaveFactory(this, args)
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: "warning"
+          });
+        });
+    },
+    hardwareSource() {
+      this.searchLoading = true;
+      hardwareSource(this)
+        .then(res => {
+          this.searchLoading = false;
+          this.sourceList = res.data;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "warning"
+          });
+        });
+    },
+    handleHardware(val) {
+      this.hardwareColorByModel(val);
+    },
+    hardwareColorByModel(val, data) {
+      this.searchLoading = true;
+      let args = {
+        model: val
+      };
+      hardwareColorByModel(this, args)
+        .then(res => {
+          this.colorList.unshift(res.data);
+          this.searchLoading = false;
+          if (data) {
+            this.hardwareTableData.unshift(data);
+          }
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "warning"
+          });
+        });
+    },
     deleteHardware(index) {
       this.hardwareTableData.splice(index, 1);
     },
     hardwareAdd() {
       let td = {
-        model_id: "",
-        color_id: "",
-        origin: "",
-        amount: ""
+        model: "",
+        color: "",
+        source: "",
+        num: ""
       };
       this.hardwareTableData.unshift(td);
     },
-    hardwareHandle() {
+    hardwareHandle(data) {
       this.dialogFormVisible = true;
+      this.getHardwareByContractId(data);
+    },
+    getHardwareByContractId(data) {
+      this.searchLoading = false;
+      let args = {
+        contract_id: data.id
+      };
+      getHardwareByContractId(this, args)
+        .then(res => {
+          this.modelList = res;
+          this.searchLoading = false;
+
+          console.log(res);
+        })
+        .catch(err => {
+          this.searchLoading = false;
+
+          this.$message({
+            message: error.response.data.message,
+            type: "warning"
+          });
+        });
     },
     getAuditingCount() {
       getAuditingCount(this)
