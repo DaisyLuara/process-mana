@@ -197,9 +197,8 @@
                 @click="specialAuditingContract(scope.row)"
               >特批</el-button>
               <el-button size="mini" type="info" @click="detailContract(scope.row)">详情</el-button>
-              <!-- && purchase && hardware_status 未出厂-->
               <el-button
-                v-if="scope.row.status === '已审批'"
+                v-if="scope.row.status === '已审批' && scope.row.hardware_status !== '无硬件' "
                 size="mini"
                 @click="hardwareHandle(scope.row)"
               >硬件</el-button>
@@ -224,12 +223,18 @@
       label-width="80px"
     >
       <el-button
+        v-if="hardwareStatus === '未出厂'"
         size="small"
         type="success"
         style="margin-bottom: 20px;"
         @click="hardwareAdd"
       >新增硬件信息</el-button>
-      <el-table :data="hardwareTableData" border style="width: 100%;margin-bottom: 20px;">
+      <el-table
+        v-loading="loading"
+        :data="hardwareTableData"
+        border
+        style="width: 100%;margin-bottom: 20px;"
+      >
         <el-table-column
           prop="model"
           label="硬件型号"
@@ -239,6 +244,7 @@
         >
           <template slot-scope="scope">
             <el-select
+              v-if="hardwareStatus === '未出厂'"
               v-model="scope.row.model"
               :loading="searchLoading"
               placeholder="请选择硬件型号"
@@ -253,6 +259,7 @@
                 :value="item.hardware_model"
               />
             </el-select>
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.hardware_model }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -264,6 +271,7 @@
         >
           <template slot-scope="scope">
             <el-select
+              v-if="hardwareStatus === '未出厂'"
               v-model="scope.row.color"
               :loading="searchLoading"
               placeholder="请选择硬件颜色"
@@ -277,6 +285,7 @@
                 :value="item.color"
               />
             </el-select>
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.hardware_color }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -288,6 +297,7 @@
         >
           <template slot-scope="scope">
             <el-select
+              v-if="hardwareStatus === '未出厂'"
               v-model="scope.row.source"
               :loading="searchLoading"
               placeholder="请选择硬件出处"
@@ -301,6 +311,7 @@
                 :value="item.id"
               />
             </el-select>
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.hardware_source }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -311,10 +322,15 @@
           header-align="center"
         >
           <template slot-scope="scope">
-            <el-input v-model="scope.row.num" placeholder="请输入硬件数量"/>
+            <el-input
+              v-if="hardwareStatus === '未出厂'"
+              v-model="scope.row.num"
+              placeholder="请输入硬件数量"
+            />
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.hardware_stock }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" min-width="100">
+        <el-table-column v-if="hardwareStatus === '未出厂'" label="操作" min-width="100">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -326,7 +342,8 @@
         </el-table-column>
       </el-table>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
+        <!-- v-if="hardwareStatus === '未出厂' && purchasing" -->
         <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
@@ -360,7 +377,8 @@ import {
   getHardwareByContractId,
   hardwareColorByModel,
   hardwareSource,
-  leaveFactory
+  leaveFactory,
+  leaveFactoryDetail
 } from "service";
 
 export default {
@@ -468,13 +486,17 @@ export default {
         loading: false,
         loadingText: "拼命加载中"
       },
+      loading: false,
       searchLoading: false,
+      hardwareStatus: null,
       pagination: {
         total: 0,
         pageSize: 10,
         currentPage: 1
       },
+      hardwareContent: [],
       tableData: [],
+      hardwareId: null,
       hardwareTableData: []
     };
   },
@@ -504,9 +526,9 @@ export default {
       });
     },
     // 采购
-    purchase: function() {
-      return this.roles.find(r => {
-        return r.name === "purchase";
+    purchasing: function() {
+      return this.role.find(r => {
+        return r.name === "purchasing";
       });
     }
   },
@@ -519,17 +541,44 @@ export default {
   },
   methods: {
     submit() {
-      let args = this.hardwareTableData;
+      let args = {
+        contract_id: this.hardwareId,
+        hardware_content: this.hardwareTableData
+      };
+      let allotSum = 0;
+      this.hardwareTableData.map(r => {
+        allotSum += parseInt(r.num);
+      });
+      let saveSum = 0;
+      this.hardwareContent.map(r => {
+        saveSum += parseInt(r.hardware_stock);
+      });
+      if (allotSum > saveSum) {
+        this.$message({
+          message: "采购分配数量大于已存在的数量",
+          type: "warning"
+        });
+        return;
+      }
       leaveFactory(this, args)
         .then(res => {
-          console.log(res);
+          this.dialogFormVisible = false;
+          this.getContractList();
         })
         .catch(err => {
+          this.dialogFormVisible = false;
           this.$message({
             message: err.response.data.message,
             type: "warning"
           });
         });
+    },
+    cancel() {
+      this.dialogFormVisible = false;
+      if (this.hardwareStatus === "未出厂") {
+        this.hardwareTableData = [];
+        this.colorList = [];
+      }
     },
     hardwareSource() {
       this.searchLoading = true;
@@ -583,8 +632,33 @@ export default {
       this.hardwareTableData.unshift(td);
     },
     hardwareHandle(data) {
+      this.loading = true;
       this.dialogFormVisible = true;
-      this.getHardwareByContractId(data);
+      this.hardwareId = data.id;
+      this.hardwareStatus = data.hardware_status;
+      if (this.hardwareStatus === "未出厂") {
+        this.hardwareContent = data.hardware_content;
+        this.getHardwareByContractId(data);
+      } else {
+        this.leaveFactoryDetail();
+      }
+    },
+    leaveFactoryDetail() {
+      let args = {
+        id: this.hardwareId
+      };
+      leaveFactoryDetail(this, args)
+        .then(res => {
+          this.hardwareTableData = res.data;
+          this.loading = false;
+        })
+        .catch(err => {
+          this.loading = false;
+          this.$message({
+            message: error.response.data.message,
+            type: "warning"
+          });
+        });
     },
     getHardwareByContractId(data) {
       this.searchLoading = false;
@@ -595,12 +669,11 @@ export default {
         .then(res => {
           this.modelList = res;
           this.searchLoading = false;
-
-          console.log(res);
+          this.loading = false;
         })
         .catch(err => {
+          this.loading = false;
           this.searchLoading = false;
-
           this.$message({
             message: error.response.data.message,
             type: "warning"

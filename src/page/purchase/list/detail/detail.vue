@@ -16,12 +16,20 @@
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
             <el-form-item label prop="source">
-              <el-input
+              <el-select
                 v-model="searchForm.source"
+                :loading="searchLoading"
+                filterable
                 clearable
-                placeholder="请输入出处"
-                class="item-input"
-              />
+                placeholder="请选择调整出处"
+              >
+                <el-option
+                  v-for="item in sourceList"
+                  :key="item.id"
+                  :label="item.source"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label prop="action">
               <el-input
@@ -71,10 +79,10 @@
                   <span>{{ scope.row.num }}</span>
                 </el-form-item>
                 <el-form-item label="原总库存:">
-                  <span>{{ scope.row.hardware.old_stock }}</span>
+                  <span>{{ scope.row.old_stock }}</span>
                 </el-form-item>
                 <el-form-item label="现总库存:">
-                  <span>{{ scope.row.hardware.now_stock }}</span>
+                  <span>{{ scope.row.now_stock }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间:">
                   <span>{{ scope.row.created_at }}</span>
@@ -101,7 +109,7 @@
             label="原总库存"
             min-width="80"
           >
-            <template slot-scope="scope">{{ scope.row.hardware.old_stock }}</template>
+            <template slot-scope="scope">{{ scope.row.old_stock }}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -109,7 +117,7 @@
             label="现总库存"
             min-width="80"
           >
-            <template slot-scope="scope">{{ scope.row.hardware.now_stock }}</template>
+            <template slot-scope="scope">{{ scope.row.now_stock }}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -143,9 +151,11 @@ import {
   FormItem,
   MessageBox,
   Breadcrumb,
-  BreadcrumbItem
+  BreadcrumbItem,
+  Select,
+  Option
 } from "element-ui";
-import { getDetialsList, Cookies } from "service";
+import { getDetialsList, Cookies, hardwareSource } from "service";
 
 export default {
   components: {
@@ -157,7 +167,9 @@ export default {
     "el-input": Input,
     "el-pagination": Pagination,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-select": Select,
+    "el-option": Option
   },
   data() {
     return {
@@ -166,6 +178,8 @@ export default {
         source: ""
       },
       roles: {},
+      sourceList: [],
+      searchLoading: false,
       setting: {
         loading: false,
         loadingText: "拼命加载中"
@@ -198,8 +212,24 @@ export default {
     this.parentInfo.model = this.$route.query.model;
     this.parentInfo.detailId = this.$route.params.uid;
     this.getDetialsList();
+    this.hardwareSource();
   },
   methods: {
+    hardwareSource() {
+      this.searchLoading = true;
+      hardwareSource(this)
+        .then(res => {
+          this.searchLoading = false;
+          this.sourceList = res.data;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "warning"
+          });
+        });
+    },
     getDetialsList() {
       this.setting.loading = true;
       let args = {
@@ -212,7 +242,7 @@ export default {
       if (!this.searchForm.action) {
         delete args.action;
       }
-      if (!this.searchForm.source) {
+      if (this.searchForm.source === "") {
         delete args.source;
       }
       getDetialsList(this, args)

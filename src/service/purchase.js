@@ -1,5 +1,6 @@
 const PURCHASE_API = '/api/hardware'
 const INVENTORY_DETAIL_API = '/api/hardwarechange'
+const CONTRACT_HARDWARE_API = '/api/contract_hardware'
 
 const HOST = process.env.SERVER_URL
 // 采购库存列表
@@ -96,6 +97,20 @@ const leaveFactory = (context, params) => {
       })
   })
 }
+
+// 采购硬件出厂详情
+const leaveFactoryDetail = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + CONTRACT_HARDWARE_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   modifyPurchase,
   purchaseDetail,
@@ -105,5 +120,6 @@ export {
   saveDetails,
   storeDetail,
   modifyDetails,
-  leaveFactory
+  leaveFactory,
+  leaveFactoryDetail
 }

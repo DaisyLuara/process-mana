@@ -27,12 +27,19 @@
             <el-form-item label="收款日期:" prop="receive_date">{{ contractForm.receive_date }}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="合同内容:" prop="content">
-          <div v-for="item in fileList" :key="item.id">
-            {{ item.name }}
-            <span class="download" @click="handlePreview(item)">下载</span>
-          </div>
-        </el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="硬件合同:" prop="hardware_status">{{ contractForm.hardware_status }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="合同内容:" prop="content">
+              <div v-for="item in fileList" :key="item.id">
+                {{ item.name }}
+                <span class="download" @click="handlePreview(item)">下载</span>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item
           v-if="contractForm.legal_message"
           label="法务意见:"
