@@ -163,6 +163,11 @@
           <el-table-column label="操作" min-width="180">
             <template slot-scope="scope">
               <el-button size="mini" type="info" @click="detailContract(scope.row)">详情</el-button>
+              <el-button
+                v-if="scope.row.status === '已审批' && scope.row.hardware_status === '已出厂' "
+                size="mini"
+                @click="hardwareHandle(scope.row)"
+              >硬件</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -177,6 +182,51 @@
         </div>
       </div>
     </div>
+    <el-dialog
+      title="硬件出厂"
+      :show-close="false"
+      :visible.sync="dialogFormVisible"
+      label-width="80px"
+    >
+      <el-table
+        v-loading="loading"
+        :data="hardwareTableData"
+        border
+        style="width: 100%;margin-bottom: 20px;"
+      >
+        <el-table-column
+          prop="model"
+          label="硬件型号"
+          min-width="80"
+          align="center"
+          header-align="center"
+        />
+        <el-table-column
+          prop="color"
+          label="硬件颜色"
+          min-width="80"
+          align="center"
+          header-align="center"
+        />
+        <el-table-column
+          prop="source"
+          label="硬件出处"
+          min-width="80"
+          align="center"
+          header-align="center"
+        />
+        <el-table-column
+          prop="num"
+          label="硬件数量"
+          min-width="100"
+          align="center"
+          header-align="center"
+        />
+      </el-table>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible=false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -194,12 +244,18 @@ import {
   Option,
   Row,
   Col,
-  DatePicker
+  DatePicker,
+  Dialog
 } from "element-ui";
-import { contractHistory, handleDateTransform } from "service";
+import {
+  contractHistory,
+  handleDateTransform,
+  leaveFactoryDetail
+} from "service";
 
 export default {
   components: {
+    "el-dialog": Dialog,
     "el-table": Table,
     "el-table-column": TableColumn,
     "el-button": Button,
@@ -215,6 +271,9 @@ export default {
   },
   data() {
     return {
+      loading: false,
+      hardwareTableData: [],
+      dialogFormVisible: false,
       searchForm: {
         dataValue: [],
         name: "",
@@ -302,6 +361,8 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
+      hardwareId: null,
+      hardwareStatus: null,
       tableData: []
     };
   },
@@ -309,6 +370,33 @@ export default {
     this.contractHistory();
   },
   methods: {
+    hardwareHandle(data) {
+      this.loading = true;
+      this.dialogFormVisible = true;
+      this.hardwareId = data.id;
+      this.hardwareStatus = data.hardware_status;
+      this.leaveFactoryDetail();
+    },
+    leaveFactoryDetail() {
+      this.hardwareTableData = [];
+      let args = {
+        id: this.hardwareId
+      };
+      leaveFactoryDetail(this, args)
+        .then(res => {
+          if (res.data.length > 0) {
+            this.hardwareTableData = res.data[0].hardware_content;
+          }
+          this.loading = false;
+        })
+        .catch(err => {
+          this.loading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "warning"
+          });
+        });
+    },
     contractHistory() {
       this.setting.loading = true;
       let args = {

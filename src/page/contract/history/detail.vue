@@ -91,7 +91,6 @@
     </div>
   </div>
 </template>
-
 <script>
 import { historyBack, contractDetail } from "service";
 
@@ -127,7 +126,6 @@ export default {
       },
       fileList: [],
       hardwareTableData: [],
-
       contractForm: {
         company_name: "",
         company_id: "",

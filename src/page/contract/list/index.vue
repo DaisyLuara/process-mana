@@ -223,7 +223,7 @@
       label-width="80px"
     >
       <el-button
-        v-if="hardwareStatus === '未出厂'"
+        v-if="hardwareStatus === '未出厂' && purchasing"
         size="small"
         type="success"
         style="margin-bottom: 20px;"
@@ -259,7 +259,7 @@
                 :value="item.hardware_model"
               />
             </el-select>
-            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.hardware_model }}</span>
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.model }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -285,7 +285,7 @@
                 :value="item.color"
               />
             </el-select>
-            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.hardware_color }}</span>
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.color }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -311,7 +311,7 @@
                 :value="item.id"
               />
             </el-select>
-            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.hardware_source }}</span>
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.source }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -327,7 +327,7 @@
               v-model="scope.row.num"
               placeholder="请输入硬件数量"
             />
-            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.hardware_stock }}</span>
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.num }}</span>
           </template>
         </el-table-column>
         <el-table-column v-if="hardwareStatus === '未出厂'" label="操作" min-width="100">
@@ -343,8 +343,7 @@
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <!-- v-if="hardwareStatus === '未出厂' && purchasing" -->
-        <el-button type="primary" @click="submit">确 定</el-button>
+        <el-button v-if="hardwareStatus === '未出厂' && purchasing" type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -644,18 +643,21 @@ export default {
       }
     },
     leaveFactoryDetail() {
+      this.hardwareTableData = [];
       let args = {
         id: this.hardwareId
       };
       leaveFactoryDetail(this, args)
         .then(res => {
-          this.hardwareTableData = res.data;
+          if (res.data.length > 0) {
+            this.hardwareTableData = res.data[0].hardware_content;
+          }
           this.loading = false;
         })
         .catch(err => {
           this.loading = false;
           this.$message({
-            message: error.response.data.message,
+            message: err.response.data.message,
             type: "warning"
           });
         });
@@ -675,7 +677,7 @@ export default {
           this.loading = false;
           this.searchLoading = false;
           this.$message({
-            message: error.response.data.message,
+            message: err.response.data.message,
             type: "warning"
           });
         });
