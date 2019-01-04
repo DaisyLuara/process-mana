@@ -204,18 +204,8 @@ export default {
       ]
     }
   },
-  computed: {
-    buttonShow: function() {
-      if (this.roles.name == 'user' || this.roles.name === 'bd-manager') {
-        return true
-      } else {
-        return false
-      }
-    }
-  },
   created() {
     let user_info = JSON.parse(Cookies.get('user_info'))
-    this.roles = user_info.roles.data[0]
     this.getRemindContractList()
   },
   methods: {

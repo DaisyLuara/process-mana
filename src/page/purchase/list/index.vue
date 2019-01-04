@@ -5,15 +5,24 @@
       :element-loading-text="setting.loadingText"
       class="item-list-wrap"
     >
+      <h3>采购库存</h3>
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="name">
+            <el-form-item label prop="model">
               <el-input
-                v-model="searchForm.name"
+                v-model="searchForm.model"
                 clearable
-                placeholder="请输入收款人"
+                placeholder="请输入硬件型号"
+                class="item-input"
+              />
+            </el-form-item>
+            <el-form-item label prop="color">
+              <el-input
+                v-model="searchForm.color"
+                clearable
+                placeholder="请输入硬件颜色"
                 class="item-input"
               />
             </el-form-item>
@@ -27,51 +36,109 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button
-              v-if="bd || bdManager || legalAffairs || legalAffairsManager"
-              size="small"
-              type="success"
-              @click="addPayee"
-            >新增收款人</el-button>
+            <el-button v-if="purchasing" size="small" type="success" @click="addHardware">新增硬件</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
               <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="收款人:">
-                  <span>{{ scope.row.name }}</span>
+                <el-form-item label="ID:">
+                  <span>{{ scope.row.id }}</span>
                 </el-form-item>
-                <el-form-item label="收款人开户行:">
-                  <span>{{ scope.row.account_bank }}</span>
+                <el-form-item label="硬件型号:">
+                  <span>{{ scope.row.model }}</span>
                 </el-form-item>
-                <el-form-item label="收款人账号:">
-                  <span>{{ scope.row.account_number }}</span>
+                <el-form-item label="硬件颜色:">
+                  <span>{{ scope.row.color }}</span>
+                </el-form-item>
+                <el-form-item label="申悦:">
+                  <span>{{ scope.row.shenyue_stock }}</span>
+                </el-form-item>
+                <el-form-item label="域展:">
+                  <span>{{ scope.row.yuzhan_stock }}</span>
+                </el-form-item>
+                <el-form-item label="卓有:">
+                  <span>{{ scope.row.zhuoyou_stock }}</span>
+                </el-form-item>
+                <el-form-item label="仓库:">
+                  <span>{{ scope.row.warehouse_stock }}</span>
+                </el-form-item>
+                <el-form-item label="公司:">
+                  <span>{{ scope.row.company_stock }}</span>
+                </el-form-item>
+                <el-form-item label="返修:">
+                  <span>{{ scope.row.fanxiu_stock }}</span>
+                </el-form-item>
+                <el-form-item label="可用库存:">
+                  <span>{{ scope.row.canuse_stock }}</span>
+                </el-form-item>
+                <el-form-item label="总库存:">
+                  <span>{{ scope.row.total_stock }}</span>
                 </el-form-item>
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="收款人" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="color" label="硬件颜色" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="account_number"
-            label="收款人账号"
-            min-width="280"
+            prop="shenyue_stock"
+            label="申悦"
+            min-width="80"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="account_bank"
-            label="收款人开户行"
-            min-width="180"
+            prop="yuzhan_stock"
+            label="域展"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="zhuoyou_stock"
+            label="卓有"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="warehouse_stock"
+            label="仓库"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="company_stock"
+            label="公司"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="fanxiu_stock"
+            label="返修"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="canuse_stock"
+            label="可用库存"
+            min-width="100"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="total_stock"
+            label="总库存"
+            min-width="100"
           />
           <el-table-column label="操作" min-width="200">
             <template slot-scope="scope">
               <el-button
-                v-if="bd || bdManager || legalAffairs || legalAffairsManager"
+                v-if="purchasing"
                 size="mini"
                 type="primary"
-                @click="editPayee(scope.row)"
+                @click="editHardware(scope.row)"
               >编辑</el-button>
+              <el-button size="mini" @click="detailsHardware(scope.row)">明细</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -100,13 +167,7 @@ import {
   FormItem,
   MessageBox
 } from "element-ui";
-import {
-  getPayeeList,
-  handleDateTransform,
-  receivePayment,
-  deletePayment,
-  Cookies
-} from "service";
+import { getPurchaseList, Cookies } from "service";
 
 export default {
   components: {
@@ -121,7 +182,8 @@ export default {
   data() {
     return {
       searchForm: {
-        name: ""
+        model: "",
+        color: ""
       },
       roles: {},
       setting: {
@@ -137,47 +199,33 @@ export default {
     };
   },
   computed: {
-    // BD
-    bd: function() {
+    // 采购
+    purchasing: function() {
       return this.roles.find(r => {
-        return r.name === "user";
-      });
-    },
-    // bd主管
-    bdManager: function() {
-      return this.roles.find(r => {
-        return r.name === "bd-manager";
-      });
-    },
-    // 法务
-    legalAffairs: function() {
-      return this.roles.find(r => {
-        return r.name === "legal-affairs";
-      });
-    },
-    // 法务主管
-    legalAffairsManager: function() {
-      return this.roles.find(r => {
-        return r.name === "legal-affairs-manager";
+        return r.name === "purchasing";
       });
     }
   },
   created() {
-    this.getPayeeList();
+    this.getPurchaseList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
   },
   methods: {
-    getPayeeList() {
+    getPurchaseList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        name: this.searchForm.name
+        model: this.searchForm.model,
+        color: this.searchForm.color
       };
-      if (!this.searchForm.name) {
-        delete args.name;
+      if (!this.searchForm.model) {
+        delete args.model;
       }
-      getPayeeList(this, args)
+      if (!this.searchForm.color) {
+        delete args.color;
+      }
+      getPurchaseList(this, args)
         .then(res => {
           this.tableData = res.data;
           this.pagination.total = res.meta.pagination.total;
@@ -187,28 +235,37 @@ export default {
           this.setting.loading = false;
         });
     },
-    addPayee() {
+    detailsHardware(data) {
       this.$router.push({
-        path: "/payment/payee/add"
+        path: "/purchase/list/detail/" + data.id,
+        query: {
+          model: data.model,
+          color: data.color
+        }
       });
     },
-    editPayee(data) {
+    addHardware() {
       this.$router.push({
-        path: "/payment/payee/edit/" + data.id
+        path: "/purchase/list/add"
+      });
+    },
+    editHardware(data) {
+      this.$router.push({
+        path: "/purchase/list/edit/" + data.id
       });
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage;
-      this.getPayeeList();
+      this.getPurchaseList();
     },
     search() {
       this.pagination.currentPage = 1;
-      this.getPayeeList();
+      this.getPurchaseList();
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
-      this.getPayeeList();
+      this.getPurchaseList();
     }
   }
 };
@@ -220,12 +277,12 @@ export default {
   color: #5e6d82;
   .item-list-wrap {
     background: #fff;
-    padding: 30px;
-
+    padding: 10px 30px 30px;
     .el-form-item {
       margin-bottom: 0;
     }
     .item-content-wrap {
+      margin-top: 10px;
       .demo-table-expand {
         font-size: 0;
       }
