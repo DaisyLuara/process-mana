@@ -9,7 +9,8 @@ const INVOICE_KIND_API = '/api/invoice_kind/query'
 const HARDWARE_MODEL_API = '/api/hardware_model/query'
 const HARDWARE_COLOR_API = '/api/hardware_color/query'
 const HARDWARE_SOURCE_API = '/api/hardware_source/query'
-const CONTRACT_HARDWARE_API = '/api/contract_hardwaremodel/query'
+const CONTRACT_HARDWARE_MODEL_API = '/api/contract_hardwaremodel/query'
+const CONTRACT_HARDWARE_COLOR_API = '/api/contract_hardwarecolor/query'
 
 const HOST = process.env.SERVER_URL
 // 公司列表
@@ -166,7 +167,21 @@ const getSearchProjectList = (context, args) => {
 const getHardwareByContractId = (context, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + CONTRACT_HARDWARE_API, { params: args })
+      .get(HOST + CONTRACT_HARDWARE_MODEL_API, { params: args })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+// 硬件出厂，对应合同硬件颜色搜索
+const getHardwareColorByContractId = (context, args) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + CONTRACT_HARDWARE_COLOR_API, { params: args })
       .then(response => {
         resolve(response.data)
       })
@@ -188,5 +203,6 @@ export {
   hardwareModel,
   hardwareColorByModel,
   hardwareSource,
-  getHardwareByContractId
+  getHardwareByContractId,
+  getHardwareColorByContractId
 }

@@ -49,8 +49,7 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <!-- v-if="purchase"  -->
-            <el-button size="small" type="success" @click="addDetail">新增库存明细</el-button>
+            <el-button v-if="purchasing" size="small" type="success" @click="addDetail">新增库存明细</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
@@ -199,9 +198,9 @@ export default {
   },
   computed: {
     // 采购
-    purchase: function() {
+    purchasing: function() {
       return this.roles.find(r => {
-        return r.name === "purchase";
+        return r.name === "purchasing";
       });
     }
   },

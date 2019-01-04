@@ -36,8 +36,7 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <!-- v-if="purchase"  -->
-            <el-button size="small" type="success" @click="addHardware">新增硬件</el-button>
+            <el-button v-if="purchasing" size="small" type="success" @click="addHardware">新增硬件</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
@@ -133,8 +132,12 @@
           />
           <el-table-column label="操作" min-width="200">
             <template slot-scope="scope">
-              <!-- v-if="purchase" -->
-              <el-button size="mini" type="primary" @click="editHardware(scope.row)">编辑</el-button>
+              <el-button
+                v-if="purchasing"
+                size="mini"
+                type="primary"
+                @click="editHardware(scope.row)"
+              >编辑</el-button>
               <el-button size="mini" @click="detailsHardware(scope.row)">明细</el-button>
             </template>
           </el-table-column>
@@ -197,9 +200,9 @@ export default {
   },
   computed: {
     // 采购
-    purchase: function() {
+    purchasing: function() {
       return this.roles.find(r => {
-        return r.name === "purchase";
+        return r.name === "purchasing";
       });
     }
   },

@@ -280,9 +280,9 @@
             >
               <el-option
                 v-for="item in colorList[scope.$index]"
-                :key="item.color"
-                :label="item.color"
-                :value="item.color"
+                :key="item.hardware_color"
+                :label="item.hardware_color"
+                :value="item.hardware_color"
               />
             </el-select>
             <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.color }}</span>
@@ -374,7 +374,7 @@ import {
   Cookies,
   getAuditingCount,
   getHardwareByContractId,
-  hardwareColorByModel,
+  getHardwareColorByContractId,
   hardwareSource,
   leaveFactory,
   leaveFactoryDetail
@@ -495,7 +495,7 @@ export default {
       },
       hardwareContent: [],
       tableData: [],
-      hardwareId: null,
+      contract_id: null,
       hardwareTableData: []
     };
   },
@@ -541,7 +541,7 @@ export default {
   methods: {
     submit() {
       let args = {
-        contract_id: this.hardwareId,
+        contract_id: this.contract_id,
         hardware_content: this.hardwareTableData
       };
       let allotSum = 0;
@@ -595,16 +595,18 @@ export default {
         });
     },
     handleHardware(val) {
-      this.hardwareColorByModel(val);
+      this.getHardwareColorByContractId(val);
     },
-    hardwareColorByModel(val, data) {
+    getHardwareColorByContractId(val, data) {
       this.searchLoading = true;
       let args = {
-        model: val
+        model: val,
+        contract_id: this.contract_id
       };
-      hardwareColorByModel(this, args)
+      getHardwareColorByContractId(this, args)
         .then(res => {
-          this.colorList.unshift(res.data);
+          console.log(res)
+          this.colorList.unshift(res);
           this.searchLoading = false;
           if (data) {
             this.hardwareTableData.unshift(data);
@@ -633,7 +635,7 @@ export default {
     hardwareHandle(data) {
       this.loading = true;
       this.dialogFormVisible = true;
-      this.hardwareId = data.id;
+      this.contract_id = data.id;
       this.hardwareStatus = data.hardware_status;
       if (this.hardwareStatus === "未出厂") {
         this.hardwareContent = data.hardware_content;
@@ -645,7 +647,7 @@ export default {
     leaveFactoryDetail() {
       this.hardwareTableData = [];
       let args = {
-        id: this.hardwareId
+        id: this.contract_id
       };
       leaveFactoryDetail(this, args)
         .then(res => {
