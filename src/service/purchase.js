@@ -118,8 +118,6 @@ export {
   getPurchaseList,
   getDetialsList,
   saveDetails,
-  storeDetail,
-  modifyDetails,
   leaveFactory,
   leaveFactoryDetail
 }
