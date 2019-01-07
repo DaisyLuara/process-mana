@@ -1,5 +1,4 @@
 import auth from 'service/auth'
-
 let router = {
   path: 'contract',
   name: '合同',
