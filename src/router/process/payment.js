@@ -1,4 +1,4 @@
-export default {
+let router = {
   path: 'payment',
   name: '付款',
   component: () =>
@@ -104,3 +104,10 @@ export default {
     }
   ]
 }
+router.redirect = () => {
+  let routes = router.children
+  for (let route of routes) {
+    return '/payment/' + route.path
+  }
+}
+export default router

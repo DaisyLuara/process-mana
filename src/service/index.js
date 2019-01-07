@@ -25,4 +25,4 @@ export * from './notice'
 export * from './account'
 
 // 采购
-export * from './purchase'
+export * from './store'

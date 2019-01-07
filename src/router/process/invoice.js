@@ -1,4 +1,4 @@
-export default {
+let router = {
   path: 'invoice',
   name: '票据',
   component: () =>
@@ -135,3 +135,12 @@ export default {
     }
   ]
 }
+
+router.redirect = () => {
+  let routes = router.children
+  for (let route of routes) {
+    return '/invoice/' + route.path
+  }
+}
+
+export default router
