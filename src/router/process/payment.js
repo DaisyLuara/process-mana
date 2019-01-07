@@ -1,4 +1,5 @@
-export default {
+import auth from 'service/auth'
+let router = {
   path: 'payment',
   name: '付款',
   component: () =>
@@ -7,7 +8,7 @@ export default {
     title: '付款',
     permission: 'payments'
   },
-  redirect: 'payment/list',
+  // redirect: 'payment/list',
   children: [
     {
       path: 'list',
@@ -104,3 +105,13 @@ export default {
     }
   ]
 }
+
+router.redirect = () => {
+  let routes = router.children
+  for (let route of routes) {
+    if (auth.checkPathPermission(route)) {
+      return '/payment/' + route.path
+    }
+  }
+}
+export default router

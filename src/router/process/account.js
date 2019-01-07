@@ -2,11 +2,11 @@ import auth from 'service/auth'
 
 let router = {
   path: 'account',
-  redirect: 'account/account',
+  // redirect: 'account/account',
   name: '',
   meta: {
     title: '',
-    permission: '',
+    permission: ''
   },
   component: () =>
     import(/* webpackChunkName: "page/account/accountView" */ 'page/account/accountView'),
@@ -16,7 +16,7 @@ let router = {
       name: '账号管理',
       redirect: 'accoun',
       meta: {
-        title: '账号管理',
+        title: '账号管理'
       },
       component: () =>
         import(/* webpackChunkName: "page/account/account/routerView" */ 'page/account/account/routerView'),
@@ -25,12 +25,12 @@ let router = {
           path: '/',
           name: '账号详情',
           meta: {
-            title: '账号详情',
+            title: '账号详情'
           },
           component: () =>
-            import(/* webpackChunkName: "page/account/account/index" */ 'page/account/account/index'),
-        },
-      ],
+            import(/* webpackChunkName: "page/account/account/index" */ 'page/account/account/index')
+        }
+      ]
     },
     {
       path: 'center',
@@ -53,13 +53,15 @@ let router = {
         }
       ]
     }
-  ],
+  ]
 }
 
 router.redirect = () => {
   let routes = router.children
   for (let route of routes) {
-    return '/account/' + route.path
+    if (auth.checkPathPermission(route)) {
+      return '/account/' + route.path
+    }
   }
 }
 
