@@ -27,15 +27,6 @@
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="storeForm.remark"
-            placeholder="请填写备注"
-            type="textarea"
-            :maxlength="1000"
-            class="item-input"
-          />
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submit('storeForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
@@ -73,8 +64,7 @@ export default {
       storeID: "",
       storeForm: {
         name: "",
-        address: "",
-        remark: ""
+        address: ""
       },
       rules: {
         name: [

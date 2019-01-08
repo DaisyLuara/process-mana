@@ -37,15 +37,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input
-            v-model="productForm.remark"
-            placeholder="请填写备注"
-            type="textarea"
-            :maxlength="1000"
-            class="item-input"
-          />
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submit('productForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
