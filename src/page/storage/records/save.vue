@@ -7,27 +7,42 @@
         :model="recordsForm"
         :rules="rules"
         label-position="left"
-        label-width="130px"
+        label-width="100px"
       >
-        <el-form-item label="产品名称" prop="name">
-          <el-select v-model="recordsForm.name" placeholder="请选择产品名称" clearable>
-            <el-option
-              v-for="item in productList"
-              :value="item.id"
-              :key="item.id"
-              :label="item.name"
-            />
+        <el-form-item label="SKU" prop="sku">
+          <el-select v-model="recordsForm.sku" placeholder="请选择SKU" clearable>
+            <el-option v-for="item in skuList" :key="item.id" :value="item.id" :label="item.name"/>
           </el-select>
         </el-form-item>
+        <el-form-item label="产品名称" prop="name">
+          <el-input
+            :disabled="true"
+            v-model="recordsForm.name"
+            placeholder="请输入产品名称"
+            clearable
+            :maxlength="30"
+            class="item-input"
+          />
+        </el-form-item>
         <el-form-item label="产品颜色" prop="color">
-          <el-select v-model="recordsForm.color" placeholder="请选择产品颜色" clearable>
-            <el-option
-              v-for="item in colorList"
-              :value="item.id"
-              :key="item.id"
-              :label="item.name"
-            />
-          </el-select>
+          <el-input
+            :disabled="true"
+            v-model="recordsForm.color"
+            placeholder="请输入产品颜色"
+            clearable
+            :maxlength="30"
+            class="item-input"
+          />
+        </el-form-item>
+        <el-form-item label="供应商" prop="supplier">
+          <el-input
+            :disabled="true"
+            v-model="recordsForm.supplier"
+            placeholder="请输入供应商"
+            clearable
+            :maxlength="30"
+            class="item-input"
+          />
         </el-form-item>
         <el-form-item label="调出库位" prop="out_location">
           <el-select v-model="recordsForm.out_location" placeholder="请选择调出库位" clearable>
@@ -118,11 +133,12 @@ export default {
         loading: false,
         loadingText: "拼命加载中"
       },
-      productList: [],
-      colorList: [],
+      skuList: [],
       locationList: [],
       recordsID: "",
       recordsForm: {
+        supplier: "",
+        sku: "",
         name: "",
         color: "",
         out_location: "",
@@ -131,15 +147,19 @@ export default {
         remark: ""
       },
       rules: {
+        sku: [{ required: true, message: "请选择SKU", trigger: "submit" }],
         name: [
-          { required: true, message: "请选择产品名称", trigger: "submit" }
+          { required: true, message: "请输入产品名称", trigger: "submit" }
+        ],
+        supplier: [
+          { required: true, message: "请输入供应商", trigger: "submit" }
         ],
         num: [
           { required: true, message: "请输入调整数量", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
         color: [
-          { required: true, message: "请选择产品颜色", trigger: "submit" }
+          { required: true, message: "请输入产品颜色", trigger: "submit" }
         ],
         out_location: [
           { required: true, message: "请选择调出库位", trigger: "submit" }

@@ -9,6 +9,15 @@
         label-position="left"
         label-width="130px"
       >
+        <el-form-item label="SKU" prop="sku">
+          <el-input
+            v-model="productForm.sku"
+            placeholder="请输入SKU"
+            clearable
+            :maxlength="100"
+            class="item-input"
+          />
+        </el-form-item>
         <el-form-item label="产品名称" prop="name">
           <el-input
             v-model="productForm.name"
@@ -54,14 +63,24 @@ import {
   getProductDetails,
   Cookies
 } from "service";
-import { Form, FormItem, Button, Input, MessageBox } from "element-ui";
+import {
+  Form,
+  FormItem,
+  Button,
+  Input,
+  MessageBox,
+  Select,
+  Option
+} from "element-ui";
 
 export default {
   components: {
     ElForm: Form,
     ElFormItem: FormItem,
     ElButton: Button,
-    ElInput: Input
+    ElInput: Input,
+    ElSelect: Select,
+    ElOption: Option
   },
   data() {
     return {
@@ -74,9 +93,9 @@ export default {
       },
       productID: "",
       productForm: {
+        sku: "",
         name: "",
         num: "",
-        remark: "",
         supplier: ""
       },
       rules: {

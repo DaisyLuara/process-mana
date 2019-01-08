@@ -9,6 +9,9 @@
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
+            <el-form-item label prop="sku">
+              <el-input v-model="searchForm.sku" clearable placeholder="请输入SKU" class="item-input"/>
+            </el-form-item>
             <el-form-item label prop="name">
               <el-input
                 v-model="searchForm.name"
@@ -51,7 +54,8 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button v-if="purchasing" type="success" size="small" @click="addRecords">新增调拨记录</el-button>
+            <!-- v-if="purchasing"  -->
+            <el-button type="success" size="small" @click="addRecords">新增调拨记录</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
@@ -60,6 +64,9 @@
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
+                </el-form-item>
+                <el-form-item label="SKU:">
+                  <span>{{ scope.row.sku }}</span>
                 </el-form-item>
                 <el-form-item label="产品名称:">
                   <span>{{ scope.row.name }}</span>
@@ -83,6 +90,7 @@
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="name" label="产品名称" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="color" label="产品颜色" min-width="100"/>
           <el-table-column
@@ -106,12 +114,8 @@
           />
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
-              <el-button
-                v-if="purchasing"
-                size="mini"
-                type="primary"
-                @click="editRecords(scope.row)"
-              >编辑</el-button>
+              <!-- v-if="purchasing" -->
+              <el-button size="mini" type="primary" @click="editRecords(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -155,6 +159,7 @@ export default {
   data() {
     return {
       searchForm: {
+        sku: "",
         name: "",
         color: "",
         out_location: "",
