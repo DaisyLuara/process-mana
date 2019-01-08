@@ -34,6 +34,12 @@
         <el-table :data="tableData" style="width: 100%">
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="name" label="库位" min-width="100"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="warehouse"
+            label="所属仓库"
+            min-width="100"
+          />
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
               <el-button v-if="purchasing" size="mini" @click="editLocation(scope.row)">编辑</el-button>v-if="purchasing"
@@ -107,7 +113,7 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
-    // this.getLocationList();
+    this.getLocationList();
   },
   methods: {
     addLocation() {
@@ -132,14 +138,10 @@ export default {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        name: this.searchForm.name,
-        supplier: this.searchForm.supplier
+        name: this.searchForm.name
       };
       if (!this.searchForm.name) {
         delete args.name;
-      }
-      if (!this.searchForm.supplier) {
-        delete args.supplier;
       }
 
       getLocationList(this, args)

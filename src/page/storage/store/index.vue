@@ -17,14 +17,6 @@
                 class="item-input"
               />
             </el-form-item>
-            <el-form-item label prop="supplier">
-              <el-input
-                v-model="searchForm.supplier"
-                clearable
-                placeholder="请输入供应商"
-                class="item-input"
-              />
-            </el-form-item>
             <el-form-item label>
               <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
               <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
@@ -42,17 +34,22 @@
         <el-table :data="tableData" style="width: 100%">
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="name" label="仓库名称" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="color" label="仓库地址" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="updated_at"
+            prop="address"
+            label="仓库地址"
+            min-width="100"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="created_at"
             label="时间"
             min-width="80"
           />
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
+                <!-- v-if="purchasing" -->
               <el-button
-                v-if="purchasing"
                 size="mini"
                 type="primary"
                 @click="editStore(scope.row)"
@@ -100,8 +97,7 @@ export default {
   data() {
     return {
       searchForm: {
-        name: "",
-        supplier: ""
+        name: ""
       },
       setting: {
         loading: false,
@@ -127,7 +123,7 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
-    // this.getStoreList();
+    this.getStoreList();
   },
   methods: {
     addStore() {
@@ -144,16 +140,11 @@ export default {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        name: this.searchForm.name,
-        supplier: this.searchForm.supplier
+        name: this.searchForm.name
       };
       if (!this.searchForm.name) {
         delete args.name;
       }
-      if (!this.searchForm.supplier) {
-        delete args.supplier;
-      }
-
       getStoreList(this, args)
         .then(res => {
           this.tableData = res.data;

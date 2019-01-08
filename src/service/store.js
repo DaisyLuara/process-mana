@@ -1,4 +1,5 @@
-const PURCHASE_API = '/api/hardware'
+const STORAGE_API = '/api/warehouse'
+const LOCATION_API = '/api/location'
 const INVENTORY_DETAIL_API = '/api/hardwarechange'
 const CONTRACT_HARDWARE_API = '/api/contract_hardware'
 
@@ -106,7 +107,7 @@ const modifyRecords = (context, params) => {
 const getStoreList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + STORAGE_API + '/list', { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -117,10 +118,10 @@ const getStoreList = (context, params) => {
 }
 
 // 仓库详情
-const getStoreDetails = (context, params) => {
+const getStoreDetails = (context, storageId) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + STORAGE_API + '/' + storageId)
       .then(response => {
         resolve(response.data)
       })
@@ -134,7 +135,7 @@ const getStoreDetails = (context, params) => {
 const saveStore = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVENTORY_DETAIL_API + '/list', params)
+      .post(HOST + STORAGE_API + '/create', params)
       .then(response => {
         resolve(response.data)
       })
@@ -145,10 +146,10 @@ const saveStore = (context, params) => {
 }
 
 // 仓库修改
-const modifyStore = (context, params) => {
+const modifyStore = (context, storageId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .patch(HOST + INVENTORY_DETAIL_API + '/list', params)
+      .patch(HOST + STORAGE_API + '/' + storageId, params)
       .then(response => {
         resolve(response.data)
       })
@@ -162,7 +163,7 @@ const modifyStore = (context, params) => {
 const getLocationList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + LOCATION_API + '/list', { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -173,10 +174,10 @@ const getLocationList = (context, params) => {
 }
 
 // 库位详情
-const getLocationDetails = (context, params) => {
+const getLocationDetails = (context, locationId) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + LOCATION_API + '/' + locationId)
       .then(response => {
         resolve(response.data)
       })
@@ -190,7 +191,7 @@ const getLocationDetails = (context, params) => {
 const saveLocation = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVENTORY_DETAIL_API + '/list', params)
+      .post(HOST + LOCATION_API + '/create', params)
       .then(response => {
         resolve(response.data)
       })
@@ -201,10 +202,10 @@ const saveLocation = (context, params) => {
 }
 
 // 库位修改
-const modifyLocation = (context, params) => {
+const modifyLocation = (context, locationId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .patch(HOST + INVENTORY_DETAIL_API + '/list', params)
+      .patch(HOST + LOCATION_API + '/' + locationId, params)
       .then(response => {
         resolve(response.data)
       })
