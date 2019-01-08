@@ -9,14 +9,14 @@ let router = {
     title: '票据',
     permission: 'invoice'
   },
-  redirect: 'invoice/list',
   children: [
     {
       path: 'list',
       component: () =>
         import(/* webpackChunkName: "page/invoice/list/routerView" */ 'page/invoice/list/routerView'),
       meta: {
-        title: '开票管理'
+        title: '开票管理',
+        permission: 'invoice.list'
       },
       children: [
         {
@@ -24,28 +24,36 @@ let router = {
           component: () =>
             import(/* webpackChunkName: "page/invoice/list/index" */ 'page/invoice/list/index'),
           name: '开票列表',
-          meta: {}
+          meta: {
+            permission: 'invoice.list.read'
+          }
         },
         {
           path: 'add',
           component: () =>
             import(/* webpackChunkName: "page/invoice/list/save" */ 'page/invoice/list/save'),
           name: '新增开票',
-          meta: {}
+          meta: {
+            permission: 'invoice.list.create'
+          }
         },
         {
           path: 'edit/:uid',
           component: () =>
             import(/* webpackChunkName: "page/invoice/list/save" */ 'page/invoice/list/save'),
           name: '修改开票',
-          meta: {}
+          meta: {
+            permission: 'invoice.list.update'
+          }
         },
         {
           path: 'detail/:uid',
           component: () =>
             import(/* webpackChunkName: "page/invoice/list/detail" */ 'page/invoice/list/detail'),
           name: '票据详情',
-          meta: {}
+          meta: {
+            permission: 'invoice.list.detail'
+          }
         }
       ]
     },
@@ -54,7 +62,8 @@ let router = {
       component: () =>
         import(/* webpackChunkName: "page/invoice/invoiceCompany/routerView" */ 'page/invoice/invoiceCompany/routerView'),
       meta: {
-        title: '开票公司'
+        title: '开票公司',
+        permission: 'invoice.invoiceCompany'
       },
       children: [
         {
@@ -62,21 +71,27 @@ let router = {
           component: () =>
             import(/* webpackChunkName: "page/invoice/invoiceCompany/index" */ 'page/invoice/invoiceCompany/index'),
           name: '开票公司列表',
-          meta: {}
+          meta: {
+            permission: 'invoice.invoiceCompany.read'
+          }
         },
         {
           path: 'add',
           component: () =>
             import(/* webpackChunkName: "page/invoice/invoiceCompany/save" */ 'page/invoice/invoiceCompany/save'),
           name: '新增开票公司',
-          meta: {}
+          meta: {
+            permission: 'invoice.invoiceCompany.create'
+          }
         },
         {
           path: 'edit/:uid',
           component: () =>
             import(/* webpackChunkName: "page/invoice/invoiceCompany/save" */ 'page/invoice/invoiceCompany/save'),
           name: '修改开票公司',
-          meta: {}
+          meta: {
+            permission: 'invoice.invoiceCompany.update'
+          }
         }
       ]
     },
@@ -85,7 +100,8 @@ let router = {
       component: () =>
         import(/* webpackChunkName: "page/invoice/receipt/routerView" */ 'page/invoice/receipt/routerView'),
       meta: {
-        title: '收款管理'
+        title: '收款管理',
+        permission: 'invoice.receipt'
       },
       children: [
         {
@@ -93,21 +109,27 @@ let router = {
           component: () =>
             import(/* webpackChunkName: "page/invoice/receipt/index" */ 'page/invoice/receipt/index'),
           name: '收款列表',
-          meta: {}
+          meta: {
+            permission: 'invoice.receipt.read'
+          }
         },
         {
           path: 'add',
           component: () =>
             import(/* webpackChunkName: "page/invoice/receipt/save" */ 'page/invoice/receipt/save'),
           name: '新增收款',
-          meta: {}
+          meta: {
+            permission: 'invoice.receipt.create'
+          }
         },
         {
           path: 'edit/:uid',
           component: () =>
             import(/* webpackChunkName: "page/invoice/receipt/save" */ 'page/invoice/receipt/save'),
           name: '修改收款',
-          meta: {}
+          meta: {
+            permission: 'invoice.receipt.update'
+          }
         }
       ]
     },
@@ -116,7 +138,8 @@ let router = {
       component: () =>
         import(/* webpackChunkName: "page/invoice/history/routerView" */ 'page/invoice/history/routerView'),
       meta: {
-        title: '我已审批的'
+        title: '我已审批的',
+        permission: 'invoice.history'
       },
       children: [
         {
@@ -124,14 +147,18 @@ let router = {
           component: () =>
             import(/* webpackChunkName: "page/invoice/history/index" */ 'page/invoice/history/index'),
           name: '票据已审批的列表',
-          meta: {}
+          meta: {
+            permission: 'invoice.history.read'
+          }
         },
         {
           path: 'detail/:uid',
           component: () =>
             import(/* webpackChunkName: "page/invoice/history/detail" */ 'page/invoice/history/detail'),
           name: '票据审批详情',
-          meta: {}
+          meta: {
+            permission: 'invoice.history.detail'
+          }
         }
       ]
     }

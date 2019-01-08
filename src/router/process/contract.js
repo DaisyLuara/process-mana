@@ -72,7 +72,7 @@ let router = {
             import(/* webpackChunkName: "page/contract/collection/index" */ 'page/contract/collection/index'),
           name: '收款合同列表',
           meta: {
-            permission: 'contract.collection.view'
+            permission: 'contract.collection.read'
           }
         }
       ]

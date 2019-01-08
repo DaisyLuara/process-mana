@@ -56,7 +56,7 @@ let router = {
           name: '联系人详情列表',
           meta: {
             title: '联系人详情列表',
-            permission: 'company.customers.contacts'
+            permission: 'company.customers.contacts.read'
           }
         },
         {
