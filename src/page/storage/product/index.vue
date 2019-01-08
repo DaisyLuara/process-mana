@@ -10,23 +10,20 @@
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
             <el-form-item label prop="sku">
-              <el-input v-model="searchForm.sku" clearable placeholder="请输入SKU" class="item-input"/>
-            </el-form-item>
-            <el-form-item label prop="name">
-              <el-input
-                v-model="searchForm.name"
+              <el-select
+                v-model="searchForm.sku"
+                :loading="searchLoading"
+                filterable
                 clearable
-                placeholder="请输入产品名称"
-                class="item-input"
-              />
-            </el-form-item>
-            <el-form-item label prop="color">
-              <el-input
-                v-model="searchForm.color"
-                clearable
-                placeholder="请输入产品颜色"
-                class="item-input"
-              />
+                placeholder="请选择SKU"
+              >
+                <el-option
+                  v-for="item in skuList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label prop="supplier">
               <el-input
@@ -91,7 +88,9 @@ import {
   Pagination,
   Form,
   FormItem,
-  MessageBox
+  MessageBox,
+  Select,
+  Option
 } from "element-ui";
 import { getProductList, Cookies } from "service";
 
@@ -103,15 +102,17 @@ export default {
     "el-input": Input,
     "el-pagination": Pagination,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-select": Select,
+    "el-option": Option
   },
   data() {
     return {
+      searchLoading: false,
+      skuList: [],
       searchForm: {
-        name: "",
-        supplier: "",
-        color: "",
-        sku: ""
+        sku: "",
+        supplier: ""
       },
       setting: {
         loading: false,
@@ -154,11 +155,11 @@ export default {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        name: this.searchForm.name,
+        sku: this.searchForm.sku,
         supplier: this.searchForm.supplier
       };
-      if (!this.searchForm.name) {
-        delete args.name;
+      if (this.searchForm.sku === "") {
+        delete args.sku;
       }
       if (!this.searchForm.supplier) {
         delete args.supplier;

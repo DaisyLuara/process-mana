@@ -14,7 +14,7 @@
             v-model="storeForm.name"
             placeholder="请输入仓库名称"
             clearable
-            :maxlength="30"
+            :maxlength="100"
             class="item-input"
           />
         </el-form-item>
@@ -88,8 +88,7 @@ export default {
       getStoreDetails(this, this.storeID)
         .then(res => {
           this.storeForm.name = res.name;
-          this.storeForm.receipt_money = res.receipt_money;
-          this.storeForm.receipt_date = res.receipt_date;
+          this.storeForm.address = res.address;
           this.setting.loading = false;
         })
         .catch(err => {

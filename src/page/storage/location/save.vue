@@ -7,7 +7,7 @@
         :model="locationForm"
         :rules="rules"
         label-position="left"
-        label-width="130px"
+        label-width="100px"
       >
         <el-form-item label="库位名称" prop="name">
           <el-input
@@ -18,8 +18,8 @@
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="所属仓库" prop="storage">
-          <el-select v-model="locationForm.storage" placeholder="请选择所属仓库" clearable>
+        <el-form-item label="所属仓库" prop="warehouse_id">
+          <el-select v-model="locationForm.warehouse_id" placeholder="请选择所属仓库" clearable>
             <el-option
               v-for="item in storageList"
               :key="item.id"
@@ -76,13 +76,13 @@ export default {
       storageList: [],
       locationForm: {
         name: "",
-        storage: ""
+        warehouse_id: ""
       },
       rules: {
         name: [
           { required: true, message: "请输入库位名称", trigger: "submit" }
         ],
-        storage: [
+        warehouse_id: [
           { required: true, message: "请选择所属仓库", trigger: "submit" }
         ]
       }
@@ -100,8 +100,7 @@ export default {
       getLocationDetails(this, this.locationID)
         .then(res => {
           this.locationForm.name = res.name;
-          this.locationForm.receipt_money = res.receipt_money;
-          this.locationForm.receipt_date = res.receipt_date;
+          this.locationForm.warehouse_id = res.warehouse_id;
           this.setting.loading = false;
         })
         .catch(err => {
