@@ -58,6 +58,9 @@
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
                 </el-form-item>
+                <el-form-item label="SKU:">
+                  <span>{{ scope.row.sku }}</span>
+                </el-form-item>
                 <el-form-item label="产品名称:">
                   <span>{{ scope.row.name }}</span>
                 </el-form-item>
@@ -77,6 +80,7 @@
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="name" label="产品名称" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="color" label="产品颜色" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="store" label="仓库" min-width="80"/>

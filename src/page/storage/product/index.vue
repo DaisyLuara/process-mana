@@ -9,6 +9,9 @@
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
+            <el-form-item label prop="sku">
+              <el-input v-model="searchForm.sku" clearable placeholder="请输入SKU" class="item-input"/>
+            </el-form-item>
             <el-form-item label prop="name">
               <el-input
                 v-model="searchForm.name"
@@ -49,6 +52,7 @@
         </div>
         <el-table :data="tableData" style="width: 100%">
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="name" label="产品名称" min-width="100"/>
           <el-table-column :show-overflow-tooltip="true" prop="color" label="产品颜色" min-width="100"/>
           <el-table-column
@@ -89,7 +93,7 @@ import {
   FormItem,
   MessageBox
 } from "element-ui";
-import { getLocationList, Cookies } from "service";
+import { getProductList, Cookies } from "service";
 
 export default {
   components: {
@@ -106,7 +110,8 @@ export default {
       searchForm: {
         name: "",
         supplier: "",
-        color: ""
+        color: "",
+        sku: ""
       },
       setting: {
         loading: false,
@@ -132,28 +137,20 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
-    // this.getLocationList();
+    // this.getProductList();
   },
   methods: {
     addProduct() {
       this.$router.push({
-        path: "/storage/location/add"
+        path: "/storage/product/add"
       });
     },
     editProduct(data) {
       this.$router.push({
-        path: "/storage/location/edit/" + data.id
+        path: "/storage/product/edit/" + data.id
       });
     },
-    recordsList(data) {
-      this.$router.push({
-        path: "/storage/records",
-        param: {
-          pid: data.id
-        }
-      });
-    },
-    getLocationList() {
+    getProductList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
@@ -167,7 +164,7 @@ export default {
         delete args.supplier;
       }
 
-      getLocationList(this, args)
+      getProductList(this, args)
         .then(res => {
           this.tableData = res.data;
           this.pagination.total = res.meta.pagination.total;
@@ -179,16 +176,16 @@ export default {
     },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage;
-      this.getLocationList();
+      this.getProductList();
     },
     search() {
       this.pagination.currentPage = 1;
-      this.getLocationList();
+      this.getProductList();
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
-      this.getLocationList();
+      this.getProductList();
     }
   }
 };

@@ -18,14 +18,15 @@
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="库存数量" prop="num">
-          <el-input
-            v-model="locationForm.num"
-            placeholder="请输入库存数量"
-            clearable
-            :maxlength="100"
-            class="item-input"
-          />
+        <el-form-item label="所属仓库" prop="storage">
+          <el-select v-model="locationForm.storage" placeholder="请选择所属仓库" clearable>
+            <el-option
+              v-for="item in storageList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submit('locationForm')">保存</el-button>
@@ -44,14 +45,24 @@ import {
   getLocationDetails,
   Cookies
 } from "service";
-import { Form, FormItem, Button, Input, MessageBox } from "element-ui";
+import {
+  Form,
+  FormItem,
+  Button,
+  Input,
+  MessageBox,
+  Select,
+  Option
+} from "element-ui";
 
 export default {
   components: {
     ElForm: Form,
     ElFormItem: FormItem,
     ElButton: Button,
-    ElInput: Input
+    ElInput: Input,
+    ElSelect: Select,
+    ElOption: Option
   },
   data() {
     return {
@@ -62,16 +73,18 @@ export default {
         loadingText: "拼命加载中"
       },
       locationID: "",
+      storageList: [],
       locationForm: {
         name: "",
-        num: "",
-        remark: ""
+        storage: ""
       },
       rules: {
         name: [
           { required: true, message: "请输入库位名称", trigger: "submit" }
         ],
-        num: [{ required: true, message: "请输入库存数量", trigger: "submit" }]
+        storage: [
+          { required: true, message: "请选择所属仓库", trigger: "submit" }
+        ]
       }
     };
   },
