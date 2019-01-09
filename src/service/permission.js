@@ -1,4 +1,4 @@
-const PERMISSION_API = '/api/permission'
+const PERMISSION_API = '/api/company_permission'
 const HOST = process.env.SERVER_URL
 
 // 详情

@@ -1,4 +1,4 @@
-const ROLE_API = '/api/role'
+const ROLE_API = '/api/company_role'
 const HOST = process.env.SERVER_URL
 
 // 详情

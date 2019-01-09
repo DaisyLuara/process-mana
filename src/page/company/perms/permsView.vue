@@ -1,17 +1,18 @@
 <template>
-  <div 
-    class="role-wrap">
+  <div class="perms-wrap">
     <router-view/>
   </div>
 </template>
 <script>
 export default {
-  name: 'RoleHome'
-}
+  name: "PermsHome"
+};
 </script>
 
 <style lang="less">
-.role-wrap {
-  padding: 33px;
+.perms-wrap {
+  background: #fff;
+  margin: 10px;
+  padding: 15px;
 }
 </style>
