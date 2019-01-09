@@ -19,7 +19,12 @@
           />
         </el-form-item>
         <el-form-item label="产品名称" prop="name">
-          <el-select v-model="productForm.name" placeholder="请选择产品名称" clearable>
+          <el-select
+            v-model="productForm.name"
+            :loading="searchLoading"
+            placeholder="请选择产品名称"
+            clearable
+          >
             <el-option
               v-for="item in nameList"
               :key="item.id"
@@ -29,7 +34,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="产品颜色" prop="color">
-          <el-select v-model="productForm.color" placeholder="请选择产品颜色" clearable>
+          <el-select
+            v-model="productForm.color"
+            :loading="searchLoading"
+            placeholder="请选择产品颜色"
+            clearable
+          >
             <el-option
               v-for="item in colorList"
               :key="item.id"
@@ -39,7 +49,12 @@
           </el-select>
         </el-form-item>
         <el-form-item label="供应商" prop="supplier">
-          <el-select v-model="productForm.supplier" placeholder="请选择供应商" clearable>
+          <el-select
+            v-model="productForm.supplier"
+            :loading="searchLoading"
+            placeholder="请选择供应商"
+            clearable
+          >
             <el-option
               v-for="item in supplierList"
               :key="item.id"

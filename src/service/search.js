@@ -13,6 +13,7 @@ const CONTRACT_HARDWARE_MODEL_API = '/api/contract_hardwaremodel/query'
 const CONTRACT_HARDWARE_COLOR_API = '/api/contract_hardwarecolor/query'
 const STORAGE_API = '/api/erp_warehouse/query'
 const SUPPLIER_API = '/api/erp_supplier/query'
+const SKU_API = '/api/erp_sku/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
 const getCompanyList = (context, params) => {
@@ -220,6 +221,20 @@ const getSearchSupplier = (context, args) => {
   })
 }
 
+// sku
+const getSearchSku = (context, args) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + SKU_API, { params: args })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getCompanyList,
   getContract,
@@ -235,5 +250,6 @@ export {
   getHardwareByContractId,
   getHardwareColorByContractId,
   getSearchStorageList,
-  getSearchSupplier
+  getSearchSupplier,
+  getSearchSku
 }

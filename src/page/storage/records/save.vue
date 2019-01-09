@@ -10,8 +10,8 @@
         label-width="100px"
       >
         <el-form-item label="SKU" prop="sku">
-          <el-select v-model="recordsForm.sku" placeholder="请选择SKU" clearable>
-            <el-option v-for="item in skuList" :key="item.id" :value="item.id" :label="item.name"/>
+          <el-select v-model="recordsForm.sku" placeholder="请选择SKU" clearable :loading="searchLoading">
+            <el-option v-for="item in skuList" :key="item.sku" :value="item.sku" :label="item.sku"/>
           </el-select>
         </el-form-item>
         <el-form-item label="产品名称" prop="name">
@@ -97,7 +97,8 @@ import {
   saveRecords,
   modifyRecords,
   getRecordsDetails,
-  Cookies
+  Cookies,
+  getSearchSku
 } from "service";
 import {
   Form,
@@ -148,19 +149,19 @@ export default {
       },
       rules: {
         sku: [{ required: true, message: "请选择SKU", trigger: "submit" }],
-        name: [
-          { required: true, message: "请输入产品名称", trigger: "submit" }
-        ],
-        supplier: [
-          { required: true, message: "请输入供应商", trigger: "submit" }
-        ],
+        // name: [
+        //   { required: true, message: "请输入产品名称", trigger: "submit" }
+        // ],
+        // supplier: [
+        //   { required: true, message: "请输入供应商", trigger: "submit" }
+        // ],
         num: [
           { required: true, message: "请输入调整数量", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
-        color: [
-          { required: true, message: "请输入产品颜色", trigger: "submit" }
-        ],
+        // color: [
+        //   { required: true, message: "请输入产品颜色", trigger: "submit" }
+        // ],
         out_location: [
           { required: true, message: "请选择调出库位", trigger: "submit" }
         ],
@@ -172,12 +173,28 @@ export default {
   },
   created() {
     this.recordsID = this.$route.params.uid;
+    this.getSearchSku();
     if (this.recordsID) {
       this.setting.loading = true;
       this.getRecordsDetails();
     }
   },
   methods: {
+    getSearchSku() {
+      this.searchLoading = true;
+      getSearchSku(this)
+        .then(res => {
+          this.skuList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     getRecordsDetails() {
       getRecordsDetails(this, this.recordsID)
         .then(res => {
