@@ -15,7 +15,6 @@
             <el-radio :label="1">供应商</el-radio>
           </el-radio-group>
         </el-form-item>
-
         <el-form-item label="公司详情" prop="description">
           <el-input
             type="textarea"
