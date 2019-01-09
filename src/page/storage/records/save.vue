@@ -181,9 +181,11 @@ export default {
     getRecordsDetails() {
       getRecordsDetails(this, this.recordsID)
         .then(res => {
-          this.recordsForm.name = res.name;
-          this.recordsForm.receipt_money = res.receipt_money;
-          this.recordsForm.receipt_date = res.receipt_date;
+          this.recordsForm.sku = res.sku;
+          this.recordsForm.out_location = res.out_location;
+          this.recordsForm.in_location = res.in_location;
+          this.recordsForm.num = res.num;
+          this.recordsForm.remark = res.remark;
           this.setting.loading = false;
         })
         .catch(err => {

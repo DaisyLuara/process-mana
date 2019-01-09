@@ -81,6 +81,7 @@ router.beforeEach((to, from, next) => {
   // let permissioness = ['/login', '/findPassword']
   let hasPathPermission = auth.checkPathPermission(to)
   if (hasPathPermission) {
+    console.log(to)
     store.commit('refreshRoute', to)
     next()
   } else {

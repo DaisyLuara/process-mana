@@ -2,8 +2,8 @@ const STORAGE_API = '/api/warehouse'
 const LOCATION_API = '/api/location'
 const PRODUCT_API = '/api/product'
 const ATTRIBUTE_API = '/api/attribute/list'
-const INVENTORY_DETAIL_API = '/api/hardwarechange'
-const CONTRACT_HARDWARE_API = '/api/contract_hardware'
+const STORAGE_DETAIL_API = '/api/location_product'
+const RECORDS_API = '/api/warehousechange'
 
 const HOST = process.env.SERVER_URL
 
@@ -11,7 +11,7 @@ const HOST = process.env.SERVER_URL
 const getStorageDetailList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + STORAGE_DETAIL_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -39,7 +39,7 @@ const leaveFactory = (context, params) => {
 const leaveFactoryDetail = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + CONTRACT_HARDWARE_API, { params: params })
+      .get(HOST + RECORDS_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -53,7 +53,7 @@ const leaveFactoryDetail = (context, params) => {
 const getRecordsList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + RECORDS_API + '/list', { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -64,10 +64,10 @@ const getRecordsList = (context, params) => {
 }
 
 // 调拨记录详情
-const getRecordsDetails = (context, params) => {
+const getRecordsDetails = (context, recordId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + RECORDS_API + '/' + recordId, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -81,7 +81,7 @@ const getRecordsDetails = (context, params) => {
 const saveRecords = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVENTORY_DETAIL_API + '/list', params)
+      .post(HOST + RECORDS_API + '/create', params)
       .then(response => {
         resolve(response.data)
       })
@@ -92,10 +92,10 @@ const saveRecords = (context, params) => {
 }
 
 // 调拨记录修改
-const modifyRecords = (context, params) => {
+const modifyRecords = (context, recordId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .patch(HOST + INVENTORY_DETAIL_API + '/list', params)
+      .patch(HOST + RECORDS_API + '/' + recordId, params)
       .then(response => {
         resolve(response.data)
       })
@@ -272,7 +272,6 @@ const modifyProduct = (context, productId, params) => {
       })
   })
 }
-
 
 // 产品属性列表
 const getAttributeList = (context, params) => {

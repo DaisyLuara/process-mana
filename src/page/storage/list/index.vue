@@ -155,7 +155,7 @@ export default {
     };
   },
   created() {
-    // this.getStorageDetailList();
+    this.getStorageDetailList();
   },
   methods: {
     getStorageDetailList() {
