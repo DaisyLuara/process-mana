@@ -19,22 +19,19 @@
           />
         </el-form-item>
         <el-form-item label="产品名称" prop="name">
-          <el-input
-            v-model="productForm.name"
-            placeholder="请输入产品名称"
-            clearable
-            :maxlength="30"
-            class="item-input"
-          />
+          <el-select v-model="productForm.name" placeholder="请选择产品名称" clearable>
+            <el-option v-for="item in nameList" :key="item.id" :value="item.id" :label="item.name"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="产品颜色" prop="color">
-          <el-input
-            v-model="productForm.color"
-            placeholder="请输入产品颜色"
-            clearable
-            :maxlength="100"
-            class="item-input"
-          />
+          <el-select v-model="productForm.color" placeholder="请选择产品颜色" clearable>
+            <el-option
+              v-for="item in colorList"
+              :key="item.id"
+              :value="item.id"
+              :label="item.name"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="供应商" prop="supplier">
           <el-select v-model="productForm.supplier" placeholder="请选择供应商" clearable>
@@ -85,6 +82,8 @@ export default {
   data() {
     return {
       supplierList: [],
+      nameList: [],
+      colorList: [],
       searchLoading: false,
       setting: {
         isOpenSelectAll: true,
@@ -95,15 +94,16 @@ export default {
       productForm: {
         sku: "",
         name: "",
-        num: "",
+        color: "",
         supplier: ""
       },
       rules: {
+        sku: [{ required: true, message: "请输入SKU", trigger: "submit" }],
         name: [
-          { required: true, message: "请输入产品名称", trigger: "submit" }
+          { required: true, message: "请选择产品名称", trigger: "submit" }
         ],
         color: [
-          { required: true, message: "请输入产品颜色", trigger: "submit" }
+          { required: true, message: "请选择产品颜色", trigger: "submit" }
         ],
         supplier: [
           { required: true, message: "请选择供应商", trigger: "submit" }

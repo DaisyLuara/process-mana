@@ -1,5 +1,6 @@
 const STORAGE_API = '/api/warehouse'
 const LOCATION_API = '/api/location'
+const PRODUCT_API = '/api/product'
 const INVENTORY_DETAIL_API = '/api/hardwarechange'
 const CONTRACT_HARDWARE_API = '/api/contract_hardware'
 
@@ -219,7 +220,7 @@ const modifyLocation = (context, locationId, params) => {
 const getProductList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + PRODUCT_API + '/list', { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -230,10 +231,10 @@ const getProductList = (context, params) => {
 }
 
 // 产品详情
-const getProductDetails = (context, params) => {
+const getProductDetails = (context, productId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + INVENTORY_DETAIL_API + '/list', { params: params })
+      .get(HOST + PRODUCT_API + '/' + productId, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -247,7 +248,7 @@ const getProductDetails = (context, params) => {
 const saveProduct = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVENTORY_DETAIL_API + '/list', params)
+      .post(HOST + PRODUCT_API + '/create', params)
       .then(response => {
         resolve(response.data)
       })
@@ -258,10 +259,10 @@ const saveProduct = (context, params) => {
 }
 
 // 产品修改
-const modifyProduct = (context, params) => {
+const modifyProduct = (context, productId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .patch(HOST + INVENTORY_DETAIL_API + '/list', params)
+      .patch(HOST + PRODUCT_API + '/' + productId, params)
       .then(response => {
         resolve(response.data)
       })
