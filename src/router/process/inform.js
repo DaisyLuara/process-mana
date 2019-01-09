@@ -13,8 +13,6 @@ let router = {
   children: [
     {
       path: 'list',
-      name: '消息管理',
-      redirect: 'list',
       meta: {
         title: '消息管理',
         permission: 'inform.list'
@@ -36,8 +34,6 @@ let router = {
     },
     {
       path: 'operate',
-      name: '操作记录',
-      redirect: 'operate',
       meta: {
         title: '操作记录',
         permission: 'inform.operate'

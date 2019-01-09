@@ -13,8 +13,6 @@ let router = {
   children: [
     {
       path: 'account',
-      name: '账号管理',
-      redirect: 'accoun',
       meta: {
         title: '账号管理'
       },
@@ -34,8 +32,6 @@ let router = {
     },
     {
       path: 'center',
-      name: '个人中心',
-      redirect: 'center',
       meta: {
         title: '个人中心'
       },

@@ -13,8 +13,8 @@ let router = {
   children: [
     {
       path: 'customers',
-      name: '公司管理',
       meta: {
+        title: '公司管理',
         permission: 'company.customers'
       },
       component: () =>
