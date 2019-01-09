@@ -186,8 +186,7 @@ export default {
       };
       getSearchRole(this, args)
         .then(res => {
-          this.allRoles = res;
-          console.log(res);
+          this.allRoles = res.data;
         })
         .catch(err => {
           this.$message({

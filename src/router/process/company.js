@@ -15,7 +15,6 @@ let router = {
       path: 'customers',
       name: '公司管理',
       meta: {
-        title: '公司管理',
         permission: 'company.customers'
       },
       component: () =>
@@ -86,7 +85,7 @@ let router = {
         import(/* webpackChunkName: "page/company/role/roleView" */ 'page/company/role/roleView'),
       meta: {
         title: '角色管理',
-        permission: ''
+        permission: 'company.role'
       },
       children: [
         {
@@ -95,7 +94,7 @@ let router = {
             import(/* webpackChunkName: "page/company/role/roleList" */ 'page/company/role/roleList'),
           name: '角色管理',
           meta: {
-            permission: ''
+            permission: 'company.role.read'
           }
         },
         {
@@ -104,7 +103,7 @@ let router = {
             import(/* webpackChunkName: "page/company/role/roleSave" */ 'page/company/role/roleSave'),
           name: '新增角色',
           meta: {
-            permission: ''
+            permission: 'company.role.create'
           }
         },
         {
@@ -113,7 +112,7 @@ let router = {
             import(/* webpackChunkName: "page/company/role/roleSave" */ 'page/company/role/roleSave'),
           name: '修改角色',
           meta: {
-            permission: ''
+            permission: 'company.role.update'
           }
         }
       ]
@@ -125,7 +124,7 @@ let router = {
         import(/* webpackChunkName: "page/company/perms/permsView" */ 'page/company/perms/permsView'),
       meta: {
         title: '权限管理',
-        permission: ''
+        permission: 'company.permission'
       },
       children: [
         {
@@ -134,7 +133,7 @@ let router = {
             import(/* webpackChunkName: "page/company/perms/permsList" */ 'page/company/perms/permsList'),
           name: '权限管理',
           meta: {
-            permission: ''
+            permission: 'company.permission.read'
           }
         }
       ]
