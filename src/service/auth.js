@@ -163,21 +163,22 @@ export default {
 }
 
 function hasPermission(name, perms) {
-    if (!perms) {
-        return false
-    }
-    if (name == perms.name) {
-        return true
-    }
-    if (perms.children && perms.children.length == 0) {
-        return false
-    }
-    for (let i in perms) {
-        if (name == perms[i]['name']) {
-            return true
-        } else if (name.indexOf(perms[i]['name']) == 0) {
-            return hasPermission(name, perms[i]['children'])
-        }
-    }
+  console.log(perms)
+  if (!perms) {
     return false
+  }
+  if (name == perms.name) {
+    return true
+  }
+  if (perms.children && perms.children.length == 0) {
+    return false
+  }
+  for (let i in perms) {
+    if (name == perms[i]['name']) {
+      return true
+    } else if (name.indexOf(perms[i]['name']) == 0) {
+      return hasPermission(name, perms[i]['children'])
+    }
+  }
+  return false
 }
