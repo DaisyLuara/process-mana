@@ -51,7 +51,7 @@
             <template slot-scope="scope">
               <el-button size="small" type="primary" @click="linkToEdit(scope.row.id)">修改</el-button>
               <el-button size="small" @click="showContactDetail(scope.row.id,scope.row.name)">联系人详情</el-button>
-              <el-button type="danger" size="small" @click="perms(scope.row.id)">权限</el-button>
+              <!-- <el-button type="danger" size="small" @click="perms(scope.row.id)">权限</el-button> -->
             </template>
           </el-table-column>
         </el-table>
