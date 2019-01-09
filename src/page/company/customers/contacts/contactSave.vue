@@ -36,6 +36,17 @@
             class="customer-form-input"
           />
         </el-form-item>
+        <el-form-item label="角色" prop="role_id">
+          <el-radio-group v-model="contactForm.contact.role_id">
+            <el-radio
+              v-for="role in allRoles"
+              :data="role"
+              :key="role.id"
+              :label="role.id"
+              class="role-radio"
+            >{{ role.display_name }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item>
           <el-button
             :loading="loading"
@@ -53,7 +64,16 @@
 <script>
 import company from "service/company";
 import { historyBack } from "service";
-import { Select, Option, Button, Input, Form, FormItem } from "element-ui";
+import {
+  Select,
+  Option,
+  Button,
+  Input,
+  Form,
+  FormItem,
+  RadioGroup,
+  Radio
+} from "element-ui";
 
 export default {
   name: "AddContact",
@@ -63,7 +83,9 @@ export default {
     "el-button": Button,
     "el-input": Input,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-radio-group": RadioGroup,
+    "el-radio": Radio
   },
   data() {
     return {
@@ -72,8 +94,10 @@ export default {
         loading: false,
         loadingText: "拼命加载中"
       },
+      allRoles: [],
       contactForm: {
         contact: {
+          role_id: null,
           name: "",
           phone: "",
           position: "",
@@ -95,7 +119,7 @@ export default {
                 callback();
               }
             },
-            trigger: "blur",
+            trigger: "submit",
             required: true
           }
         ],
@@ -112,14 +136,17 @@ export default {
                 callback();
               }
             },
-            trigger: "blur"
+            trigger: "submit"
           }
         ],
         "contact.name": [
-          { message: "请输入联系人名称", trigger: "blur", required: true }
+          { message: "请输入联系人名称", trigger: "submit", required: true }
+        ],
+        "contact.role_id": [
+          { message: "请选择角色", trigger: "submit", required: true }
         ],
         "contact.position": [
-          { message: "请输入联系人职务", trigger: "blur", required: true }
+          { message: "请输入联系人职务", trigger: "submit", required: true }
         ],
         "contact.password": [
           {

@@ -64,7 +64,17 @@
             />
           </el-form-item>
         </div>
-
+        <el-form-item label="角色" prop="role_id">
+          <el-radio-group v-model="customerForm.role_id">
+            <el-radio
+              v-for="role in allRoles"
+              :data="role"
+              :key="role.id"
+              :label="role.id"
+              class="role-radio"
+            >{{ role.display_name }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item>
           <el-button
             :loading="loading"
@@ -82,7 +92,16 @@
 <script>
 import company from "service/company";
 import { historyBack } from "service";
-import { Select, Option, Button, Input, Form, FormItem } from "element-ui";
+import {
+  Select,
+  Option,
+  Button,
+  Input,
+  Form,
+  FormItem,
+  RadioGroup,
+  Radio
+} from "element-ui";
 
 export default {
   name: "AddCustomer",
@@ -92,7 +111,9 @@ export default {
     "el-button": Button,
     "el-input": Input,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-radio-group": RadioGroup,
+    "el-radio": Radio
   },
   data() {
     return {
@@ -101,7 +122,9 @@ export default {
         loading: true,
         loadingText: "拼命加载中"
       },
+      allRoles: [],
       customerForm: {
+        role_id: null,
         name: "",
         address: "",
         description: "",
@@ -131,12 +154,17 @@ export default {
       ],
       customerID: "",
       rules: {
-        name: [{ message: "请输入公司名称", trigger: "blur", required: true }],
+        name: [
+          { message: "请输入公司名称", trigger: "submit", required: true }
+        ],
+        role_id: [
+          { message: "角色不能为空", trigger: "submit", required: true }
+        ],
         address: [
-          { message: "请输入公司地址", trigger: "blur", required: true }
+          { message: "请输入公司地址", trigger: "submit", required: true }
         ],
         description: [
-          { message: "请输入公司详情", trigger: "blur", required: true }
+          { message: "请输入公司详情", trigger: "submit", required: true }
         ],
         phone: [
           {
@@ -149,7 +177,7 @@ export default {
                 callback();
               }
             },
-            trigger: "blur",
+            trigger: "submit",
             required: true
           }
         ],
@@ -166,14 +194,14 @@ export default {
                 callback();
               }
             },
-            trigger: "blur"
+            trigger: "submit"
           }
         ],
         customer_name: [
-          { message: "请输入联系人名称", trigger: "blur", required: true }
+          { message: "请输入联系人名称", trigger: "submit", required: true }
         ],
         position: [
-          { message: "请输入联系人职务", trigger: "blur", required: true }
+          { message: "请输入联系人职务", trigger: "submit", required: true }
         ],
         password: [
           {
@@ -207,6 +235,7 @@ export default {
           this.setting.loading = true;
           let args = {
             name: this.customerForm.name,
+            role_id: this.customerForm.role_id,
             address: this.customerForm.address,
             description: this.customerForm.description,
             logo: this.customerForm.logo,
@@ -260,6 +289,7 @@ export default {
           .getCustomerDetial(this, this.customerID)
           .then(result => {
             this.statusFlag = true;
+            this.customerForm.role_id = result.role_id;
             this.customerForm.name = result.name;
             this.customerForm.address = result.address;
             this.customerForm.description = result.description;
