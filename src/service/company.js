@@ -50,7 +50,7 @@ export default {
       })
     }
   },
-  getContactDetial(context, pid, uid) {
+    getContactDetail(context, pid, uid) {
     return new Promise(function(resolve, reject){
       context.$http.get(HOST + CUSTOMER_API + '/' + pid + '/customers/' + uid).then(response => {
         resolve(response.data)
@@ -59,7 +59,7 @@ export default {
       })
     })
   },
-  getCustomerDetial(context, pid){
+  getCustomerDetail(context, pid){
     return new Promise(function(resolve, reject){
       context.$http.get(HOST + CUSTOMER_API + '/' + pid + '?include=customers').then(response => {
         resolve(response.data)

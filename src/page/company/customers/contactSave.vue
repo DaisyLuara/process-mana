@@ -175,7 +175,7 @@ export default {
     this.contactName = this.$route.query.name;
     this.getSearchRole();
     if (this.contactID) {
-      this.getContactDetial();
+      this.getContactDetail();
     }
     this.setting.loadingText = "拼命加载中";
   },
@@ -240,10 +240,10 @@ export default {
         }
       });
     },
-    getContactDetial() {
+    getContactDetail() {
       this.setting.loading = true;
       company
-        .getContactDetial(this, this.pid, uid)
+        .getContactDetail(this, this.pid, this.contactID)
         .then(result => {
           this.contactForm.contact = result;
           this.setting.loading = false;

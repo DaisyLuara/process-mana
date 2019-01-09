@@ -228,7 +228,7 @@ export default {
     this.init();
     this.customerID = this.$route.params.uid;
     if (this.customerID) {
-      this.getCustomerDetial();
+      this.getCustomerDetail();
     } else {
       this.statusFlag = false;
       this.setting.loading = false;
@@ -306,14 +306,14 @@ export default {
         }
       });
     },
-    getCustomerDetial() {
+    getCustomerDetail() {
       this.setting.loading = true;
       this.rules.customer_name[0].required = false;
       this.rules.phone[0].required = false;
       this.rules.position[0].required = false;
       this.rules.password[0].required = false;
       company
-        .getCustomerDetial(this, this.customerID)
+        .getCustomerDetail(this, this.customerID)
         .then(result => {
           this.statusFlag = true;
           this.customerForm.role_id = result.role_id;
