@@ -63,7 +63,7 @@
 
 <script>
 import company from "service/company";
-import { historyBack } from "service";
+import { historyBack, getSearchRole } from "service";
 import {
   Select,
   Option,
@@ -173,10 +173,29 @@ export default {
     this.contactID = this.$route.query.uid;
     this.pid = this.$route.query.pid;
     this.contactName = this.$route.query.name;
-    this.getContactDetial();
+    this.getSearchRole();
+    if (this.contactID) {
+      this.getContactDetial();
+    }
     this.setting.loadingText = "拼命加载中";
   },
   methods: {
+    getSearchRole() {
+      let args = {
+        guard_name: "shop"
+      };
+      getSearchRole(this, args)
+        .then(res => {
+          this.allRoles = res;
+          console.log(res);
+        })
+        .catch(err => {
+          this.$message({
+            type: "warning",
+            message: err.response.data.message
+          });
+        });
+    },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -189,7 +208,8 @@ export default {
             phone: this.contactForm.contact.phone,
             position: this.contactForm.contact.position,
             password: this.contactForm.contact.password,
-            telephone: this.contactForm.contact.telephone
+            telephone: this.contactForm.contact.telephone,
+            role_id: this.contactForm.contact.role_id
           };
           if (this.contactForm.contact.password === "") {
             delete args.password;
@@ -222,23 +242,20 @@ export default {
       });
     },
     getContactDetial() {
-      let uid = this.$route.query.uid;
-      if (uid) {
-        this.setting.loading = true;
-        company
-          .getContactDetial(this, this.pid, uid)
-          .then(result => {
-            this.contactForm.contact = result;
-            this.setting.loading = false;
-          })
-          .catch(err => {
-            this.setting.loading = false;
-            this.$message({
-              message: error.response.message.data,
-              type: "error"
-            });
+      this.setting.loading = true;
+      company
+        .getContactDetial(this, this.pid, uid)
+        .then(result => {
+          this.contactForm.contact = result;
+          this.setting.loading = false;
+        })
+        .catch(err => {
+          this.setting.loading = false;
+          this.$message({
+            message: error.response.message.data,
+            type: "error"
           });
-      }
+        });
     },
     resetForm(formName) {
       historyBack();

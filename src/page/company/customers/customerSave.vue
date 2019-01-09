@@ -91,7 +91,7 @@
 
 <script>
 import company from "service/company";
-import { historyBack } from "service";
+import { historyBack, getSearchRole } from "service";
 import {
   Select,
   Option,
@@ -225,10 +225,39 @@ export default {
   },
   created: function() {
     this.setting.loadingText = "拼命加载中";
+    this.init();
     this.customerID = this.$route.params.uid;
-    this.getCustomerDetial();
+    if (this.customerID) {
+      this.getCustomerDetial();
+    } else {
+      this.statusFlag = false;
+      this.setting.loading = false;
+    }
   },
   methods: {
+    async init() {
+      try {
+        await this.getSearchRole();
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    getSearchRole() {
+      let args = {
+        guard_name: "shop"
+      };
+      getSearchRole(this, args)
+        .then(res => {
+          this.allRoles = res;
+          console.log(res);
+        })
+        .catch(err => {
+          this.$message({
+            type: "warning",
+            message: err.response.data.message
+          });
+        });
+    },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -280,34 +309,28 @@ export default {
     },
     getCustomerDetial() {
       this.setting.loading = true;
-      if (this.customerID) {
-        this.rules.customer_name[0].required = false;
-        this.rules.phone[0].required = false;
-        this.rules.position[0].required = false;
-        this.rules.password[0].required = false;
-        company
-          .getCustomerDetial(this, this.customerID)
-          .then(result => {
-            this.statusFlag = true;
-            this.customerForm.role_id = result.role_id;
-            this.customerForm.name = result.name;
-            this.customerForm.address = result.address;
-            this.customerForm.description = result.description;
-            this.customerForm.selectedStatus = result.status;
-            this.customerForm.logo = result.logo;
-            this.customerForm.internal_name = result.internal_name;
-            this.setting.loading = false;
-          })
-          .catch(err => {
-            console.log(err);
-            this.setting.loading = false;
-          });
-      } else {
-        this.statusFlag = false;
-        this.setting.loading = false;
-      }
+      this.rules.customer_name[0].required = false;
+      this.rules.phone[0].required = false;
+      this.rules.position[0].required = false;
+      this.rules.password[0].required = false;
+      company
+        .getCustomerDetial(this, this.customerID)
+        .then(result => {
+          this.statusFlag = true;
+          this.customerForm.role_id = result.role_id;
+          this.customerForm.name = result.name;
+          this.customerForm.address = result.address;
+          this.customerForm.description = result.description;
+          this.customerForm.selectedStatus = result.status;
+          this.customerForm.logo = result.logo;
+          this.customerForm.internal_name = result.internal_name;
+          this.setting.loading = false;
+        })
+        .catch(err => {
+          console.log(err);
+          this.setting.loading = false;
+        });
     },
-    resetForm(formName) {},
     historyBack() {
       historyBack();
     }
