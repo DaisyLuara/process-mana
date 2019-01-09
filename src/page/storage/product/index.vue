@@ -26,12 +26,20 @@
               </el-select>
             </el-form-item>
             <el-form-item label prop="supplier">
-              <el-input
+              <el-select
                 v-model="searchForm.supplier"
+                :loading="searchLoading"
+                filterable
                 clearable
                 placeholder="请输入供应商"
-                class="item-input"
-              />
+              >
+                <el-option
+                  v-for="item in supplierList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label>
               <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
@@ -50,11 +58,9 @@
         <el-table :data="tableData" style="width: 100%">
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="产品名称" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="color" label="产品颜色" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="supplier"
+            prop="supplier_name"
             label="供应商"
             min-width="100"
           />
@@ -92,7 +98,7 @@ import {
   Select,
   Option
 } from "element-ui";
-import { getProductList, Cookies } from "service";
+import { getProductList, Cookies, getSearchSupplier } from "service";
 
 export default {
   components: {
@@ -110,6 +116,7 @@ export default {
     return {
       searchLoading: false,
       skuList: [],
+      supplierList: [],
       searchForm: {
         sku: "",
         supplier: ""
@@ -138,9 +145,25 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
-    // this.getProductList();
+    this.getProductList();
+    this.getSearchSupplier();
   },
   methods: {
+    getSearchSupplier() {
+      this.searchLoading = true;
+      getSearchSupplier(this)
+        .then(res => {
+          this.supplierList = res.data;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     addProduct() {
       this.$router.push({
         path: "/storage/product/add"
@@ -161,7 +184,7 @@ export default {
       if (this.searchForm.sku === "") {
         delete args.sku;
       }
-      if (!this.searchForm.supplier) {
+      if (this.searchForm.supplier === "") {
         delete args.supplier;
       }
 

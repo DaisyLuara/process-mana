@@ -1,6 +1,7 @@
 const STORAGE_API = '/api/warehouse'
 const LOCATION_API = '/api/location'
 const PRODUCT_API = '/api/product'
+const ATTRIBUTE_API = '/api/attribute/list'
 const INVENTORY_DETAIL_API = '/api/hardwarechange'
 const CONTRACT_HARDWARE_API = '/api/contract_hardware'
 
@@ -271,6 +272,22 @@ const modifyProduct = (context, productId, params) => {
       })
   })
 }
+
+
+// 产品属性列表
+const getAttributeList = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + ATTRIBUTE_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getStorageDetailList,
   leaveFactory,
@@ -290,5 +307,6 @@ export {
   getProductList,
   modifyProduct,
   saveProduct,
-  getProductDetails
+  getProductDetails,
+  getAttributeList
 }

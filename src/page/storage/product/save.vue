@@ -20,7 +20,12 @@
         </el-form-item>
         <el-form-item label="产品名称" prop="name">
           <el-select v-model="productForm.name" placeholder="请选择产品名称" clearable>
-            <el-option v-for="item in nameList" :key="item.id" :value="item.id" :label="item.name"/>
+            <el-option
+              v-for="item in nameList"
+              :key="item.id"
+              :value="item.attribute_id+ ',' +item.value"
+              :label="item.value"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="产品颜色" prop="color">
@@ -28,8 +33,8 @@
             <el-option
               v-for="item in colorList"
               :key="item.id"
-              :value="item.id"
-              :label="item.name"
+              :value="item.attribute_id + ',' + item.value"
+              :label="item.value"
             />
           </el-select>
         </el-form-item>
@@ -58,6 +63,8 @@ import {
   saveProduct,
   modifyProduct,
   getProductDetails,
+  getAttributeList,
+  getSearchSupplier,
   Cookies
 } from "service";
 import {
@@ -113,18 +120,77 @@ export default {
   },
   created() {
     this.productID = this.$route.params.uid;
+    this.init();
     if (this.productID) {
-      this.setting.loading = true;
       this.getProductDetails();
     }
   },
   methods: {
-    getProductDetails() {
-      getProductDetails(this, this.productID)
+    async init() {
+      try {
+        await this.getAttributeList();
+        await this.getSearchSupplier();
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    getAttributeList() {
+      this.searchLoading = true;
+      getAttributeList(this)
         .then(res => {
-          this.productForm.name = res.name;
-          this.productForm.receipt_money = res.receipt_money;
-          this.productForm.receipt_date = res.receipt_date;
+          res.data.map(r => {
+            if (r.name === "name") {
+              this.nameList = r.value;
+            }
+            if (r.name === "color") {
+              this.colorList = r.value;
+            }
+          });
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getSearchSupplier() {
+      this.searchLoading = true;
+      getSearchSupplier(this)
+        .then(res => {
+          this.supplierList = res.data;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getProductDetails() {
+      this.setting.loading = true;
+      let args = {
+        include: "attributes"
+      };
+      getProductDetails(this, this.productID, args)
+        .then(res => {
+          this.productForm.sku = res.sku;
+          this.productForm.supplier = res.supplier;
+          let attributes = res.attributes.data;
+          attributes.map(r => {
+            if (r.attributes_id === 1) {
+              this.productForm.name =
+                r.attributes_id + "," + r.attributes_value;
+            }
+            if (r.attributes_id === 2) {
+              this.productForm.color =
+                r.attributes_id + "," + r.attributes_value;
+            }
+          });
           this.setting.loading = false;
         })
         .catch(err => {
@@ -142,7 +208,20 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setting.loading = true;
-          let args = this.productForm;
+          let attribute = [];
+          attribute.push({
+            attributes_id: this.productForm.name.split(",")[0],
+            attributes_value: this.productForm.name.split(",")[1]
+          });
+          attribute.push({
+            attributes_id: this.productForm.color.split(",")[0],
+            attributes_value: this.productForm.color.split(",")[1]
+          });
+          let args = {
+            sku: this.productForm.sku,
+            supplier: this.productForm.supplier,
+            attribute: attribute
+          };
           if (this.productID) {
             modifyProduct(this, this.productID, args)
               .then(res => {
