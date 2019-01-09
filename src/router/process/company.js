@@ -2,7 +2,6 @@ import auth from 'service/auth'
 
 let router = {
   path: 'company',
-  // redirect: 'company/customers',
   name: '公司',
   meta: {
     title: '公司',
@@ -22,7 +21,7 @@ let router = {
       children: [
         {
           path: '/',
-          name: '公司管理列表',
+          // name: '公司管理列表',
           meta: {
             title: '公司管理列表',
             permission: 'company.customers.read'
@@ -34,8 +33,9 @@ let router = {
           path: 'add',
           component: () =>
             import(/* webpackChunkName: "page/company/customers/customerSave" */ 'page/company/customers/customerSave'),
-          name: '新增公司',
+          // name: '新增公司',
           meta: {
+            title: '新增公司',
             permission: 'company.customers.create'
           }
         },
@@ -43,37 +43,37 @@ let router = {
           path: 'edit/:uid',
           component: () =>
             import(/* webpackChunkName: "page/company/customers/customerSave" */ 'page/company/customers/customerSave'),
-          name: '修改公司',
           meta: {
+            title: '修改公司',
             permission: 'company.customers.update'
           }
         },
         {
           path: 'contacts',
           component: () =>
-            import(/* webpackChunkName: "page/company/customers/contacts/contactList" */ 'page/company/customers/contacts/contactList'),
-          name: '联系人详情列表',
+            import(/* webpackChunkName: "page/company/customers/contactList" */ 'page/company/customers/contactList'),
+          // name: '联系人详情列表',
           meta: {
             title: '联系人详情列表',
-            permission: 'company.customers.contacts.read'
+            permission: 'company.customers.contacts_read'
           }
         },
         {
-          path: 'contacts/add',
+          path: 'c_add',
           component: () =>
-            import(/* webpackChunkName: "page/company/customers/contacts/contactSave" */ 'page/company/customers/contacts/contactSave'),
-          name: '新增联系人',
+            import(/* webpackChunkName: "page/company/customers/contactSave" */ 'page/company/customers/contactSave'),
           meta: {
-            permission: 'company.customers.contacts.create'
+            title: '新增联系人',
+            permission: 'company.customers.contacts_create'
           }
         },
         {
-          path: 'contacts/edit',
+          path: 'c_edit',
           component: () =>
-            import(/* webpackChunkName: "page/company/customers/contacts/contactSave" */ 'page/company/customers/contacts/contactSave'),
-          name: '修改联系人',
+            import(/* webpackChunkName: "page/company/customers/contactSave" */ 'page/company/customers/contactSave'),
           meta: {
-            permission: 'company.customers.contacts.update'
+            title: '修改联系人',
+            permission: 'company.customers.contacts_update'
           }
         }
       ]
