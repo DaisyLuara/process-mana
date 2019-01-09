@@ -23,3 +23,9 @@ export * from './notice'
 
 // 个人中心
 export * from './account'
+
+// 角色
+export * from './role'
+
+// 权限
+export * from './permission'

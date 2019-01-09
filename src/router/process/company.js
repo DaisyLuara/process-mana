@@ -76,45 +76,66 @@ let router = {
           meta: {
             permission: 'company.customers.contacts.update'
           }
-        },
-        {
-          path: 'perms/add',
-          component: () =>
-            import(/* webpackChunkName: "page/company/customers/contacts/contactSave" */ 'page/company/customers/contacts/contactSave'),
-          name: '新增权限',
-          meta: {}
-        },
-        {
-          path: 'perms/edit',
-          component: () =>
-            import(/* webpackChunkName: "page/company/customers/contacts/contactSave" */ 'page/company/customers/contacts/contactSave'),
-          name: '修改权限',
-          meta: {}
         }
       ]
     },
     {
-      path: 'perms',
-      redirect: 'perms',
-      meta: {
-        title: ''
-      },
+      // 角色主页，也是角色列表页
+      path: 'role',
       component: () =>
-        import(/* webpackChunkName: "page/company/customers/routerView" */ 'page/company/customers/routerView'),
+        import(/* webpackChunkName: "page/company/role/roleView" */ 'page/company/role/roleView'),
+      meta: {
+        title: '角色管理',
+        permission: ''
+      },
       children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/company/role/roleList" */ 'page/company/role/roleList'),
+          name: '角色管理',
+          meta: {
+            permission: ''
+          }
+        },
         {
           path: 'add',
           component: () =>
-            import(/* webpackChunkName: "page/company/customers/perms" */ 'page/company/customers/perms'),
-          name: '新增权限',
-          meta: {}
+            import(/* webpackChunkName: "page/company/role/roleSave" */ 'page/company/role/roleSave'),
+          name: '新增角色',
+          meta: {
+            permission: ''
+          }
         },
         {
           path: 'edit/:uid',
           component: () =>
-            import(/* webpackChunkName: "page/company/customers/perms" */ 'page/company/customers/perms'),
-          name: '修改权限',
-          meta: {}
+            import(/* webpackChunkName: "page/company/role/roleSave" */ 'page/company/role/roleSave'),
+          name: '修改角色',
+          meta: {
+            permission: ''
+          }
+        }
+      ]
+    },
+    {
+      // 角色主页，也是角色列表页
+      path: 'permission',
+      component: () =>
+        import(/* webpackChunkName: "page/company/perms/permsView" */ 'page/company/perms/permsView'),
+      meta: {
+        title: '权限管理',
+        permission: ''
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/company/perms/permsList" */ 'page/company/perms/permsList'),
+          name: '权限管理',
+          meta: {
+            permission: ''
+          }
         }
       ]
     }
