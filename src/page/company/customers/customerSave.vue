@@ -9,10 +9,10 @@
         <el-form-item label="公司地址" prop="address">
           <el-input v-model="customerForm.address" :maxlength="60" class="customer-form-input"/>
         </el-form-item>
-        <el-form-item label="公司属性" prop="type">
-          <el-radio-group v-model="customerForm.type">
-            <el-radio :label="1">客户</el-radio>
-            <el-radio :label="2">供应商</el-radio>
+        <el-form-item label="公司属性" prop="category">
+          <el-radio-group v-model="customerForm.category">
+            <el-radio :label="0">客户</el-radio>
+            <el-radio :label="1">供应商</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -122,7 +122,7 @@ export default {
       customerForm: {
         name: "",
         address: "",
-        type: 1,
+        category: 0,
         description: "",
         internal_name: "",
         logo: "",
@@ -153,7 +153,7 @@ export default {
         name: [
           { message: "请输入公司名称", trigger: "submit", required: true }
         ],
-        type: [
+        category: [
           { message: "请选择公司属性", trigger: "submit", required: true }
         ],
         address: [
@@ -234,7 +234,7 @@ export default {
             address: this.customerForm.address,
             description: this.customerForm.description,
             logo: this.customerForm.logo,
-            type: this.customerForm.type,
+            category: this.customerForm.category,
             internal_name: this.customerForm.internal_name
           };
           if (this.customerID) {
@@ -287,7 +287,7 @@ export default {
             this.statusFlag = true;
             this.customerForm.name = result.name;
             this.customerForm.address = result.address;
-            this.customerForm.type = result.type;
+            this.customerForm.category = result.category;
             this.customerForm.description = result.description;
             this.customerForm.selectedStatus = result.status;
             this.customerForm.logo = result.logo;

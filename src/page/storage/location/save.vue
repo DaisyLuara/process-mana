@@ -41,6 +41,7 @@
 import {
   historyBack,
   saveLocation,
+  getSearchStorageList,
   modifyLocation,
   getLocationDetails,
   Cookies
@@ -90,12 +91,27 @@ export default {
   },
   created() {
     this.locationID = this.$route.params.uid;
+    this.getSearchStorageList();
     if (this.locationID) {
       this.setting.loading = true;
       this.getLocationDetails();
     }
   },
   methods: {
+    getSearchStorageList() {
+      this.searchLoading = true;
+      getSearchStorageList(this)
+        .then(res => {
+          this.storageList = res;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     getLocationDetails() {
       getLocationDetails(this, this.locationID)
         .then(res => {

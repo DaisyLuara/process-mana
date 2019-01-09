@@ -11,6 +11,7 @@ const HARDWARE_COLOR_API = '/api/hardware_color/query'
 const HARDWARE_SOURCE_API = '/api/hardware_source/query'
 const CONTRACT_HARDWARE_MODEL_API = '/api/contract_hardwaremodel/query'
 const CONTRACT_HARDWARE_COLOR_API = '/api/contract_hardwarecolor/query'
+const STORAGE_API = '/api/erp_warehouse/query'
 
 const HOST = process.env.SERVER_URL
 // 公司列表
@@ -191,6 +192,20 @@ const getHardwareColorByContractId = (context, args) => {
   })
 }
 
+// 仓库列表
+const getSearchStorageList = (context, args) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + STORAGE_API, { params: args })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getCompanyList,
   getContract,
@@ -204,5 +219,6 @@ export {
   hardwareColorByModel,
   hardwareSource,
   getHardwareByContractId,
-  getHardwareColorByContractId
+  getHardwareColorByContractId,
+  getSearchStorageList
 }
