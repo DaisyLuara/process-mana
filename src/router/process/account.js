@@ -6,7 +6,7 @@ let router = {
   name: '',
   meta: {
     title: '',
-    permission: ''
+    permission: 'account'
   },
   component: () =>
     import(/* webpackChunkName: "page/account/accountView" */ 'page/account/accountView'),
@@ -14,16 +14,17 @@ let router = {
     {
       path: 'account',
       meta: {
-        title: '账号管理'
+        title: '账号管理',
+        permission: 'account.account'
       },
       component: () =>
         import(/* webpackChunkName: "page/account/account/routerView" */ 'page/account/account/routerView'),
       children: [
         {
           path: '/',
-          name: '账号详情',
           meta: {
-            title: '账号详情'
+            title: '账号详情',
+            permission: 'account.account.read'
           },
           component: () =>
             import(/* webpackChunkName: "page/account/account/index" */ 'page/account/account/index')
@@ -33,16 +34,17 @@ let router = {
     {
       path: 'center',
       meta: {
-        title: '个人中心'
+        title: '个人中心',
+        permission: 'account.center'
       },
       component: () =>
         import(/* webpackChunkName: "page/account/center/routerView" */ 'page/account/center/routerView'),
       children: [
         {
           path: '/',
-          name: '个人中心列表',
           meta: {
-            title: '个人中心列表'
+            title: '个人中心列表',
+            permission: 'account.center.read'
           },
           component: () =>
             import(/* webpackChunkName: "page/account/center/index" */ 'page/account/center/index')

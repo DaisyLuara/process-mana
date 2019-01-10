@@ -248,7 +248,14 @@ export default {
       company
         .getContactDetail(this, this.pid, this.contactID, args)
         .then(result => {
-          this.contactForm.contact = result;
+          this.this.contactForm.contact.name = result.name;
+          this.contactForm.contact.phone = result.phone;
+          this.contactForm.contact.position = result.position;
+          this.contactForm.contact.password = result.password;
+          this.contactForm.contact.telephone = result.telephone;
+          if (result.roles) {
+            this.contactForm.contact.role_id = result.roles.data[0].id;
+          }
           this.setting.loading = false;
         })
         .catch(err => {

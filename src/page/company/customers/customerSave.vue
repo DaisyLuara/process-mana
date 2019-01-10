@@ -319,7 +319,9 @@ export default {
         .getCustomerDetail(this, this.customerID, args)
         .then(result => {
           this.statusFlag = true;
-          this.customerForm.role_id = result.role_id;
+          if (result.roles) {
+            this.customerForm.role_id = result.roles.data[0].id;
+          }
           this.customerForm.name = result.name;
           this.customerForm.address = result.address;
           this.customerForm.description = result.description;
