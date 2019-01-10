@@ -63,18 +63,18 @@
               class="customer-form-input"
             />
           </el-form-item>
+          <el-form-item label="角色" prop="role_id">
+            <el-radio-group v-model="customerForm.role_id">
+              <el-radio
+                      v-for="role in allRoles"
+                      :data="role"
+                      :key="role.id"
+                      :label="role.id"
+                      class="role-radio"
+              >{{ role.display_name }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
         </div>
-        <el-form-item label="角色" prop="role_id">
-          <el-radio-group v-model="customerForm.role_id">
-            <el-radio
-              v-for="role in allRoles"
-              :data="role"
-              :key="role.id"
-              :label="role.id"
-              class="role-radio"
-            >{{ role.display_name }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
         <el-form-item>
           <el-button
             :loading="loading"
@@ -312,16 +312,11 @@ export default {
       this.rules.phone[0].required = false;
       this.rules.position[0].required = false;
       this.rules.password[0].required = false;
-      let args = {
-        include: "roles"
-      };
+
       company
-        .getCustomerDetail(this, this.customerID, args)
+        .getCustomerDetail(this, this.customerID)
         .then(result => {
           this.statusFlag = true;
-          if (result.roles) {
-            this.customerForm.role_id = result.roles.data[0].id;
-          }
           this.customerForm.name = result.name;
           this.customerForm.address = result.address;
           this.customerForm.description = result.description;
