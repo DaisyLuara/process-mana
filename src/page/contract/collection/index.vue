@@ -20,6 +20,15 @@
               <el-input 
                 v-model="searchForm.name" 
                 clearable
+                placeholder="请输入合同名称"
+                class="item-input"/>
+            </el-form-item>
+            <el-form-item 
+              label="" 
+              prop="company_name">
+              <el-input 
+                v-model="searchForm.company_name" 
+                clearable
                 placeholder="请输入公司名称"
                 class="item-input"/>
             </el-form-item>
@@ -176,6 +185,7 @@ export default {
     return {
       searchForm: {
         name: '',
+        company_name:'',
         contract_number: ''
       },
       roles: [],
@@ -215,10 +225,14 @@ export default {
         include: 'receiveDate.invoiceReceipt',
         page: this.pagination.currentPage,
         name: this.searchForm.name,
+        company_name: this.searchForm.company_name,
         contract_number: this.searchForm.contract_number
       }
       if (!this.searchForm.name) {
         delete args.name
+      }
+      if (!this.searchForm.company_name) {
+        delete args.company_name
       }
       if (this.searchForm.contract_number === '') {
         delete args.contract_number
