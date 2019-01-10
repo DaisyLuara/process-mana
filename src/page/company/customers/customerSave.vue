@@ -312,8 +312,11 @@ export default {
       this.rules.phone[0].required = false;
       this.rules.position[0].required = false;
       this.rules.password[0].required = false;
+      let args = {
+        include: "roles"
+      };
       company
-        .getCustomerDetail(this, this.customerID)
+        .getCustomerDetail(this, this.customerID, args)
         .then(result => {
           this.statusFlag = true;
           this.customerForm.role_id = result.role_id;

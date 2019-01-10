@@ -242,8 +242,11 @@ export default {
     },
     getContactDetail() {
       this.setting.loading = true;
+      let args = {
+        include: "roles"
+      };
       company
-        .getContactDetail(this, this.pid, this.contactID)
+        .getContactDetail(this, this.pid, this.contactID, args)
         .then(result => {
           this.contactForm.contact = result;
           this.setting.loading = false;
