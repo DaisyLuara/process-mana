@@ -4,6 +4,8 @@ const PRODUCT_API = '/api/product'
 const ATTRIBUTE_API = '/api/attribute/list'
 const STORAGE_DETAIL_API = '/api/location_product'
 const RECORDS_API = '/api/warehousechange'
+const CONTRACT_PRODUCT_API = '/api/contract_product'
+const PRODUCT_ATTRIBUTE_API = '/api/product_attribute'
 
 const HOST = process.env.SERVER_URL
 
@@ -25,7 +27,7 @@ const getStorageDetailList = (context, params) => {
 const leaveFactory = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + INVENTORY_DETAIL_API + '/chuchang', params)
+      .post(HOST + RECORDS_API + '/chuchang', params)
       .then(response => {
         resolve(response.data)
       })
@@ -39,7 +41,7 @@ const leaveFactory = (context, params) => {
 const leaveFactoryDetail = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + RECORDS_API, { params: params })
+      .get(HOST + CONTRACT_PRODUCT_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -82,20 +84,6 @@ const saveRecords = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .post(HOST + RECORDS_API + '/create', params)
-      .then(response => {
-        resolve(response.data)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
-
-// 调拨记录修改
-const modifyRecords = (context, recordId, params) => {
-  return new Promise(function(resolve, reject) {
-    context.$http
-      .patch(HOST + RECORDS_API + '/' + recordId, params)
       .then(response => {
         resolve(response.data)
       })
@@ -287,6 +275,20 @@ const getAttributeList = (context, params) => {
   })
 }
 
+// 根据产品SKU，查出对应产品属性
+const getAttributeBySku = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PRODUCT_ATTRIBUTE_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getStorageDetailList,
   leaveFactory,
@@ -307,5 +309,6 @@ export {
   modifyProduct,
   saveProduct,
   getProductDetails,
-  getAttributeList
+  getAttributeList,
+  getAttributeBySku
 }

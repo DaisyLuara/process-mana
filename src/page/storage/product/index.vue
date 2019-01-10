@@ -19,9 +19,9 @@
               >
                 <el-option
                   v-for="item in skuList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+                  :key="item.sku"
+                  :label="item.sku"
+                  :value="item.sku"
                 />
               </el-select>
             </el-form-item>
@@ -98,7 +98,12 @@ import {
   Select,
   Option
 } from "element-ui";
-import { getProductList, Cookies, getSearchSupplier } from "service";
+import {
+  getProductList,
+  Cookies,
+  getSearchSupplier,
+  getSearchSku
+} from "service";
 
 export default {
   components: {
@@ -147,8 +152,24 @@ export default {
     this.roles = user_info.roles.data;
     this.getProductList();
     this.getSearchSupplier();
+    this.getSearchSku();
   },
   methods: {
+    getSearchSku() {
+      this.searchLoading = true;
+      getSearchSku(this)
+        .then(res => {
+          this.skuList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     getSearchSupplier() {
       this.searchLoading = true;
       getSearchSupplier(this)

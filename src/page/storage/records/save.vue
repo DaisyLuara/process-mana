@@ -1,7 +1,7 @@
 <template>
   <div class="item-wrap-template">
     <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
-      <div class="pane-title">{{recordsID ? '修改调拨记录' : '新增调拨记录' }}</div>
+      <div class="pane-title">{{recordsID ? '调拨记录详情' : '新增调拨记录' }}</div>
       <el-form
         ref="recordsForm"
         :model="recordsForm"
@@ -10,7 +10,13 @@
         label-width="100px"
       >
         <el-form-item label="SKU" prop="sku">
-          <el-select v-model="recordsForm.sku" placeholder="请选择SKU" clearable :loading="searchLoading">
+          <el-select
+            v-model="recordsForm.sku"
+            placeholder="请选择SKU"
+            clearable
+            :loading="searchLoading"
+            @change="skuHandle"
+          >
             <el-option v-for="item in skuList" :key="item.sku" :value="item.sku" :label="item.sku"/>
           </el-select>
         </el-form-item>
@@ -54,8 +60,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="调入库位" prop="into_location">
-          <el-select v-model="recordsForm.into_location" placeholder="请选择调入库位" clearable>
+        <el-form-item label="调入库位" prop="in_location">
+          <el-select v-model="recordsForm.in_location" placeholder="请选择调入库位" clearable>
             <el-option
               v-for="item in locationList"
               :value="item.id"
@@ -83,7 +89,7 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submit('recordsForm')">保存</el-button>
+          <el-button v-if="!recordsID" type="primary" @click="submit('recordsForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>
@@ -98,7 +104,9 @@ import {
   modifyRecords,
   getRecordsDetails,
   Cookies,
-  getSearchSku
+  getSearchSku,
+  getAttributeBySku,
+  getSearchLocation
 } from "service";
 import {
   Form,
@@ -136,36 +144,36 @@ export default {
       },
       skuList: [],
       locationList: [],
-      recordsID: "",
+      recordsID: null,
       recordsForm: {
         supplier: "",
         sku: "",
         name: "",
         color: "",
         out_location: "",
-        into_location: "",
+        in_location: "",
         num: "",
         remark: ""
       },
       rules: {
         sku: [{ required: true, message: "请选择SKU", trigger: "submit" }],
-        // name: [
-        //   { required: true, message: "请输入产品名称", trigger: "submit" }
-        // ],
-        // supplier: [
-        //   { required: true, message: "请输入供应商", trigger: "submit" }
-        // ],
+        name: [
+          { required: true, message: "请输入产品名称", trigger: "submit" }
+        ],
+        supplier: [
+          { required: true, message: "请输入供应商", trigger: "submit" }
+        ],
         num: [
           { required: true, message: "请输入调整数量", trigger: "submit" },
           { validator: checkNumber, trigger: "submit" }
         ],
-        // color: [
-        //   { required: true, message: "请输入产品颜色", trigger: "submit" }
-        // ],
+        color: [
+          { required: true, message: "请输入产品颜色", trigger: "submit" }
+        ],
         out_location: [
           { required: true, message: "请选择调出库位", trigger: "submit" }
         ],
-        into_location: [
+        in_location: [
           { required: true, message: "请选择调入库位", trigger: "submit" }
         ]
       }
@@ -174,12 +182,49 @@ export default {
   created() {
     this.recordsID = this.$route.params.uid;
     this.getSearchSku();
+    this.getSearchLocation();
     if (this.recordsID) {
       this.setting.loading = true;
       this.getRecordsDetails();
     }
   },
   methods: {
+    skuHandle(val) {
+      this.getAttributeBySku(val);
+    },
+    getAttributeBySku(value) {
+      let args = {
+        sku: value
+      };
+      getAttributeBySku(this, args)
+        .then(res => {
+          this.recordsForm.name = res.name.attributes_value;
+          this.recordsForm.color = res.color.attributes_value;
+          this.recordsForm.supplier = res.supplier[0].name;
+        })
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getSearchLocation() {
+      this.searchLoading = true;
+      getSearchLocation(this)
+        .then(res => {
+          this.locationList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     getSearchSku() {
       this.searchLoading = true;
       getSearchSku(this)
@@ -199,6 +244,7 @@ export default {
       getRecordsDetails(this, this.recordsID)
         .then(res => {
           this.recordsForm.sku = res.sku;
+          this.getAttributeBySku(this.recordsForm.sku);
           this.recordsForm.out_location = res.out_location;
           this.recordsForm.in_location = res.in_location;
           this.recordsForm.num = res.num;
@@ -221,45 +267,24 @@ export default {
         if (valid) {
           this.setting.loading = true;
           let args = this.recordsForm;
-          if (this.recordsID) {
-            modifyRecords(this, this.recordsID, args)
-              .then(res => {
-                this.$message({
-                  message: "修改成功",
-                  type: "success"
-                });
-                this.$router.push({
-                  path: "/storage/records"
-                });
-                this.setting.loading = false;
-              })
-              .catch(err => {
-                this.setting.loading = false;
-                this.$message({
-                  message: err.response.data.message,
-                  type: "warning"
-                });
+          saveRecords(this, args)
+            .then(res => {
+              this.$message({
+                message: "提交成功",
+                type: "success"
               });
-          } else {
-            saveRecords(this, args)
-              .then(res => {
-                this.$message({
-                  message: "提交成功",
-                  type: "success"
-                });
-                this.$router.push({
-                  path: "/storage/records"
-                });
-                this.setting.loading = false;
-              })
-              .catch(err => {
-                this.setting.loading = false;
-                this.$message({
-                  message: err.response.data.message,
-                  type: "warning"
-                });
+              this.$router.push({
+                path: "/storage/records"
               });
-          }
+              this.setting.loading = false;
+            })
+            .catch(err => {
+              this.setting.loading = false;
+              this.$message({
+                message: err.response.data.message,
+                type: "warning"
+              });
+            });
         }
       });
     }

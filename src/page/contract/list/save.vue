@@ -241,8 +241,6 @@ import {
   historyBack,
   contractDetail,
   Cookies,
-  hardwareColorByModel,
-  hardwareModel
 } from "service";
 import auth from "service/auth";
 import {
@@ -344,7 +342,7 @@ export default {
     this.setting.loading = true;
     this.contractID = this.$route.params.uid;
     this.getCompany();
-    this.hardwareModel();
+    // this.hardwareModel();
     if (this.contractID) {
       this.contractDetail();
     } else {
@@ -369,40 +367,6 @@ export default {
       this.hardwareTableData.unshift(td);
     },
     handleHardware(val) {
-      this.hardwareColorByModel(val);
-    },
-    hardwareColorByModel(val, data) {
-      this.searchLoading = true;
-      let args = {
-        model: val
-      };
-      hardwareColorByModel(this, args)
-        .then(res => {
-          this.colorList.unshift(res.data);
-          this.searchLoading = false;
-          if (data) {
-            this.hardwareTableData.unshift(data);
-          }
-        })
-        .catch(err => {
-          this.searchLoading = false;
-          this.$message({
-            message: err.response.data.message,
-            type: "warning"
-          });
-        });
-    },
-    hardwareModel() {
-      hardwareModel(this)
-        .then(res => {
-          this.modelList = res;
-        })
-        .catch(err => {
-          this.$message({
-            message: err.response.data.message,
-            type: "warning"
-          });
-        });
     },
 
     hardwareHandle(val) {

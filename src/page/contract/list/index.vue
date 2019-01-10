@@ -245,78 +245,59 @@
           <template slot-scope="scope">
             <el-select
               v-if="hardwareStatus === '未出厂'"
-              v-model="scope.row.model"
+              v-model="scope.row.sku"
               :loading="searchLoading"
               placeholder="请选择硬件型号"
               filterable
               clearable
-              @change="handleHardware"
+              @change="handleSku"
             >
               <el-option
-                v-for="item in modelList"
-                :key="item.hardware_model"
-                :label="item.hardware_model"
-                :value="item.hardware_model"
+                v-for="item in skuList"
+                :key="item.sku"
+                :label="item.sku"
+                :value="item.sku"
               />
             </el-select>
-            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.model }}</span>
+            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.sku }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="产品名称"
+          min-width="80"
+          align="center"
+          header-align="center"
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column
           prop="color"
-          label="硬件颜色"
+          label="产品颜色"
           min-width="80"
           align="center"
           header-align="center"
         >
           <template slot-scope="scope">
-            <el-select
-              v-if="hardwareStatus === '未出厂'"
-              v-model="scope.row.color"
-              :loading="searchLoading"
-              placeholder="请选择硬件颜色"
-              filterable
-              clearable
-            >
-              <el-option
-                v-for="item in colorList[scope.$index]"
-                :key="item.hardware_color"
-                :label="item.hardware_color"
-                :value="item.hardware_color"
-              />
-            </el-select>
-            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.color }}</span>
+            <span>{{ scope.row.color }}</span>
           </template>
         </el-table-column>
         <el-table-column
-          prop="source"
-          label="硬件出处"
+          prop="supplier"
+          label="供应商"
           min-width="80"
           align="center"
           header-align="center"
         >
           <template slot-scope="scope">
-            <el-select
-              v-if="hardwareStatus === '未出厂'"
-              v-model="scope.row.source"
-              :loading="searchLoading"
-              placeholder="请选择硬件出处"
-              filterable
-              clearable
-            >
-              <el-option
-                v-for="item in sourceList"
-                :key="item.id"
-                :label="item.source"
-                :value="item.id"
-              />
-            </el-select>
-            <span v-if="hardwareStatus !== '未出厂'">{{ scope.row.source }}</span>
+            <span>{{ scope.row.supplier }}</span>
           </template>
         </el-table-column>
         <el-table-column
           prop="num"
-          label="硬件数量"
+          label="出库数量"
           min-width="100"
           align="center"
           header-align="center"
@@ -373,11 +354,10 @@ import {
   specialAuditingContract,
   Cookies,
   getAuditingCount,
-  getHardwareByContractId,
-  getHardwareColorByContractId,
-  hardwareSource,
   leaveFactory,
-  leaveFactoryDetail
+  leaveFactoryDetail,
+  getSearchSku,
+  getAttributeBySku
 } from "service";
 
 export default {
@@ -398,9 +378,7 @@ export default {
   },
   data() {
     return {
-      modelList: [],
-      colorList: [],
-      sourceList: [],
+      skuList: [],
       searchForm: {
         dataValue: [],
         name: "",
@@ -533,101 +511,96 @@ export default {
   },
   created() {
     this.getContractList();
-    this.hardwareSource();
+    this.getSearchSku();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.applicant = user_info.id;
     this.role = user_info.roles.data;
   },
   methods: {
     submit() {
-      let args = {
-        contract_id: this.contract_id,
-        hardware_content: this.hardwareTableData
-      };
-      let allotSum = 0;
-      this.hardwareTableData.map(r => {
-        allotSum += parseInt(r.num);
-      });
-      let saveSum = 0;
-      this.hardwareContent.map(r => {
-        saveSum += parseInt(r.hardware_stock);
-      });
-      if (allotSum > saveSum) {
-        this.$message({
-          message: "采购分配数量大于已存在的数量",
-          type: "warning"
-        });
-        return;
-      }
-      leaveFactory(this, args)
-        .then(res => {
-          this.dialogFormVisible = false;
-          this.getContractList();
-        })
-        .catch(err => {
-          this.dialogFormVisible = false;
-          this.$message({
-            message: err.response.data.message,
-            type: "warning"
-          });
-        });
+      // let args = {
+      //   contract_id: this.contract_id,
+      //   hardware_content: this.hardwareTableData
+      // };
+      // let allotSum = 0;
+      // this.hardwareTableData.map(r => {
+      //   allotSum += parseInt(r.num);
+      // });
+      // let saveSum = 0;
+      // this.hardwareContent.map(r => {
+      //   saveSum += parseInt(r.hardware_stock);
+      // });
+      // if (allotSum > saveSum) {
+      //   this.$message({
+      //     message: "采购分配数量大于已存在的数量",
+      //     type: "warning"
+      //   });
+      //   return;
+      // }
+      // leaveFactory(this, args)
+      //   .then(res => {
+      //     this.dialogFormVisible = false;
+      //     this.getContractList();
+      //   })
+      //   .catch(err => {
+      //     this.dialogFormVisible = false;
+      //     this.$message({
+      //       message: err.response.data.message,
+      //       type: "warning"
+      //     });
+      //   });
     },
     cancel() {
       this.dialogFormVisible = false;
       if (this.hardwareStatus === "未出厂") {
         this.hardwareTableData = [];
-        this.colorList = [];
       }
     },
-    hardwareSource() {
+    getSearchSku() {
       this.searchLoading = true;
-      hardwareSource(this)
+      getSearchSku(this)
         .then(res => {
+          this.skuList = res;
           this.searchLoading = false;
-          this.sourceList = res.data;
         })
         .catch(err => {
           this.searchLoading = false;
           this.$message({
             message: err.response.data.message,
-            type: "warning"
+            type: "success"
           });
         });
     },
-    handleHardware(val) {
-      this.getHardwareColorByContractId(val);
+    handleSku(val) {
+      this.getAttributeBySku(val);
     },
-    getHardwareColorByContractId(val, data) {
-      this.searchLoading = true;
-      let args = {
-        model: val,
-        contract_id: this.contract_id
-      };
-      getHardwareColorByContractId(this, args)
-        .then(res => {
-          console.log(res)
-          this.colorList.unshift(res);
-          this.searchLoading = false;
-          if (data) {
-            this.hardwareTableData.unshift(data);
-          }
-        })
-        .catch(err => {
-          this.searchLoading = false;
-          this.$message({
-            message: err.response.data.message,
-            type: "warning"
-          });
-        });
-    },
+
     deleteHardware(index) {
       this.hardwareTableData.splice(index, 1);
     },
+    getAttributeBySku(value) {
+      let args = {
+        sku: value
+      };
+      getAttributeBySku(this, args)
+        .then(res => {
+          // this.recordsForm.name = res.name.attributes_value;
+          // this.recordsForm.color = res.color.attributes_value;
+          // this.recordsForm.supplier = res.supplier[0].name;
+        })
+        .catch(err => {
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     hardwareAdd() {
       let td = {
-        model: "",
+        sku: "",
+        name: "",
         color: "",
-        source: "",
+        supplier: "",
         num: ""
       };
       this.hardwareTableData.unshift(td);
@@ -639,7 +612,6 @@ export default {
       this.hardwareStatus = data.hardware_status;
       if (this.hardwareStatus === "未出厂") {
         this.hardwareContent = data.hardware_content;
-        this.getHardwareByContractId(data);
       } else {
         this.leaveFactoryDetail();
       }
@@ -658,26 +630,6 @@ export default {
         })
         .catch(err => {
           this.loading = false;
-          this.$message({
-            message: err.response.data.message,
-            type: "warning"
-          });
-        });
-    },
-    getHardwareByContractId(data) {
-      this.searchLoading = false;
-      let args = {
-        contract_id: data.id
-      };
-      getHardwareByContractId(this, args)
-        .then(res => {
-          this.modelList = res;
-          this.searchLoading = false;
-          this.loading = false;
-        })
-        .catch(err => {
-          this.loading = false;
-          this.searchLoading = false;
           this.$message({
             message: err.response.data.message,
             type: "warning"

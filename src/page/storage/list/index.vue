@@ -19,9 +19,9 @@
               >
                 <el-option
                   v-for="item in skuList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+                  :key="item.sku"
+                  :label="item.sku"
+                  :value="item.sku"
                 />
               </el-select>
             </el-form-item>
@@ -34,12 +34,20 @@
               />
             </el-form-item>
             <el-form-item label prop="position">
-              <el-input
+              <el-select
                 v-model="searchForm.position"
+                :loading="searchLoading"
+                filterable
                 clearable
-                placeholder="请输入库存位置"
-                class="item-input"
-              />
+                placeholder="请选择库存位置"
+              >
+                <el-option
+                  v-for="item in locationList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label>
               <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
@@ -119,7 +127,7 @@ import {
   Select,
   Option
 } from "element-ui";
-import { getStorageDetailList } from "service";
+import { getStorageDetailList, getSearchSku, getSearchLocation } from "service";
 
 export default {
   components: {
@@ -136,6 +144,7 @@ export default {
   data() {
     return {
       skuList: [],
+      locationList: [],
       searchLoading: false,
       searchForm: {
         sku: "",
@@ -155,9 +164,42 @@ export default {
     };
   },
   created() {
+    this.getSearchSku();
+    this.getSearchLocation();
     this.getStorageDetailList();
   },
   methods: {
+    getSearchLocation() {
+      this.searchLoading = true;
+      getSearchLocation(this)
+        .then(res => {
+          this.locationList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getSearchSku() {
+      this.searchLoading = true;
+      getSearchSku(this)
+        .then(res => {
+          this.skuList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     getStorageDetailList() {
       this.setting.loading = true;
       let args = {

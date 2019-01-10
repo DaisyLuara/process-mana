@@ -19,27 +19,43 @@
               >
                 <el-option
                   v-for="item in skuList"
+                  :key="item.sku"
+                  :label="item.sku"
+                  :value="item.sku"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label prop="out_location">
+              <el-select
+                v-model="searchForm.out_location"
+                :loading="searchLoading"
+                filterable
+                clearable
+                placeholder="请选择调出库位"
+              >
+                <el-option
+                  v-for="item in locationList"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="out_location">
-              <el-input
-                v-model="searchForm.out_location"
+            <el-form-item label prop="in_location">
+              <el-select
+                v-model="searchForm.in_location"
+                :loading="searchLoading"
+                filterable
                 clearable
-                placeholder="请输入调出库位"
-                class="item-input"
-              />
-            </el-form-item>
-            <el-form-item label prop="into_location">
-              <el-input
-                v-model="searchForm.into_location"
-                clearable
-                placeholder="请输入调入库位"
-                class="item-input"
-              />
+                placeholder="请选择调入库位"
+              >
+                <el-option
+                  v-for="item in locationList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label>
               <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
@@ -65,17 +81,11 @@
                 <el-form-item label="SKU:">
                   <span>{{ scope.row.sku }}</span>
                 </el-form-item>
-                <el-form-item label="产品名称:">
-                  <span>{{ scope.row.name }}</span>
-                </el-form-item>
-                <el-form-item label="产品颜色:">
-                  <span>{{ scope.row.color }}</span>
-                </el-form-item>
                 <el-form-item label="调出库位:">
                   <span>{{ scope.row.out_location }}</span>
                 </el-form-item>
                 <el-form-item label="调入库位:">
-                  <span>{{ scope.row.into_location }}</span>
+                  <span>{{ scope.row.in_location }}</span>
                 </el-form-item>
                 <el-form-item label="调拨数量:">
                   <span>{{ scope.row.num }}</span>
@@ -88,8 +98,6 @@
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="产品名称" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="color" label="产品颜色" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="out_location"
@@ -98,7 +106,7 @@
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="into_location"
+            prop="in_location"
             label="调入库位"
             min-width="80"
           />
@@ -112,7 +120,7 @@
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
               <!-- v-if="purchasing" -->
-              <el-button size="mini" type="primary" @click="editRecords(scope.row)">编辑</el-button>
+              <el-button size="mini" type="primary" @click="editRecords(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -143,7 +151,12 @@ import {
   Select,
   Option
 } from "element-ui";
-import { getRecordsList, Cookies } from "service";
+import {
+  getRecordsList,
+  Cookies,
+  getSearchLocation,
+  getSearchSku
+} from "service";
 
 export default {
   components: {
@@ -164,7 +177,7 @@ export default {
       searchForm: {
         sku: "",
         out_location: "",
-        into_location: ""
+        in_location: ""
       },
       setting: {
         loading: false,
@@ -176,6 +189,7 @@ export default {
         currentPage: 1
       },
       tableData: [],
+      locationList: [],
       roles: []
     };
   },
@@ -190,7 +204,9 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
-    // this.getRecordsList();
+    this.getSearchLocation();
+    this.getRecordsList();
+    this.getSearchSku();
   },
   methods: {
     addRecords() {
@@ -203,23 +219,54 @@ export default {
         path: "/storage/records/edit/" + data.id
       });
     },
+    getSearchLocation() {
+      this.searchLoading = true;
+      getSearchLocation(this)
+        .then(res => {
+          this.locationList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getSearchSku() {
+      this.searchLoading = true;
+      getSearchSku(this)
+        .then(res => {
+          this.skuList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     getRecordsList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
         sku: this.searchForm.sku,
         out_location: this.searchForm.out_location,
-        into_location: this.searchForm.into_location
+        in_location: this.searchForm.in_location
       };
 
       if (this.searchForm.sku === "") {
         delete args.sku;
       }
-      if (!this.searchForm.out_location) {
+      if (this.searchForm.out_location === "") {
         delete args.out_location;
       }
-      if (!this.searchForm.into_location) {
-        delete args.into_location;
+      if (this.searchForm.in_location === "") {
+        delete args.in_location;
       }
       getRecordsList(this, args)
         .then(res => {
