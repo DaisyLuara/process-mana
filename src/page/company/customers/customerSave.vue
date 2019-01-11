@@ -9,6 +9,12 @@
         <el-form-item label="公司地址" prop="address">
           <el-input v-model="customerForm.address" :maxlength="60" class="customer-form-input"/>
         </el-form-item>
+        <el-form-item label="公司属性" prop="category">
+          <el-radio-group v-model="customerForm.category">
+            <el-radio :label="0">客户</el-radio>
+            <el-radio :label="1">供应商</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="公司详情" prop="description">
           <el-input
             type="textarea"
@@ -100,7 +106,7 @@ import {
   Form,
   FormItem,
   RadioGroup,
-  Radio
+  Radio,
 } from "element-ui";
 
 export default {
@@ -110,6 +116,8 @@ export default {
     "el-option": Option,
     "el-button": Button,
     "el-input": Input,
+    "el-radio": Radio,
+    "el-radio-group": RadioGroup,
     "el-form": Form,
     "el-form-item": FormItem,
     "el-radio-group": RadioGroup,
@@ -127,6 +135,7 @@ export default {
         role_id: null,
         name: "",
         address: "",
+        category: 0,
         description: "",
         internal_name: "",
         logo: "",
@@ -159,6 +168,9 @@ export default {
         ],
         role_id: [
           { message: "角色不能为空", trigger: "submit", required: true }
+          ],
+        category: [
+          { message: "请选择公司属性", trigger: "submit", required: true }
         ],
         address: [
           { message: "请输入公司地址", trigger: "submit", required: true }
@@ -267,6 +279,7 @@ export default {
             address: this.customerForm.address,
             description: this.customerForm.description,
             logo: this.customerForm.logo,
+            category: this.customerForm.category,
             internal_name: this.customerForm.internal_name
           };
           if (this.customerID) {
@@ -278,7 +291,7 @@ export default {
             args.position = this.customerForm.position;
             args.password = this.customerForm.password;
           }
-          if (this.customerForm.telephone === "") {
+          if (!this.customerForm.telephone) {
             delete args.telephone;
           }
           company
@@ -308,27 +321,32 @@ export default {
     },
     getCustomerDetail() {
       this.setting.loading = true;
-      this.rules.customer_name[0].required = false;
-      this.rules.phone[0].required = false;
-      this.rules.position[0].required = false;
-      this.rules.password[0].required = false;
-
-      company
-        .getCustomerDetail(this, this.customerID)
-        .then(result => {
-          this.statusFlag = true;
-          this.customerForm.name = result.name;
-          this.customerForm.address = result.address;
-          this.customerForm.description = result.description;
-          this.customerForm.selectedStatus = result.status;
-          this.customerForm.logo = result.logo;
-          this.customerForm.internal_name = result.internal_name;
-          this.setting.loading = false;
-        })
-        .catch(err => {
-          console.log(err);
-          this.setting.loading = false;
-        });
+      if (this.customerID) {
+        this.rules.customer_name[0].required = false;
+        this.rules.phone[0].required = false;
+        this.rules.position[0].required = false;
+        this.rules.password[0].required = false;
+        company
+          .getCustomerDetial(this, this.customerID)
+          .then(result => {
+            this.statusFlag = true;
+            this.customerForm.name = result.name;
+            this.customerForm.address = result.address;
+            this.customerForm.category = result.category;
+            this.customerForm.description = result.description;
+            this.customerForm.selectedStatus = result.status;
+            this.customerForm.logo = result.logo;
+            this.customerForm.internal_name = result.internal_name;
+            this.setting.loading = false;
+          })
+          .catch(err => {
+            console.log(err);
+            this.setting.loading = false;
+          });
+      } else {
+        this.statusFlag = false;
+        this.setting.loading = false;
+      }
     },
     historyBack() {
       historyBack();

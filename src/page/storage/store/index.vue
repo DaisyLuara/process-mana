@@ -13,7 +13,7 @@
               <el-input
                 v-model="searchForm.name"
                 clearable
-                placeholder="请输入收款人"
+                placeholder="请输入仓库名称"
                 class="item-input"
               />
             </el-form-item>
@@ -23,55 +23,31 @@
             </el-form-item>
           </el-form>
         </div>
-        <!-- 合同列表 -->
+        <!-- 仓库列表 -->
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button
-              v-if="bd || bdManager || legalAffairs || legalAffairsManager"
-              size="small"
-              type="success"
-              @click="addPayee"
-            >新增收款人</el-button>
+            <el-button v-if="purchasing" type="success" size="small" @click="addStore">新增仓库</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
-          <el-table-column type="expand">
-            <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="收款人:">
-                  <span>{{ scope.row.name }}</span>
-                </el-form-item>
-                <el-form-item label="收款人开户行:">
-                  <span>{{ scope.row.account_bank }}</span>
-                </el-form-item>
-                <el-form-item label="收款人账号:">
-                  <span>{{ scope.row.account_number }}</span>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="收款人" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="name" label="仓库名称" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="account_number"
-            label="收款人账号"
-            min-width="280"
+            prop="address"
+            label="仓库地址"
+            min-width="100"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="account_bank"
-            label="收款人开户行"
-            min-width="180"
+            prop="created_at"
+            label="时间"
+            min-width="80"
           />
-          <el-table-column label="操作" min-width="200">
+          <el-table-column v-if="purchasing" label="操作" min-width="100">
             <template slot-scope="scope">
-              <el-button
-                v-if="bd || bdManager || legalAffairs || legalAffairsManager"
-                size="mini"
-                type="primary"
-                @click="editPayee(scope.row)"
-              >编辑</el-button>
+              <el-button size="mini" type="primary" @click="editStore(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -100,13 +76,7 @@ import {
   FormItem,
   MessageBox
 } from "element-ui";
-import {
-  getPayeeList,
-  handleDateTransform,
-  receivePayment,
-  deletePayment,
-  Cookies
-} from "service";
+import { getStoreList, Cookies } from "service";
 
 export default {
   components: {
@@ -123,7 +93,6 @@ export default {
       searchForm: {
         name: ""
       },
-      roles: {},
       setting: {
         loading: false,
         loadingText: "拼命加载中"
@@ -133,42 +102,35 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: []
+      tableData: [],
+      roles: []
     };
   },
   computed: {
-    // BD
-    bd: function() {
+    // 采购
+    purchasing: function() {
       return this.roles.find(r => {
-        return r.name === "user";
-      });
-    },
-    // bd主管
-    bdManager: function() {
-      return this.roles.find(r => {
-        return r.name === "bd-manager";
-      });
-    },
-    // 法务
-    legalAffairs: function() {
-      return this.roles.find(r => {
-        return r.name === "legal-affairs";
-      });
-    },
-    // 法务主管
-    legalAffairsManager: function() {
-      return this.roles.find(r => {
-        return r.name === "legal-affairs-manager";
+        return r.name === "purchasing";
       });
     }
   },
   created() {
-    this.getPayeeList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
+    this.getStoreList();
   },
   methods: {
-    getPayeeList() {
+    addStore() {
+      this.$router.push({
+        path: "/storage/store/add"
+      });
+    },
+    editStore(data) {
+      this.$router.push({
+        path: "/storage/store/edit/" + data.id
+      });
+    },
+    getStoreList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
@@ -177,7 +139,7 @@ export default {
       if (!this.searchForm.name) {
         delete args.name;
       }
-      getPayeeList(this, args)
+      getStoreList(this, args)
         .then(res => {
           this.tableData = res.data;
           this.pagination.total = res.meta.pagination.total;
@@ -187,28 +149,18 @@ export default {
           this.setting.loading = false;
         });
     },
-    addPayee() {
-      this.$router.push({
-        path: "/payment/payee/add"
-      });
-    },
-    editPayee(data) {
-      this.$router.push({
-        path: "/payment/payee/edit/" + data.id
-      });
-    },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage;
-      this.getPayeeList();
+      this.getStoreList();
     },
     search() {
       this.pagination.currentPage = 1;
-      this.getPayeeList();
+      this.getStoreList();
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
-      this.getPayeeList();
+      this.getStoreList();
     }
   }
 };
@@ -220,12 +172,12 @@ export default {
   color: #5e6d82;
   .item-list-wrap {
     background: #fff;
-    padding: 30px;
-
+    padding: 10px 30px 30px;
     .el-form-item {
       margin-bottom: 0;
     }
     .item-content-wrap {
+      margin-top: 10px;
       .demo-table-expand {
         font-size: 0;
       }
@@ -250,9 +202,6 @@ export default {
         font-size: 16px;
         align-items: center;
         margin-bottom: 10px;
-        .search-content {
-          width: 800px;
-        }
         .el-form-item {
           margin-bottom: 10px;
         }

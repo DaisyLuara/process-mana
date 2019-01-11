@@ -8,7 +8,6 @@ let router = {
     title: '合同',
     permission: 'contract'
   },
-  // redirect: 'contract/list',
   children: [
     {
       path: 'list',
@@ -116,4 +115,5 @@ router.redirect = () => {
     }
   }
 }
+
 export default router
