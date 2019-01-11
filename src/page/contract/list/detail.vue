@@ -40,7 +40,7 @@
             <el-form-item label="预估收款日期:" prop="receive_date">{{ contractForm.receive_date }}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="硬件合同:" prop="hardware_status">{{ contractForm.hardware_status }}</el-form-item>
+        <el-form-item label="硬件合同:" prop="product_status">{{ contractForm.product_status }}</el-form-item>
         <el-form-item
           v-if="contractForm.legal_message"
           label="法务意见:"
@@ -58,28 +58,28 @@
         >{{ contractForm.bd_ma_message }}</el-form-item>
         <el-form-item label="备注:" prop="remark">{{ contractForm.remark }}</el-form-item>
         <el-table
-          v-if="contractForm.hardware_status === '是'"
-          :data="hardwareTableData"
+          v-if="contractForm.product_status === '是'"
+          :data="productTableData"
           border
           style="width: 100%;margin-bottom: 20px;"
         >
           <el-table-column
-            prop="hardware_model"
-            label="硬件型号"
+            prop="product_name"
+            label="产品名称"
             min-width="80"
             align="center"
             header-align="center"
           />
           <el-table-column
-            prop="hardware_color"
-            label="硬件颜色"
+            prop="product_color"
+            label="产品颜色"
             min-width="80"
             align="center"
             header-align="center"
           />
           <el-table-column
-            prop="hardware_stock"
-            label="硬件数量"
+            prop="product_stock"
+            label="产品数量"
             min-width="100"
             align="center"
             header-align="center"
@@ -261,9 +261,9 @@ export default {
         loading: false,
         loadingText: "拼命加载中"
       },
-      hardwareTableData: [],
+      productTableData: [],
       contractForm: {
-        hardware_status: "",
+        product_status: "",
         company_name: "",
         company_id: "",
         applicant_name: "",
@@ -388,9 +388,9 @@ export default {
           this.contractForm.bd_ma_message = res.bd_ma_message;
           this.contractForm.legal_message = res.legal_message;
           this.contractForm.legal_ma_message = res.legal_ma_message;
-          this.contractForm.hardware_status =
-            res.hardware_status === "无硬件" ? "否" : "是";
-          this.hardwareTableData = res.hardware_content;
+          this.contractForm.product_status =
+            res.product_status === "无硬件" ? "否" : "是";
+          this.productTableData = res.product_content;
           mediaData.map(r => {
             mediaIds.push(r.id);
           });

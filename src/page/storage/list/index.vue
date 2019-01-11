@@ -25,17 +25,25 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="store">
-              <el-input
-                v-model="searchForm.store"
-                clearable
-                placeholder="请输入仓库"
-                class="item-input"
-              />
-            </el-form-item>
-            <el-form-item label prop="position">
+            <el-form-item label prop="warehouse">
               <el-select
-                v-model="searchForm.position"
+                v-model="searchForm.warehouse"
+                :loading="searchLoading"
+                filterable
+                clearable
+                placeholder="请选择仓库"
+              >
+                <el-option
+                  v-for="item in warehouseList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label prop="location">
+              <el-select
+                v-model="searchForm.location"
                 :loading="searchLoading"
                 filterable
                 clearable
@@ -69,36 +77,33 @@
                 <el-form-item label="SKU:">
                   <span>{{ scope.row.sku }}</span>
                 </el-form-item>
-                <el-form-item label="产品名称:">
-                  <span>{{ scope.row.name }}</span>
-                </el-form-item>
-                <el-form-item label="产品颜色:">
-                  <span>{{ scope.row.color }}</span>
-                </el-form-item>
                 <el-form-item label="仓库:">
-                  <span>{{ scope.row.store }}</span>
+                  <span>{{ scope.row.warehouse }}</span>
                 </el-form-item>
                 <el-form-item label="库存位置:">
-                  <span>{{ scope.row.position }}</span>
+                  <span>{{ scope.row.location }}</span>
                 </el-form-item>
                 <el-form-item label="库存数量:">
-                  <span>{{ scope.row.num }}</span>
+                  <span>{{ scope.row.stock }}</span>
                 </el-form-item>
               </el-form>
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
           <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="产品名称" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="color" label="产品颜色" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="store" label="仓库" min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="position"
+            prop="warehouse"
+            label="仓库"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="location"
             label="库存位置"
             min-width="100"
           />
-          <el-table-column :show-overflow-tooltip="true" prop="num" label="库存数量" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="stock" label="库存数量" min-width="100"/>
         </el-table>
         <div class="pagination-wrap">
           <el-pagination
@@ -127,7 +132,12 @@ import {
   Select,
   Option
 } from "element-ui";
-import { getStorageDetailList, getSearchSku, getSearchLocation } from "service";
+import {
+  getStorageDetailList,
+  getSearchSku,
+  getSearchLocation,
+  getSearchStorageList
+} from "service";
 
 export default {
   components: {
@@ -144,12 +154,13 @@ export default {
   data() {
     return {
       skuList: [],
+      warehouseList: [],
       locationList: [],
       searchLoading: false,
       searchForm: {
         sku: "",
-        store: "",
-        position: ""
+        warehouse: "",
+        location: ""
       },
       setting: {
         loading: false,
@@ -167,8 +178,24 @@ export default {
     this.getSearchSku();
     this.getSearchLocation();
     this.getStorageDetailList();
+    this.getSearchStorageList();
   },
   methods: {
+    getSearchStorageList() {
+      this.searchLoading = true;
+      getSearchStorageList(this)
+        .then(res => {
+          console.log(res);
+          this.warehouseList = res;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
     getSearchLocation() {
       this.searchLoading = true;
       getSearchLocation(this)
@@ -205,17 +232,17 @@ export default {
       let args = {
         page: this.pagination.currentPage,
         sku: this.searchForm.sku,
-        store: this.searchForm.store,
-        position: this.searchForm.position
+        warehouse: this.searchForm.warehouse,
+        location: this.searchForm.location
       };
       if (this.searchForm.sku === "") {
         delete args.sku;
       }
-      if (!this.searchForm.store) {
-        delete args.store;
+      if (!this.searchForm.warehouse) {
+        delete args.warehouse;
       }
-      if (!this.searchForm.position) {
-        delete args.position;
+      if (!this.searchForm.location) {
+        delete args.location;
       }
       getStorageDetailList(this, args)
         .then(res => {

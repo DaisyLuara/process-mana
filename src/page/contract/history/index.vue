@@ -80,7 +80,7 @@
                   <span>{{ scope.row.handler_name }}</span>
                 </el-form-item>
                 <el-form-item label="硬件状态">
-                  <span>{{ scope.row.hardware_status }}</span>
+                  <span>{{ scope.row.product_status }}</span>
                 </el-form-item>
                 <el-form-item label="申请时间:">
                   <span>{{ scope.row.created_at }}</span>
@@ -146,7 +146,7 @@
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="hardware_status"
+            prop="product_status"
             label="硬件状态"
             min-width="70"
           />
@@ -164,9 +164,9 @@
             <template slot-scope="scope">
               <el-button size="mini" type="info" @click="detailContract(scope.row)">详情</el-button>
               <el-button
-                v-if="scope.row.status === '已审批' && scope.row.hardware_status === '已出厂' "
+                v-if="scope.row.status === '已审批' && scope.row.product_status === '已出厂' "
                 size="mini"
-                @click="hardwareHandle(scope.row)"
+                @click="productHandle(scope.row)"
               >硬件</el-button>
             </template>
           </el-table-column>
@@ -190,34 +190,48 @@
     >
       <el-table
         v-loading="loading"
-        :data="hardwareTableData"
+        :data="productTableData"
         border
         style="width: 100%;margin-bottom: 20px;"
       >
         <el-table-column
-          prop="model"
-          label="硬件型号"
+          prop="sku"
+          label="SKU"
+          min-width="80"
+          align="center"
+          header-align="center"
+        />
+        <el-table-column
+          prop="name"
+          label="产品名称"
           min-width="80"
           align="center"
           header-align="center"
         />
         <el-table-column
           prop="color"
-          label="硬件颜色"
+          label="产品颜色"
           min-width="80"
           align="center"
           header-align="center"
         />
         <el-table-column
-          prop="source"
-          label="硬件出处"
+          prop="supplier"
+          label="供应商"
+          min-width="80"
+          align="center"
+          header-align="center"
+        />
+        <el-table-column
+          prop="out_location"
+          label="出库库位"
           min-width="80"
           align="center"
           header-align="center"
         />
         <el-table-column
           prop="num"
-          label="硬件数量"
+          label="产品数量"
           min-width="100"
           align="center"
           header-align="center"
@@ -272,7 +286,7 @@ export default {
   data() {
     return {
       loading: false,
-      hardwareTableData: [],
+      productTableData: [],
       dialogFormVisible: false,
       searchForm: {
         dataValue: [],
@@ -361,8 +375,8 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      hardwareId: null,
-      hardwareStatus: null,
+      contractId: null,
+      productStatus: null,
       tableData: []
     };
   },
@@ -370,22 +384,22 @@ export default {
     this.contractHistory();
   },
   methods: {
-    hardwareHandle(data) {
+    productHandle(data) {
       this.loading = true;
       this.dialogFormVisible = true;
-      this.hardwareId = data.id;
-      this.hardwareStatus = data.hardware_status;
+      this.contractId = data.id;
+      this.productStatus = data.product_status;
       this.leaveFactoryDetail();
     },
     leaveFactoryDetail() {
-      this.hardwareTableData = [];
+      this.productTableData = [];
       let args = {
-        id: this.hardwareId
+        id: this.contractId
       };
       leaveFactoryDetail(this, args)
         .then(res => {
           if (res.data.length > 0) {
-            this.hardwareTableData = res.data[0].hardware_content;
+            this.productTableData = res.data[0].product_content;
           }
           this.loading = false;
         })
