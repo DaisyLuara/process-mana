@@ -149,12 +149,9 @@ export default {
               case "payment":
                 m.src = this.CDN_URL + "payment_icon.png";
                 break;
-<<<<<<< HEAD
-=======
               case "storage":
                 m.src = this.CDN_URL + "purchase_icon.png";
                 break;
->>>>>>> develop
               case "inform":
                 m.src = this.CDN_URL + "notification-icon.png";
                 break;
@@ -221,25 +218,15 @@ export default {
       }
     },
     linkRedirect(type) {
-<<<<<<< HEAD
       localStorage.removeItem("permissions");
       // let permissions = this.$cookie.get('permissions')
-=======
-      let permissions = this.$cookie.get("permissions");
->>>>>>> develop
       let userInfo = this.$cookie.get("user_info");
       let jwt_ttl = this.$cookie.get("jwt_ttl");
       let token = this.$cookie.get("jwt_token");
       let jwt_begin_time = this.$cookie.get("jwt_begin_time");
       window.location.href =
         process.env.SERVER_URL +
-<<<<<<< HEAD
         "/api/system_skip?user_info=" +
-=======
-        "/api/system_skip?permissions=" +
-        permissions +
-        "&user_info=" +
->>>>>>> develop
         userInfo +
         "&type=" +
         type +

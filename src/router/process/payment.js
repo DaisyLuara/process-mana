@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 import auth from 'service/auth'
-=======
->>>>>>> develop
 let router = {
   path: 'payment',
   name: '付款',
@@ -128,7 +125,7 @@ let router = {
     }
   ]
 }
-<<<<<<< HEAD
+
 
 router.redirect = () => {
   let routes = router.children
@@ -136,12 +133,6 @@ router.redirect = () => {
     if (auth.checkPathPermission(route)) {
       return '/payment/' + route.path
     }
-=======
-router.redirect = () => {
-  let routes = router.children
-  for (let route of routes) {
-    return '/payment/' + route.path
->>>>>>> develop
   }
 }
 export default router

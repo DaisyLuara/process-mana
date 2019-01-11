@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import auth from 'service/auth'
-
-=======
->>>>>>> develop
 let router = {
   path: 'invoice',
   name: '票据',
@@ -167,7 +163,6 @@ let router = {
     }
   ]
 }
-<<<<<<< HEAD
 router.redirect = () => {
   let routes = router.children
   for (let route of routes) {
@@ -176,14 +171,4 @@ router.redirect = () => {
     }
   }
 }
-=======
-
-router.redirect = () => {
-  let routes = router.children
-  for (let route of routes) {
-    return '/invoice/' + route.path
-  }
-}
-
->>>>>>> develop
 export default router

@@ -24,13 +24,11 @@ export * from './notice'
 // 个人中心
 export * from './account'
 
-<<<<<<< HEAD
 // 角色
 export * from './role'
 
 // 权限
 export * from './permission'
-=======
+
 // 采购
 export * from './store'
->>>>>>> develop

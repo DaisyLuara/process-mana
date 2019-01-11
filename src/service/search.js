@@ -6,15 +6,12 @@ const GOODS_SERVICE_QUERY_API = '/api/goods_service/query'
 const RECEIVE_DATE_QUERY_API = '/api/receive_date/query'
 const PROJECT_API = '/api/projects/query'
 const INVOICE_KIND_API = '/api/invoice_kind/query'
-<<<<<<< HEAD
 const PERMISSION_API = '/api/permission/query'
 const ROLE_API = '/api/role/query'
-=======
 const STORAGE_API = '/api/erp_warehouse/query'
 const SUPPLIER_API = '/api/erp_supplier/query'
 const SKU_API = '/api/erp_sku/query'
 const LOCATION_API = '/api/erp_location/query'
->>>>>>> develop
 const HOST = process.env.SERVER_URL
 // 公司列表
 const getCompanyList = (context, params) => {
@@ -111,19 +108,24 @@ const getReceiveDate = (context, params) => {
   })
 }
 
-<<<<<<< HEAD
 // 权限树状结构
 const getPermission = (context, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + PERMISSION_API, { params: args })
-=======
+      .then(res => {
+        resolve(response.data)
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
 // 节目
 const getSearchProjectList = (context, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + PROJECT_API, { params: args })
->>>>>>> develop
       .then(response => {
         resolve(response.data)
       })
@@ -132,13 +134,19 @@ const getSearchProjectList = (context, args) => {
       })
   })
 }
-<<<<<<< HEAD
 // 角色
 const getSearchRole = (context, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + ROLE_API, { params: args })
-=======
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 // 仓库列表
 const getSearchStorageList = (context, args) => {
   return new Promise(function(resolve, reject) {
@@ -185,7 +193,6 @@ const getSearchLocation = (context, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + LOCATION_API, { params: args })
->>>>>>> develop
       .then(response => {
         resolve(response.data)
       })
@@ -203,14 +210,11 @@ export {
   getPaymentPayee,
   getReceiveDate,
   getInvoiceKindList,
-<<<<<<< HEAD
   getPermission,
-  getSearchRole
-=======
+  getSearchRole,
   getSearchProjectList,
   getSearchStorageList,
   getSearchSupplier,
   getSearchSku,
   getSearchLocation
->>>>>>> develop
 }
