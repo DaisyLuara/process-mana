@@ -175,7 +175,7 @@
             :show-overflow-tooltip="true"
             prop="product_status"
             label="硬件状态"
-            min-width="70"
+            min-width="80"
           />
           <el-table-column
             :show-overflow-tooltip="true"
@@ -237,6 +237,7 @@
       :show-close="false"
       :visible.sync="dialogFormVisible"
       label-width="80px"
+      width="100%"
     >
       <el-button
         v-if="productStatus === '未出厂' && purchasing"
