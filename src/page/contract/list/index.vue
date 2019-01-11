@@ -187,7 +187,7 @@
               <span>{{ scope.row.created_at }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="180">
+          <el-table-column label="操作" min-width="250">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
