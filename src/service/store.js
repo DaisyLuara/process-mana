@@ -296,7 +296,6 @@ export {
   getRecordsList,
   getRecordsDetails,
   saveRecords,
-  modifyRecords,
   modifyStore,
   saveStore,
   getStoreDetails,
