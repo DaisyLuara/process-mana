@@ -1,17 +1,17 @@
 <template>
-  <div class="purchase-root">
-    <second-sidebar module="purchase"/>
+  <div class="storage-root">
+    <second-sidebar module="storage"/>
     <router-view />
   </div>
 </template>
 <script>
 export default {
-  name: 'PurchaseView'
+  name: 'StorageView'
 }
 </script>
 
 <style lang="less" scoped>
-.purchase-root {
+.storage-root {
   height: 100%;
   background-color: #eff2f7;
   .topbar {

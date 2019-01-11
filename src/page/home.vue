@@ -149,7 +149,7 @@ export default {
               case "payment":
                 m.src = this.CDN_URL + "payment_icon.png";
                 break;
-              case "purchase":
+              case "storage":
                 m.src = this.CDN_URL + "purchase_icon.png";
                 break;
               case "inform":

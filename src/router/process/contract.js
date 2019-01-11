@@ -1,4 +1,4 @@
-export default {
+let router = {
   path: 'contract',
   name: '合同',
   component: () =>
@@ -90,3 +90,11 @@ export default {
     }
   ]
 }
+router.redirect = () => {
+  let routes = router.children
+  for (let route of routes) {
+    return '/contract/' + route.path
+  }
+}
+
+export default router

@@ -5,39 +5,57 @@
       :element-loading-text="setting.loadingText"
       class="item-list-wrap"
     >
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item :to="{ path: '/purchase/list' }">
-          <span>采购库存</span>
-        </el-breadcrumb-item>
-        <el-breadcrumb-item>库存明细</el-breadcrumb-item>
-      </el-breadcrumb>
-      <div class="item-purchase-wrap">
+      <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="source">
+            <el-form-item label prop="sku">
               <el-select
-                v-model="searchForm.source"
+                v-model="searchForm.sku"
                 :loading="searchLoading"
                 filterable
                 clearable
-                placeholder="请选择调整出处"
+                placeholder="请选择SKU"
               >
                 <el-option
-                  v-for="item in sourceList"
+                  v-for="item in skuList"
+                  :key="item.sku"
+                  :label="item.sku"
+                  :value="item.sku"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label prop="out_location">
+              <el-select
+                v-model="searchForm.out_location"
+                :loading="searchLoading"
+                filterable
+                clearable
+                placeholder="请选择调出库位"
+              >
+                <el-option
+                  v-for="item in locationList"
                   :key="item.id"
-                  :label="item.source"
+                  :label="item.name"
                   :value="item.id"
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="action">
-              <el-input
-                v-model="searchForm.action"
+            <el-form-item label prop="in_location">
+              <el-select
+                v-model="searchForm.in_location"
+                :loading="searchLoading"
+                filterable
                 clearable
-                placeholder="请输入硬件性质"
-                class="item-input"
-              />
+                placeholder="请选择调入库位"
+              >
+                <el-option
+                  v-for="item in locationList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label>
               <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
@@ -45,11 +63,11 @@
             </el-form-item>
           </el-form>
         </div>
-        <!-- 合同列表 -->
+        <!-- 调拨记录列表 -->
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button v-if="purchasing" size="small" type="success" @click="addDetail">新增库存明细</el-button>
+            <el-button v-if="purchasing" type="success" size="small" @click="addRecords">新增调拨记录</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
@@ -59,71 +77,50 @@
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
                 </el-form-item>
-                <el-form-item label="硬件型号:">
-                  <span>{{ scope.row.model }}</span>
+                <el-form-item label="SKU:">
+                  <span>{{ scope.row.sku }}</span>
                 </el-form-item>
-                <el-form-item label="硬件颜色:">
-                  <span>{{ scope.row.color }}</span>
+                <el-form-item label="调出库位:">
+                  <span>{{ scope.row.out_location }}</span>
                 </el-form-item>
-                <el-form-item label="硬件性质:">
-                  <span>{{ scope.row.action }}</span>
+                <el-form-item label="调入库位:">
+                  <span>{{ scope.row.in_location }}</span>
                 </el-form-item>
-                <el-form-item label="调整出处:">
-                  <span>{{ scope.row.source }}</span>
-                </el-form-item>
-                <el-form-item label="调整形式:">
-                  <span>{{ scope.row.change }}</span>
-                </el-form-item>
-                <el-form-item label="调整数量:">
+                <el-form-item label="调拨数量:">
                   <span>{{ scope.row.num }}</span>
                 </el-form-item>
-                <el-form-item label="原总库存:">
-                  <span>{{ scope.row.old_stock }}</span>
-                </el-form-item>
-                <el-form-item label="现总库存:">
-                  <span>{{ scope.row.now_stock }}</span>
-                </el-form-item>
-                <el-form-item label="创建时间:">
-                  <span>{{ scope.row.created_at }}</span>
-                </el-form-item>
-                <el-form-item label="更新时间:">
+                <el-form-item label="时间:">
                   <span>{{ scope.row.updated_at }}</span>
-                </el-form-item>
-                <el-form-item label="备注:">
-                  <span>{{ scope.row.remark }}</span>
                 </el-form-item>
               </el-form>
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="color" label="硬件颜色" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="action" label="硬件性质" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="source" label="调整出处" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="change" label="调整形式" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="num" label="调整数量" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="old_stock"
-            label="原总库存"
+            prop="out_location"
+            label="调出库位"
             min-width="80"
-          >
-            <template slot-scope="scope">{{ scope.row.old_stock }}</template>
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="now_stock"
-            label="现总库存"
-            min-width="80"
-          >
-            <template slot-scope="scope">{{ scope.row.now_stock }}</template>
-          </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="created_at"
-            label="创建时间"
-            min-width="100"
           />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="in_location"
+            label="调入库位"
+            min-width="80"
+          />
+          <el-table-column :show-overflow-tooltip="true" prop="num" label="调拨数量" min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="updated_at"
+            label="时间"
+            min-width="80"
+          />
+          <el-table-column v-if="purchasing" label="操作" min-width="100">
+            <template slot-scope="scope">
+              <el-button size="mini" type="primary" @click="editRecords(scope.row)">详情</el-button>
+            </template>
+          </el-table-column>
         </el-table>
         <div class="pagination-wrap">
           <el-pagination
@@ -149,17 +146,18 @@ import {
   Form,
   FormItem,
   MessageBox,
-  Breadcrumb,
-  BreadcrumbItem,
   Select,
   Option
 } from "element-ui";
-import { getDetialsList, Cookies, hardwareSource } from "service";
+import {
+  getRecordsList,
+  Cookies,
+  getSearchLocation,
+  getSearchSku
+} from "service";
 
 export default {
   components: {
-    "el-breadcrumb": Breadcrumb,
-    "el-breadcrumb-item": BreadcrumbItem,
     "el-table": Table,
     "el-table-column": TableColumn,
     "el-button": Button,
@@ -172,13 +170,13 @@ export default {
   },
   data() {
     return {
-      searchForm: {
-        action: "",
-        source: ""
-      },
-      roles: {},
-      sourceList: [],
       searchLoading: false,
+      skuList: [],
+      searchForm: {
+        sku: "",
+        out_location: "",
+        in_location: ""
+      },
       setting: {
         loading: false,
         loadingText: "拼命加载中"
@@ -188,12 +186,9 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      parentInfo: {
-        model: "",
-        color: "",
-        detailId: ""
-      },
-      tableData: []
+      tableData: [],
+      locationList: [],
+      roles: []
     };
   },
   computed: {
@@ -207,44 +202,71 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
-    this.parentInfo.color = this.$route.query.color;
-    this.parentInfo.model = this.$route.query.model;
-    this.parentInfo.detailId = this.$route.params.uid;
-    this.getDetialsList();
-    this.hardwareSource();
+    this.getSearchLocation();
+    this.getRecordsList();
+    this.getSearchSku();
   },
   methods: {
-    hardwareSource() {
+    addRecords() {
+      this.$router.push({
+        path: "/storage/records/add"
+      });
+    },
+    editRecords(data) {
+      this.$router.push({
+        path: "/storage/records/edit/" + data.id
+      });
+    },
+    getSearchLocation() {
       this.searchLoading = true;
-      hardwareSource(this)
+      getSearchLocation(this)
         .then(res => {
+          this.locationList = res;
           this.searchLoading = false;
-          this.sourceList = res.data;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getSearchSku() {
+      this.searchLoading = true;
+      getSearchSku(this)
+        .then(res => {
+          this.skuList = res;
+          this.searchLoading = false;
         })
         .catch(err => {
           this.searchLoading = false;
           this.$message({
             message: err.response.data.message,
-            type: "warning"
+            type: "success"
           });
         });
     },
-    getDetialsList() {
+    getRecordsList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        include: "hardware",
-        id: this.parentInfo.detailId,
-        action: this.searchForm.action,
-        source: this.searchForm.source
+        sku: this.searchForm.sku,
+        out_location: this.searchForm.out_location,
+        in_location: this.searchForm.in_location
       };
-      if (!this.searchForm.action) {
-        delete args.action;
+
+      if (this.searchForm.sku === "") {
+        delete args.sku;
       }
-      if (this.searchForm.source === "") {
-        delete args.source;
+      if (this.searchForm.out_location === "") {
+        delete args.out_location;
       }
-      getDetialsList(this, args)
+      if (this.searchForm.in_location === "") {
+        delete args.in_location;
+      }
+      getRecordsList(this, args)
         .then(res => {
           this.tableData = res.data;
           this.pagination.total = res.meta.pagination.total;
@@ -254,37 +276,18 @@ export default {
           this.setting.loading = false;
         });
     },
-    addDetail() {
-      this.$router.push({
-        path: "/purchase/list/saveDetail",
-        query: {
-          model: this.parentInfo.model,
-          color: this.parentInfo.color,
-          pid: this.parentInfo.detailId
-        }
-      });
-    },
-    editDetail(data) {
-      let _this = this;
-      this.$router.push({
-        path: "/purchase/list/saveDetail/" + data.id,
-        query: {
-          pid: _this.parentInfo.detailId
-        }
-      });
-    },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage;
-      this.getDetialsList();
+      this.getRecordsList();
     },
     search() {
       this.pagination.currentPage = 1;
-      this.getDetialsList();
+      this.getRecordsList();
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
-      this.getDetialsList();
+      this.getRecordsList();
     }
   }
 };
@@ -296,14 +299,12 @@ export default {
   color: #5e6d82;
   .item-list-wrap {
     background: #fff;
-    padding: 30px;
-
+    padding: 10px 30px 30px;
     .el-form-item {
       margin-bottom: 0;
     }
-    .item-purchase-wrap {
+    .item-content-wrap {
       margin-top: 10px;
-
       .demo-table-expand {
         font-size: 0;
       }
@@ -328,9 +329,6 @@ export default {
         font-size: 16px;
         align-items: center;
         margin-bottom: 10px;
-        .search-content {
-          width: 800px;
-        }
         .el-form-item {
           margin-bottom: 10px;
         }

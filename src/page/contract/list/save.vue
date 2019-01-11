@@ -2,7 +2,7 @@
   <div class="item-wrap-template">
     <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
       <div class="pane-title">新增合同</div>
-      <el-form ref="contractForm" :model="contractForm" :rules="rules" label-width="100px">
+      <el-form ref="contractForm" :model="contractForm" :rules="rules" label-width="120px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="公司名称" prop="company_id">
@@ -122,84 +122,79 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="硬件合同" prop="hardware_status">
-              <el-radio-group v-model="contractForm.hardware_status" @change="hardwareHandle">
+            <el-form-item label="硬件合同" prop="product_status">
+              <el-radio-group v-model="contractForm.product_status" @change="productHandle">
                 <el-radio :label="0">否</el-radio>
                 <el-radio :label="1">是</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="hardwareFlag">
+        <el-row v-if="productFlag">
           <el-button
             size="small"
             type="success"
             style="margin-bottom: 20px;"
-            @click="hardwareAdd"
+            @click="productAdd"
           >新增硬件信息</el-button>
-          <el-table :data="hardwareTableData" border style="width: 100%;margin-bottom: 20px;">
+          <el-table :data="productTableData" border style="width: 100%;margin-bottom: 20px;">
             <el-table-column
               prop="model"
-              label="硬件型号"
+              label="产品名称"
               min-width="80"
               align="center"
               header-align="center"
             >
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.hardware_model"
+                  v-model="scope.row.product_name"
                   :loading="searchLoading"
-                  placeholder="请选择硬件型号"
+                  placeholder="请选择产品名称"
                   filterable
                   clearable
-                  @change="handleHardware"
                 >
                   <el-option
-                    v-for="item in modelList"
-                    :key="item.model"
-                    :label="item.model"
-                    :value="item.model"
+                    v-for="item in nameList"
+                    :key="item.id"
+                    :label="item.value"
+                    :value="item.value"
                   />
                 </el-select>
               </template>
             </el-table-column>
             <el-table-column
-              prop="color"
-              label="硬件颜色"
+              prop="product_color"
+              label="产品颜色"
               min-width="80"
               align="center"
               header-align="center"
             >
               <template slot-scope="scope">
                 <el-select
-                  v-model="scope.row.hardware_color"
+                  v-model="scope.row.product_color"
                   :loading="searchLoading"
-                  placeholder="请选择硬件颜色"
+                  placeholder="请选择产品颜色"
                   filterable
                   clearable
                 >
                   <el-option
-                    v-for="item in colorList[scope.$index]"
-                    :key="item.color"
-                    :label="item.color"
-                    :value="item.color"
+                    v-for="item in colorList"
+                    :key="item.id"
+                    :label="item.value"
+                    :value="item.value"
                   />
                 </el-select>
               </template>
             </el-table-column>
             <el-table-column
-              prop="hardware_color"
-              label="硬件数量"
+              prop="product_stock"
+              label="产品数量"
               min-width="100"
               align="center"
               header-align="center"
             >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.hardware_stock" placeholder="请输入硬件数量"/>
-                <!-- <div
-                  v-if=" colorList[scope.$index] && ((((colorList[scope.$index])[scope.$index]).canuse_stock)< scope.row.hardware_stock)"
-                  style="color:red;"
-                >库存不足</div>-->
+                <el-input v-model="scope.row.product_stock" placeholder="请输入产品数量"/>
               </template>
             </el-table-column>
             <el-table-column label="操作" min-width="100">
@@ -241,8 +236,7 @@ import {
   historyBack,
   contractDetail,
   Cookies,
-  hardwareColorByModel,
-  hardwareModel
+  getAttributeList
 } from "service";
 import auth from "service/auth";
 import {
@@ -283,13 +277,13 @@ export default {
   },
   data() {
     return {
-      hardwareTableData: [],
+      productTableData: [],
       SERVER_URL: SERVER_URL,
       formHeader: {
         Authorization: "Bearer " + auth.getToken()
       },
       companyList: [],
-      modelList: [],
+      nameList: [],
       colorList: [],
       fileList: [],
       searchLoading: false,
@@ -299,14 +293,14 @@ export default {
         loadingText: "拼命加载中"
       },
       roles: [],
-      hardwareFlag: false,
+      productFlag: false,
       contractID: "",
       contractForm: {
         company_id: "",
         applicant_name: "",
         contract_number: "",
         name: "",
-        hardware_status: 0,
+        product_status: 0,
         type: 0,
         applicant: 0,
         receive_date: [],
@@ -322,7 +316,18 @@ export default {
         company_id: [
           { required: true, message: "请选择公司", trigger: "submit" }
         ],
-        name: [{ required: true, message: "请输入合同名称", trigger: "submit" }]
+        name: [
+          { required: true, message: "请输入合同名称", trigger: "submit" }
+        ],
+        amount: [
+          { required: true, message: "请输入合同金额", trigger: "submit" }
+        ],
+        receive_date: [
+          { required: true, message: "请输入预估收款日期", trigger: "submit" }
+        ],
+        contract_number: [
+          { required: true, message: "请输入合同编号", trigger: "submit" }
+        ]
       }
     };
   },
@@ -344,7 +349,7 @@ export default {
     this.setting.loading = true;
     this.contractID = this.$route.params.uid;
     this.getCompany();
-    this.hardwareModel();
+    this.getAttributeList();
     if (this.contractID) {
       this.contractDetail();
     } else {
@@ -356,60 +361,44 @@ export default {
     }
   },
   methods: {
-    deleteHardware(index) {
-      this.hardwareTableData.splice(index, 1);
-      this.colorList.splice(index, 1);
-    },
-    hardwareAdd() {
-      let td = {
-        hardware_model: "",
-        hardware_color: "",
-        hardware_stock: ""
-      };
-      this.hardwareTableData.unshift(td);
-    },
-    handleHardware(val) {
-      this.hardwareColorByModel(val);
-    },
-    hardwareColorByModel(val, data) {
-      this.searchLoading = true;
-      let args = {
-        model: val
-      };
-      hardwareColorByModel(this, args)
+    getAttributeList() {
+      getAttributeList(this)
         .then(res => {
-          this.colorList.unshift(res.data);
-          this.searchLoading = false;
-          if (data) {
-            this.hardwareTableData.unshift(data);
+          if (res.data.length > 0) {
+            res.data.map(r => {
+              if (r.name === "name") {
+                this.nameList = r.value;
+              }
+              if (r.name === "color") {
+                this.colorList = r.value;
+              }
+            });
           }
         })
         .catch(err => {
-          this.searchLoading = false;
           this.$message({
             message: err.response.data.message,
             type: "warning"
           });
         });
     },
-    hardwareModel() {
-      hardwareModel(this)
-        .then(res => {
-          this.modelList = res;
-        })
-        .catch(err => {
-          this.$message({
-            message: err.response.data.message,
-            type: "warning"
-          });
-        });
+    deleteHardware(index) {
+      this.productTableData.splice(index, 1);
+      this.colorList.splice(index, 1);
     },
-
-    hardwareHandle(val) {
+    productAdd() {
+      let td = {
+        product_name: "",
+        product_color: "",
+        product_stock: ""
+      };
+      this.productTableData.unshift(td);
+    },
+    productHandle(val) {
       if (val === 1) {
-        this.hardwareFlag = true;
+        this.productFlag = true;
       } else {
-        this.hardwareFlag = false;
+        this.productFlag = false;
       }
     },
     contractDetail() {
@@ -431,21 +420,20 @@ export default {
             : [];
           this.contractForm.remark = res.remark;
           this.contractForm.contract_number = res.contract_number;
-          this.contractForm.hardware_status =
-            res.hardware_status === "无硬件" ? 0 : 1;
-          this.hardwareFlag =
-            this.contractForm.hardware_status === 1 ? true : false;
-          let hardware_content = res.hardware_content;
+          this.contractForm.product_status =
+            res.product_status === "无硬件" ? 0 : 1;
+          this.productFlag =
+            this.contractForm.product_status === 1 ? true : false;
+          let product_content = res.product_content;
 
-          hardware_content.map(r => {
+          product_content.map(r => {
             let data = {
-              hardware_model: r.hardware_model,
-              hardware_color: r.hardware_color,
-              hardware_stock: r.hardware_stock
+              product_name: r.product_name,
+              product_color: r.product_color,
+              product_stock: r.product_stock
             };
-            this.hardwareColorByModel(r.hardware_model, data);
           });
-
+          this.productTableData = product_content
           this.contractForm.amount = res.amount;
           mediaData.map(r => {
             mediaIds.push(r.id);
@@ -538,7 +526,7 @@ export default {
             applicant: this.contractForm.applicant,
             type: this.contractForm.type,
             ids: this.contractForm.ids,
-            hardware_status: this.contractForm.hardware_status,
+            product_status: this.contractForm.product_status,
             remark: this.contractForm.remark
           };
           if (this.contractForm.type === 0) {
@@ -579,8 +567,8 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number;
           }
-          if (this.contractForm.hardware_status === 1) {
-            let length = this.hardwareTableData.length;
+          if (this.contractForm.product_status === 1) {
+            let length = this.productTableData.length;
             if (length <= 0) {
               this.$message({
                 message: "必须填写硬件信息,请点击新增硬件",
@@ -590,9 +578,9 @@ export default {
               return;
             }
           } else {
-            this.hardwareTableData = [];
+            this.productTableData = [];
           }
-          args.hardware_content = this.hardwareTableData;
+          args.product_content = this.productTableData;
           saveContract(this, args)
             .then(res => {
               this.$message({

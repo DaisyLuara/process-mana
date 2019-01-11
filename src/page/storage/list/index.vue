@@ -5,26 +5,57 @@
       :element-loading-text="setting.loadingText"
       class="item-list-wrap"
     >
-      <h3>采购库存</h3>
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="model">
-              <el-input
-                v-model="searchForm.model"
+            <el-form-item label prop="sku">
+              <el-select
+                v-model="searchForm.sku"
+                :loading="searchLoading"
+                filterable
                 clearable
-                placeholder="请输入硬件型号"
-                class="item-input"
-              />
+                placeholder="请选择SKU"
+              >
+                <el-option
+                  v-for="item in skuList"
+                  :key="item.sku"
+                  :label="item.sku"
+                  :value="item.sku"
+                />
+              </el-select>
             </el-form-item>
-            <el-form-item label prop="color">
-              <el-input
-                v-model="searchForm.color"
+            <el-form-item label prop="warehouse">
+              <el-select
+                v-model="searchForm.warehouse"
+                :loading="searchLoading"
+                filterable
                 clearable
-                placeholder="请输入硬件颜色"
-                class="item-input"
-              />
+                placeholder="请选择仓库"
+              >
+                <el-option
+                  v-for="item in warehouseList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label prop="location">
+              <el-select
+                v-model="searchForm.location"
+                :loading="searchLoading"
+                filterable
+                clearable
+                placeholder="请选择库存位置"
+              >
+                <el-option
+                  v-for="item in locationList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label>
               <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
@@ -32,12 +63,9 @@
             </el-form-item>
           </el-form>
         </div>
-        <!-- 合同列表 -->
+        <!-- 明细列表 -->
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
-          <div>
-            <el-button v-if="purchasing" size="small" type="success" @click="addHardware">新增硬件</el-button>
-          </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
           <el-table-column type="expand">
@@ -46,101 +74,36 @@
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
                 </el-form-item>
-                <el-form-item label="硬件型号:">
-                  <span>{{ scope.row.model }}</span>
-                </el-form-item>
-                <el-form-item label="硬件颜色:">
-                  <span>{{ scope.row.color }}</span>
-                </el-form-item>
-                <el-form-item label="申悦:">
-                  <span>{{ scope.row.shenyue_stock }}</span>
-                </el-form-item>
-                <el-form-item label="域展:">
-                  <span>{{ scope.row.yuzhan_stock }}</span>
-                </el-form-item>
-                <el-form-item label="卓有:">
-                  <span>{{ scope.row.zhuoyou_stock }}</span>
+                <el-form-item label="SKU:">
+                  <span>{{ scope.row.sku }}</span>
                 </el-form-item>
                 <el-form-item label="仓库:">
-                  <span>{{ scope.row.warehouse_stock }}</span>
+                  <span>{{ scope.row.warehouse }}</span>
                 </el-form-item>
-                <el-form-item label="公司:">
-                  <span>{{ scope.row.company_stock }}</span>
+                <el-form-item label="库存位置:">
+                  <span>{{ scope.row.location }}</span>
                 </el-form-item>
-                <el-form-item label="返修:">
-                  <span>{{ scope.row.fanxiu_stock }}</span>
-                </el-form-item>
-                <el-form-item label="可用库存:">
-                  <span>{{ scope.row.canuse_stock }}</span>
-                </el-form-item>
-                <el-form-item label="总库存:">
-                  <span>{{ scope.row.total_stock }}</span>
+                <el-form-item label="库存数量:">
+                  <span>{{ scope.row.stock }}</span>
                 </el-form-item>
               </el-form>
             </template>
           </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="model" label="硬件型号" min-width="100"/>
-          <el-table-column :show-overflow-tooltip="true" prop="color" label="硬件颜色" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="shenyue_stock"
-            label="申悦"
-            min-width="80"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="yuzhan_stock"
-            label="域展"
-            min-width="80"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="zhuoyou_stock"
-            label="卓有"
-            min-width="80"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="warehouse_stock"
+            prop="warehouse"
             label="仓库"
             min-width="80"
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="company_stock"
-            label="公司"
-            min-width="80"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="fanxiu_stock"
-            label="返修"
-            min-width="80"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="canuse_stock"
-            label="可用库存"
+            prop="location"
+            label="库存位置"
             min-width="100"
           />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="total_stock"
-            label="总库存"
-            min-width="100"
-          />
-          <el-table-column label="操作" min-width="200">
-            <template slot-scope="scope">
-              <el-button
-                v-if="purchasing"
-                size="mini"
-                type="primary"
-                @click="editHardware(scope.row)"
-              >编辑</el-button>
-              <el-button size="mini" @click="detailsHardware(scope.row)">明细</el-button>
-            </template>
-          </el-table-column>
+          <el-table-column :show-overflow-tooltip="true" prop="stock" label="库存数量" min-width="100"/>
         </el-table>
         <div class="pagination-wrap">
           <el-pagination
@@ -165,9 +128,16 @@ import {
   Pagination,
   Form,
   FormItem,
-  MessageBox
+  MessageBox,
+  Select,
+  Option
 } from "element-ui";
-import { getPurchaseList, Cookies } from "service";
+import {
+  getStorageDetailList,
+  getSearchSku,
+  getSearchLocation,
+  getSearchStorageList
+} from "service";
 
 export default {
   components: {
@@ -177,15 +147,21 @@ export default {
     "el-input": Input,
     "el-pagination": Pagination,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-select": Select,
+    "el-option": Option
   },
   data() {
     return {
+      skuList: [],
+      warehouseList: [],
+      locationList: [],
+      searchLoading: false,
       searchForm: {
-        model: "",
-        color: ""
+        sku: "",
+        warehouse: "",
+        location: ""
       },
-      roles: {},
       setting: {
         loading: false,
         loadingText: "拼命加载中"
@@ -198,34 +174,77 @@ export default {
       tableData: []
     };
   },
-  computed: {
-    // 采购
-    purchasing: function() {
-      return this.roles.find(r => {
-        return r.name === "purchasing";
-      });
-    }
-  },
   created() {
-    this.getPurchaseList();
-    let user_info = JSON.parse(Cookies.get("user_info"));
-    this.roles = user_info.roles.data;
+    this.searchForm.location = this.$route.query.pid
+    this.getSearchSku();
+    this.getSearchLocation();
+    this.getStorageDetailList();
+    this.getSearchStorageList();
   },
   methods: {
-    getPurchaseList() {
+    getSearchStorageList() {
+      this.searchLoading = true;
+      getSearchStorageList(this)
+        .then(res => {
+          this.warehouseList = res;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getSearchLocation() {
+      this.searchLoading = true;
+      getSearchLocation(this)
+        .then(res => {
+          this.locationList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getSearchSku() {
+      this.searchLoading = true;
+      getSearchSku(this)
+        .then(res => {
+          this.skuList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getStorageDetailList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        model: this.searchForm.model,
-        color: this.searchForm.color
+        sku: this.searchForm.sku,
+        warehouse: this.searchForm.warehouse,
+        location: this.searchForm.location
       };
-      if (!this.searchForm.model) {
-        delete args.model;
+      if (this.searchForm.sku === "") {
+        delete args.sku;
       }
-      if (!this.searchForm.color) {
-        delete args.color;
+      if (!this.searchForm.warehouse) {
+        delete args.warehouse;
       }
-      getPurchaseList(this, args)
+      if (!this.searchForm.location) {
+        delete args.location;
+      }
+      getStorageDetailList(this, args)
         .then(res => {
           this.tableData = res.data;
           this.pagination.total = res.meta.pagination.total;
@@ -235,37 +254,18 @@ export default {
           this.setting.loading = false;
         });
     },
-    detailsHardware(data) {
-      this.$router.push({
-        path: "/purchase/list/detail/" + data.id,
-        query: {
-          model: data.model,
-          color: data.color
-        }
-      });
-    },
-    addHardware() {
-      this.$router.push({
-        path: "/purchase/list/add"
-      });
-    },
-    editHardware(data) {
-      this.$router.push({
-        path: "/purchase/list/edit/" + data.id
-      });
-    },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage;
-      this.getPurchaseList();
+      this.getStorageDetailList();
     },
     search() {
       this.pagination.currentPage = 1;
-      this.getPurchaseList();
+      this.getStorageDetailList();
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
-      this.getPurchaseList();
+      this.getStorageDetailList();
     }
   }
 };
@@ -307,9 +307,6 @@ export default {
         font-size: 16px;
         align-items: center;
         margin-bottom: 10px;
-        .search-content {
-          width: 800px;
-        }
         .el-form-item {
           margin-bottom: 10px;
         }
