@@ -175,6 +175,7 @@ export default {
     };
   },
   created() {
+    this.searchForm.location = this.$route.query.pid
     this.getSearchSku();
     this.getSearchLocation();
     this.getStorageDetailList();
@@ -185,7 +186,6 @@ export default {
       this.searchLoading = true;
       getSearchStorageList(this)
         .then(res => {
-          console.log(res);
           this.warehouseList = res;
         })
         .catch(err => {

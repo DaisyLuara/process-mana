@@ -43,8 +43,7 @@ import {
   saveLocation,
   getSearchStorageList,
   modifyLocation,
-  getLocationDetails,
-  Cookies
+  getLocationDetails
 } from "service";
 import {
   Form,

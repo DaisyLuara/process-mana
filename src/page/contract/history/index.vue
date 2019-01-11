@@ -35,6 +35,22 @@
                 class="item-input"
               />
             </el-form-item>
+            <el-form-item label prop="product_status">
+              <el-select
+                v-model="searchForm.product_status"
+                :loading="searchLoading"
+                filterable
+                clearable
+                placeholder="请选择硬件状态"
+              >
+                <el-option
+                  v-for="item in productStatusList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item label prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
@@ -207,23 +223,29 @@
           min-width="80"
           align="center"
           header-align="center"
-        />
+        >
+          <template slot-scope="scope">{{ scope.row.attribute.name }}</template>
+        </el-table-column>
         <el-table-column
           prop="color"
           label="产品颜色"
           min-width="80"
           align="center"
           header-align="center"
-        />
+        >
+          <template slot-scope="scope">{{ scope.row.attribute.color }}</template>
+        </el-table-column>
         <el-table-column
           prop="supplier"
           label="供应商"
           min-width="80"
           align="center"
           header-align="center"
-        />
+        >
+          <template slot-scope="scope">{{ scope.row.attribute.supplier }}</template>
+        </el-table-column>
         <el-table-column
-          prop="out_location"
+          prop="out_location_name"
           label="出库库位"
           min-width="80"
           align="center"
@@ -292,7 +314,8 @@ export default {
         dataValue: [],
         name: "",
         status: "",
-        contract_number: ""
+        contract_number: "",
+        product_status: ""
       },
       pickerOptions2: {
         shortcuts: [
@@ -365,6 +388,20 @@ export default {
           name: "驳回"
         }
       ],
+      productStatusList: [
+        {
+          id: 0,
+          name: "无硬件"
+        },
+        {
+          id: 1,
+          name: "未出厂"
+        },
+        {
+          id: 2,
+          name: "已出厂"
+        }
+      ],
       setting: {
         loading: false,
         loadingText: "拼命加载中"
@@ -420,13 +457,17 @@ export default {
         status: this.searchForm.status,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        end_date: handleDateTransform(this.searchForm.dataValue[1])
+        end_date: handleDateTransform(this.searchForm.dataValue[1]),
+        product_status: this.searchForm.product_status
       };
       if (!this.searchForm.name) {
         delete args.name;
       }
       if (this.searchForm.contract_number === "") {
         delete args.contract_number;
+      }
+      if (this.searchForm.product_status === "") {
+        delete args.product_status;
       }
       if (!this.searchForm.status) {
         delete args.status;

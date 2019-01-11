@@ -27,8 +27,7 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <!-- v-if="purchasing"  -->
-            <el-button type="success" size="small" @click="addLocation">新增库位</el-button>
+            <el-button v-if="purchasing" type="success" size="small" @click="addLocation">新增库位</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
@@ -42,8 +41,7 @@
           />
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
-              <!-- v-if="purchasing"  -->
-              <el-button size="mini" @click="editLocation(scope.row)">编辑</el-button>
+              <el-button size="mini" v-if="purchasing" @click="editLocation(scope.row)">编辑</el-button>
               <el-button size="mini" type="primary" @click="recordsList(scope.row)">当前库存</el-button>
             </template>
           </el-table-column>
@@ -129,8 +127,8 @@ export default {
     },
     recordsList(data) {
       this.$router.push({
-        path: "/storage/records",
-        param: {
+        path: "/storage/list",
+        query: {
           pid: data.id
         }
       });

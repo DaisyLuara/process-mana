@@ -42,7 +42,6 @@ import {
   saveStore,
   modifyStore,
   getStoreDetails,
-  Cookies
 } from "service";
 import { Form, FormItem, Button, Input, MessageBox } from "element-ui";
 

@@ -103,7 +103,6 @@ import {
   saveRecords,
   modifyRecords,
   getRecordsDetails,
-  Cookies,
   getSearchSku,
   getAttributeBySku,
   getSearchLocation

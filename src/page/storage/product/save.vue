@@ -1,7 +1,7 @@
 <template>
   <div class="item-wrap-template">
     <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
-      <div class="pane-title">{{productID ? '修改产品' : '新增产品' }}</div>
+      <div class="pane-title">{{productID ? (purchasing ? '修改产品': '查看产品') : '新增产品' }}</div>
       <el-form
         ref="productForm"
         :model="productForm"
@@ -64,7 +64,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submit('productForm')">保存</el-button>
+          <el-button v-if="purchasing" type="primary" @click="submit('productForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>
@@ -119,6 +119,7 @@ export default {
         color: "",
         supplier: ""
       },
+      roles: [],
       rules: {
         sku: [{ required: true, message: "请输入SKU", trigger: "submit" }],
         name: [
@@ -133,7 +134,17 @@ export default {
       }
     };
   },
+  computed: {
+    // 采购
+    purchasing: function() {
+      return this.roles.find(r => {
+        return r.name === "purchasing";
+      });
+    }
+  },
   created() {
+    let user_info = JSON.parse(Cookies.get("user_info"));
+    this.roles = user_info.roles.data;
     this.productID = this.$route.params.uid;
     this.init();
     if (this.productID) {

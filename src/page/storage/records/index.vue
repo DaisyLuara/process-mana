@@ -67,8 +67,7 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <!-- v-if="purchasing"  -->
-            <el-button type="success" size="small" @click="addRecords">新增调拨记录</el-button>
+            <el-button v-if="purchasing" type="success" size="small" @click="addRecords">新增调拨记录</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
@@ -117,9 +116,8 @@
             label="时间"
             min-width="80"
           />
-          <el-table-column label="操作" min-width="100">
+          <el-table-column v-if="purchasing" label="操作" min-width="100">
             <template slot-scope="scope">
-              <!-- v-if="purchasing" -->
               <el-button size="mini" type="primary" @click="editRecords(scope.row)">详情</el-button>
             </template>
           </el-table-column>

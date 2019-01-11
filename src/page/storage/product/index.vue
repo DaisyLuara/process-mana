@@ -51,8 +51,7 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <!-- v-if="purchasing"  -->
-            <el-button type="success" size="small" @click="addProduct">新增产品</el-button>
+            <el-button v-if="purchasing" type="success" size="small" @click="addProduct">新增产品</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
@@ -66,8 +65,7 @@
           />
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
-              <!-- v-if="purchasing" -->
-              <el-button size="mini" @click="editProduct(scope.row)">编辑</el-button>
+              <el-button size="mini" type="primary" @click="editProduct(scope.row)">{{ purchasing ? '编辑' : '详情'}}</el-button>
             </template>
           </el-table-column>
         </el-table>

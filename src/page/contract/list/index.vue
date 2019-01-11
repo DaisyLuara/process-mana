@@ -35,6 +35,22 @@
                 class="item-input"
               />
             </el-form-item>
+            <el-form-item label prop="product_status">
+              <el-select
+                v-model="searchForm.product_status"
+                :loading="searchLoading"
+                filterable
+                clearable
+                placeholder="请选择硬件状态"
+              >
+                <el-option
+                  v-for="item in productStatusList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item label prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
@@ -264,7 +280,7 @@
           header-align="center"
         >
           <template slot-scope="scope">
-            <span v-if="productStatus === '未出厂'">{{ scope.row.attribute.name }}</span>
+            <span>{{ scope.row.attribute.name }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -275,7 +291,7 @@
           header-align="center"
         >
           <template slot-scope="scope">
-            <span v-if="productStatus === '未出厂'">{{ scope.row.attribute.color }}</span>
+            <span>{{ scope.row.attribute.color }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -286,7 +302,7 @@
           header-align="center"
         >
           <template slot-scope="scope">
-            <span v-if="productStatus === '未出厂'">{{ scope.row.attribute.supplier }}</span>
+            <span>{{ scope.row.attribute.supplier }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -309,10 +325,10 @@
                 v-for="item in locationList"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id"
+                :value="item.name + ',' + item.id"
               />
             </el-select>
-            <span v-if="productStatus !== '未出厂'">{{ scope.row.out_location }}</span>
+            <span v-if="productStatus !== '未出厂'">{{ scope.row.out_location_name }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -396,12 +412,27 @@ export default {
   data() {
     return {
       locationList: [],
+      productStatusList: [
+        {
+          id: 0,
+          name: "无硬件"
+        },
+        {
+          id: 1,
+          name: "未出厂"
+        },
+        {
+          id: 2,
+          name: "已出厂"
+        }
+      ],
       skuList: [],
       searchForm: {
         dataValue: [],
         name: "",
         status: "",
-        contract_number: ""
+        contract_number: "",
+        product_status: ""
       },
       dialogFormVisible: false,
       role: [],
@@ -539,13 +570,18 @@ export default {
     submit() {
       let product_content = [];
       this.productTableData.map(r => {
-        delete r.attribute;
+        let out_location = r.out_location.split(",")[1];
+        let out_location_name = r.out_location.split(",")[0];
+        delete r.out_location;
+        r.out_location = out_location;
+        r.out_location_name = out_location_name;
         product_content.push(r);
       });
       let args = {
         contract_id: this.contract_id,
         product_content: product_content
       };
+      console.log(args);
       leaveFactory(this, args)
         .then(res => {
           this.dialogFormVisible = false;
@@ -613,7 +649,8 @@ export default {
             res.name.attributes_value;
           this.productTableData[index].attribute.color =
             res.color.attributes_value;
-          this.productTableData[index].attribute.supplier = res.supplier[0].name;
+          this.productTableData[index].attribute.supplier =
+            res.supplier[0].name;
         })
         .catch(err => {
           this.$message({
@@ -749,13 +786,17 @@ export default {
         status: this.searchForm.status,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        end_date: handleDateTransform(this.searchForm.dataValue[1])
+        end_date: handleDateTransform(this.searchForm.dataValue[1]),
+        product_status: this.searchForm.product_status
       };
       if (!this.searchForm.name) {
         delete args.name;
       }
       if (this.searchForm.contract_number === "") {
         delete args.contract_number;
+      }
+      if (this.searchForm.product_status === "") {
+        delete args.product_status;
       }
       if (!this.searchForm.status) {
         delete args.status;
