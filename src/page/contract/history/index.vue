@@ -211,7 +211,7 @@
         style="width: 100%;margin-bottom: 20px;"
       >
         <el-table-column
-          prop="sku"
+          prop="product_sku"
           label="SKU"
           min-width="80"
           align="center"

@@ -249,6 +249,7 @@ export default {
             attribute: attribute
           };
           if (this.productID) {
+            args.id = this.productID;
             modifyProduct(this, this.productID, args)
               .then(res => {
                 this.$message({

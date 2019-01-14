@@ -260,17 +260,16 @@
               :loading="searchLoading"
               placeholder="请选择sku"
               filterable
-              clearable
               @change="handleSku($event,scope.$index)"
             >
               <el-option
                 v-for="item in skuList"
-                :key="item.sku"
+                :key="item.id"
                 :label="item.sku"
-                :value="item.sku"
+                :value="item.id + ',' + item.sku"
               />
             </el-select>
-            <span v-if="productStatus !== '未出厂'">{{ scope.row.sku }}</span>
+            <span v-if="productStatus !== '未出厂'">{{ scope.row.product_sku }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -574,8 +573,13 @@ export default {
         let out_location = r.out_location.split(",")[1];
         let out_location_name = r.out_location.split(",")[0];
         delete r.out_location;
+        let product_sku = r.sku.split(",")[1];
+        let product_id = r.sku.split(",")[0];
+        delete r.sku;
         r.out_location = out_location;
         r.out_location_name = out_location_name;
+        r.product_id = product_id;
+        r.product_sku = product_sku;
         product_content.push(r);
       });
       let args = {
@@ -634,6 +638,7 @@ export default {
         });
     },
     handleSku(val, index) {
+      let id = val.split(",")[0];
       this.getAttributeBySku(val, index);
     },
 
@@ -642,7 +647,7 @@ export default {
     },
     getAttributeBySku(value, index) {
       let args = {
-        sku: value
+        id: value
       };
       getAttributeBySku(this, args)
         .then(res => {
