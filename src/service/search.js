@@ -12,6 +12,7 @@ const STORAGE_API = '/api/erp_warehouse/query'
 const SUPPLIER_API = '/api/erp_supplier/query'
 const SKU_API = '/api/erp_sku/query'
 const LOCATION_API = '/api/erp_location/query'
+const USER_API = '/api/user/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
 const getCompanyList = (context, params) => {
@@ -202,6 +203,20 @@ const getSearchLocation = (context, args) => {
   })
 }
 
+// 用户
+const getSearchUserList = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + USER_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getCompanyList,
   getContract,
@@ -216,5 +231,6 @@ export {
   getSearchStorageList,
   getSearchSupplier,
   getSearchSku,
-  getSearchLocation
+  getSearchLocation,
+  getSearchUserList
 }

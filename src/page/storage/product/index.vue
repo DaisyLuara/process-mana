@@ -19,9 +19,9 @@
               >
                 <el-option
                   v-for="item in skuList"
-                  :key="item.sku"
+                  :key="item.id"
                   :label="item.sku"
-                  :value="item.sku"
+                  :value="item.id"
                 />
               </el-select>
             </el-form-item>
@@ -121,7 +121,7 @@ export default {
       skuList: [],
       supplierList: [],
       searchForm: {
-        sku: "",
+        id: "",
         supplier: ""
       },
       setting: {
@@ -197,11 +197,11 @@ export default {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        sku: this.searchForm.sku,
+        id: this.searchForm.sku,
         supplier: this.searchForm.supplier
       };
       if (this.searchForm.sku === "") {
-        delete args.sku;
+        delete args.id;
       }
       if (this.searchForm.supplier === "") {
         delete args.supplier;

@@ -9,15 +9,15 @@
         label-position="left"
         label-width="100px"
       >
-        <el-form-item label="SKU" prop="sku">
+        <el-form-item label="SKU" prop="product_id">
           <el-select
-            v-model="recordsForm.sku"
+            v-model="recordsForm.product_id"
             placeholder="请选择SKU"
             clearable
             :loading="searchLoading"
             @change="skuHandle"
           >
-            <el-option v-for="item in skuList" :key="item.sku" :value="item.sku" :label="item.sku"/>
+            <el-option v-for="item in skuList" :key="item.id" :value="item.id" :label="item.sku"/>
           </el-select>
         </el-form-item>
         <el-form-item label="产品名称" prop="name">
@@ -146,7 +146,7 @@ export default {
       recordsID: null,
       recordsForm: {
         supplier: "",
-        sku: "",
+        product_id: "",
         name: "",
         color: "",
         out_location: "",
@@ -155,7 +155,7 @@ export default {
         remark: ""
       },
       rules: {
-        sku: [{ required: true, message: "请选择SKU", trigger: "submit" }],
+        product_id: [{ required: true, message: "请选择SKU", trigger: "submit" }],
         name: [
           { required: true, message: "请输入产品名称", trigger: "submit" }
         ],
@@ -193,7 +193,7 @@ export default {
     },
     getAttributeBySku(value) {
       let args = {
-        sku: value
+        id: value
       };
       getAttributeBySku(this, args)
         .then(res => {
@@ -242,8 +242,8 @@ export default {
     getRecordsDetails() {
       getRecordsDetails(this, this.recordsID)
         .then(res => {
-          this.recordsForm.sku = res.sku;
-          this.getAttributeBySku(this.recordsForm.sku);
+          this.recordsForm.product_id = res.product_id;
+          this.getAttributeBySku(this.recordsForm.product_id);
           this.recordsForm.out_location = res.out_location;
           this.recordsForm.in_location = res.in_location;
           this.recordsForm.num = res.num;
