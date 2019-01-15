@@ -51,8 +51,7 @@
 </template>
 
 <script>
-import company from "service/company";
-import { historyBack } from "service";
+import { historyBack, getContactDetial, saveContact } from "service";
 import { Select, Option, Button, Input, Form, FormItem } from "element-ui";
 
 export default {
@@ -170,8 +169,7 @@ export default {
           if (!this.contactForm.contact.telephone) {
             delete args.telephone;
           }
-          company
-            .saveContact(this, pid, args, uid)
+          saveContact(this, pid, args, uid)
             .then(result => {
               this.setting.loading = false;
               this.$message({
@@ -198,8 +196,7 @@ export default {
       let uid = this.$route.query.uid;
       if (uid) {
         this.setting.loading = true;
-        company
-          .getContactDetial(this, this.pid, uid)
+        getContactDetial(this, this.pid, uid)
           .then(result => {
             this.contactForm.contact = result;
             this.setting.loading = false;

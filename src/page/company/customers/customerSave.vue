@@ -33,6 +33,11 @@
             class="customer-form-input"
           />
         </el-form-item>
+        <el-form-item label="所属BD" prop="bd_user_id">
+          <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属BD">
+            <el-option v-for="item in bdList" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </el-form-item>
         <el-form-item v-if="statusFlag" label="状态" prop="selectedStatus">
           <el-select v-model="customerForm.selectedStatus" placeholder="请选择状态">
             <el-option
@@ -86,8 +91,13 @@
 </template>
 
 <script>
-import company from "service/company";
-import { historyBack } from "service";
+import {
+  historyBack,
+  getSearchBDList,
+  getCustomerDetial,
+  saveCustomer
+} from "service";
+
 import {
   Select,
   Option,
@@ -120,6 +130,7 @@ export default {
       },
       contactFlag: true,
       customerForm: {
+        bd_user_id: null,
         name: "",
         address: "",
         category: 0,
@@ -134,6 +145,7 @@ export default {
         selectedStatus: ""
       },
       statusFlag: false,
+      bdList: [],
       statusOption: [
         {
           value: 1,
@@ -161,6 +173,9 @@ export default {
         ],
         description: [
           { message: "请输入公司详情", trigger: "submit", required: true }
+        ],
+        bd_user_id: [
+          { message: "请选择所属BD", trigger: "submit", required: true }
         ],
         phone: [
           {
@@ -223,6 +238,7 @@ export default {
     this.setting.loadingText = "拼命加载中";
     this.customerID = this.$route.params.uid;
     this.getCustomerDetial();
+    this.getSearchBDList();
   },
   methods: {
     categoryHandle(val) {
@@ -242,7 +258,8 @@ export default {
             description: this.customerForm.description,
             logo: this.customerForm.logo,
             category: this.customerForm.category,
-            internal_name: this.customerForm.internal_name
+            internal_name: this.customerForm.internal_name,
+            bd_user_id: this.customerForm.bd_user_id
           };
           if (this.customerID || !this.contactFlag) {
             args.status = this[formName].selectedStatus;
@@ -256,8 +273,7 @@ export default {
           if (!this.customerForm.telephone) {
             delete args.telephone;
           }
-          company
-            .saveCustomer(this, args, this.customerID)
+          saveCustomer(this, args, this.customerID)
             .then(result => {
               this.setting.loading = false;
               this.$message({
@@ -281,6 +297,18 @@ export default {
         }
       });
     },
+    getSearchBDList() {
+      getSearchBDList(this)
+        .then(res => {
+          this.bdList = res;
+        })
+        .catch(err => {
+          this.$message({
+            type: "warning",
+            message: err.response.data.message
+          });
+        });
+    },
     getCustomerDetial() {
       this.setting.loading = true;
       if (this.customerID) {
@@ -288,8 +316,7 @@ export default {
         this.rules.phone[0].required = false;
         this.rules.position[0].required = false;
         this.rules.password[0].required = false;
-        company
-          .getCustomerDetial(this, this.customerID)
+        getCustomerDetial(this, this.customerID)
           .then(result => {
             this.statusFlag = true;
             this.customerForm.name = result.name;
@@ -299,6 +326,9 @@ export default {
             this.customerForm.selectedStatus = result.status;
             this.customerForm.logo = result.logo;
             this.customerForm.internal_name = result.internal_name;
+            this.customerForm.bd_user_id = result.bdUser
+              ? result.bdUser.id
+              : null;
             this.setting.loading = false;
           })
           .catch(err => {
@@ -310,7 +340,6 @@ export default {
         this.setting.loading = false;
       }
     },
-    resetForm(formName) {},
     historyBack() {
       historyBack();
     }
