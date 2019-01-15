@@ -520,7 +520,6 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      productContent: [],
       tableData: [],
       contract_id: null,
       productTableData: []
@@ -586,7 +585,6 @@ export default {
         contract_id: this.contract_id,
         product_content: product_content
       };
-      console.log(args);
       leaveFactory(this, args)
         .then(res => {
           this.dialogFormVisible = false;
@@ -684,8 +682,8 @@ export default {
       this.contract_id = data.id;
       this.productStatus = data.product_status;
       if (this.productStatus === "未出厂") {
+        this.productTableData = [];
         this.loading = false;
-        this.productContent = data.product_content;
       } else {
         this.leaveFactoryDetail();
       }
