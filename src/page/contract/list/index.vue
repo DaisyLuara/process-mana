@@ -585,6 +585,13 @@ export default {
         contract_id: this.contract_id,
         product_content: product_content
       };
+      if (product_content.length === 0) {
+        this.$message({
+          type: "warning",
+          message: "硬件信息不能为空"
+        });
+        return;
+      }
       leaveFactory(this, args)
         .then(res => {
           this.dialogFormVisible = false;
