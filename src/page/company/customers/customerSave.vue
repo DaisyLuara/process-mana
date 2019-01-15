@@ -10,7 +10,7 @@
           <el-input v-model="customerForm.address" :maxlength="60" class="customer-form-input"/>
         </el-form-item>
         <el-form-item label="公司属性" prop="category">
-          <el-radio-group v-model="customerForm.category">
+          <el-radio-group v-model="customerForm.category" @change="categoryHandle">
             <el-radio :label="0">客户</el-radio>
             <el-radio :label="1">供应商</el-radio>
           </el-radio-group>
@@ -43,7 +43,7 @@
             />
           </el-select>
         </el-form-item>
-        <div v-if="!customerID">
+        <div v-if="!customerID&&contactFlag">
           <el-form-item label="联系人名称" prop="customer_name">
             <el-input
               v-model="customerForm.customer_name"
@@ -118,6 +118,7 @@ export default {
         loading: true,
         loadingText: "拼命加载中"
       },
+      contactFlag: true,
       customerForm: {
         name: "",
         address: "",
@@ -224,6 +225,13 @@ export default {
     this.getCustomerDetial();
   },
   methods: {
+    categoryHandle(val) {
+      if (val === 1) {
+        this.contactFlag = false;
+      } else {
+        this.contactFlag = true;
+      }
+    },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -236,7 +244,7 @@ export default {
             category: this.customerForm.category,
             internal_name: this.customerForm.internal_name
           };
-          if (this.customerID) {
+          if (this.customerID || !this.contactFlag) {
             args.status = this[formName].selectedStatus;
           } else {
             args.customer_name = this.customerForm.customer_name;
