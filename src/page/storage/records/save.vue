@@ -270,14 +270,6 @@ export default {
           let args = this.recordsForm;
           saveRecords(this, args)
             .then(res => {
-              if (res.error_code && res.error_code === "110") {
-                this.$message({
-                  message: "库存不足",
-                  type: "warning"
-                });
-                this.setting.loading = false;
-                return;
-              }
               this.$message({
                 message: "提交成功",
                 type: "success"
