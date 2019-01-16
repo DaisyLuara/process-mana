@@ -594,6 +594,13 @@ export default {
       }
       leaveFactory(this, args)
         .then(res => {
+          if (res.error_code && res.error_code === "110") {
+            this.$message({
+              message: "库存不足",
+              type: "warning"
+            });
+            return;
+          }
           this.dialogFormVisible = false;
           this.getContractList();
         })
