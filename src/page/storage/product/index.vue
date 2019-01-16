@@ -9,13 +9,37 @@
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="name">
-              <el-input
-                v-model="searchForm.name"
+            <el-form-item label prop="sku">
+              <el-select
+                v-model="searchForm.sku"
+                :loading="searchLoading"
+                filterable
                 clearable
-                placeholder="请输入收款人"
-                class="item-input"
-              />
+                placeholder="请选择SKU"
+              >
+                <el-option
+                  v-for="item in skuList"
+                  :key="item.id"
+                  :label="item.sku"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label prop="supplier">
+              <el-select
+                v-model="searchForm.supplier"
+                :loading="searchLoading"
+                filterable
+                clearable
+                placeholder="请输入供应商"
+              >
+                <el-option
+                  v-for="item in supplierList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
             </el-form-item>
             <el-form-item label>
               <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
@@ -23,55 +47,25 @@
             </el-form-item>
           </el-form>
         </div>
-        <!-- 合同列表 -->
+        <!-- 产品列表 -->
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button
-              v-if="bd || bdManager || legalAffairs || legalAffairsManager"
-              size="small"
-              type="success"
-              @click="addPayee"
-            >新增收款人</el-button>
+            <el-button v-if="purchasing" type="success" size="small" @click="addProduct">新增产品</el-button>
           </div>
         </div>
         <el-table :data="tableData" style="width: 100%">
-          <el-table-column type="expand">
-            <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="收款人:">
-                  <span>{{ scope.row.name }}</span>
-                </el-form-item>
-                <el-form-item label="收款人开户行:">
-                  <span>{{ scope.row.account_bank }}</span>
-                </el-form-item>
-                <el-form-item label="收款人账号:">
-                  <span>{{ scope.row.account_number }}</span>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="收款人" min-width="100"/>
+          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
+          <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="account_number"
-            label="收款人账号"
-            min-width="280"
+            prop="supplier_name"
+            label="供应商"
+            min-width="100"
           />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="account_bank"
-            label="收款人开户行"
-            min-width="180"
-          />
-          <el-table-column label="操作" min-width="200">
+          <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
-              <el-button
-                v-if="bd || bdManager || legalAffairs || legalAffairsManager"
-                size="mini"
-                type="primary"
-                @click="editPayee(scope.row)"
-              >编辑</el-button>
+              <el-button size="mini" type="primary" @click="editProduct(scope.row)">{{ purchasing ? '编辑' : '详情'}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -98,14 +92,15 @@ import {
   Pagination,
   Form,
   FormItem,
-  MessageBox
+  MessageBox,
+  Select,
+  Option
 } from "element-ui";
 import {
-  getPayeeList,
-  handleDateTransform,
-  receivePayment,
-  deletePayment,
-  Cookies
+  getProductList,
+  Cookies,
+  getSearchSupplier,
+  getSearchSku
 } from "service";
 
 export default {
@@ -116,14 +111,19 @@ export default {
     "el-input": Input,
     "el-pagination": Pagination,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-select": Select,
+    "el-option": Option
   },
   data() {
     return {
+      searchLoading: false,
+      skuList: [],
+      supplierList: [],
       searchForm: {
-        name: ""
+        id: "",
+        supplier: ""
       },
-      roles: {},
       setting: {
         loading: false,
         loadingText: "拼命加载中"
@@ -133,51 +133,81 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: []
+      tableData: [],
+      roles: []
     };
   },
   computed: {
-    // BD
-    bd: function() {
+    // 采购
+    purchasing: function() {
       return this.roles.find(r => {
-        return r.name === "user";
-      });
-    },
-    // bd主管
-    bdManager: function() {
-      return this.roles.find(r => {
-        return r.name === "bd-manager";
-      });
-    },
-    // 法务
-    legalAffairs: function() {
-      return this.roles.find(r => {
-        return r.name === "legal-affairs";
-      });
-    },
-    // 法务主管
-    legalAffairsManager: function() {
-      return this.roles.find(r => {
-        return r.name === "legal-affairs-manager";
+        return r.name === "purchasing";
       });
     }
   },
   created() {
-    this.getPayeeList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
+    this.getProductList();
+    this.getSearchSupplier();
+    this.getSearchSku();
   },
   methods: {
-    getPayeeList() {
+    getSearchSku() {
+      this.searchLoading = true;
+      getSearchSku(this)
+        .then(res => {
+          this.skuList = res;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    getSearchSupplier() {
+      this.searchLoading = true;
+      getSearchSupplier(this)
+        .then(res => {
+          this.supplierList = res.data;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            message: err.response.data.message,
+            type: "success"
+          });
+        });
+    },
+    addProduct() {
+      this.$router.push({
+        path: "/storage/product/add"
+      });
+    },
+    editProduct(data) {
+      this.$router.push({
+        path: "/storage/product/edit/" + data.id
+      });
+    },
+    getProductList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        name: this.searchForm.name
+        id: this.searchForm.sku,
+        supplier: this.searchForm.supplier
       };
-      if (!this.searchForm.name) {
-        delete args.name;
+      if (this.searchForm.sku === "") {
+        delete args.id;
       }
-      getPayeeList(this, args)
+      if (this.searchForm.supplier === "") {
+        delete args.supplier;
+      }
+
+      getProductList(this, args)
         .then(res => {
           this.tableData = res.data;
           this.pagination.total = res.meta.pagination.total;
@@ -187,28 +217,18 @@ export default {
           this.setting.loading = false;
         });
     },
-    addPayee() {
-      this.$router.push({
-        path: "/payment/payee/add"
-      });
-    },
-    editPayee(data) {
-      this.$router.push({
-        path: "/payment/payee/edit/" + data.id
-      });
-    },
     changePage(currentPage) {
       this.pagination.currentPage = currentPage;
-      this.getPayeeList();
+      this.getProductList();
     },
     search() {
       this.pagination.currentPage = 1;
-      this.getPayeeList();
+      this.getProductList();
     },
     resetSearch(formName) {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
-      this.getPayeeList();
+      this.getProductList();
     }
   }
 };
@@ -220,12 +240,12 @@ export default {
   color: #5e6d82;
   .item-list-wrap {
     background: #fff;
-    padding: 30px;
-
+    padding: 10px 30px 30px;
     .el-form-item {
       margin-bottom: 0;
     }
     .item-content-wrap {
+      margin-top: 10px;
       .demo-table-expand {
         font-size: 0;
       }
@@ -250,9 +270,6 @@ export default {
         font-size: 16px;
         align-items: center;
         margin-bottom: 10px;
-        .search-content {
-          width: 800px;
-        }
         .el-form-item {
           margin-bottom: 10px;
         }

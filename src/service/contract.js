@@ -3,7 +3,7 @@ const CONTRACT_REMIND_API = '/api/remind_contract'
 const CONTRACT_HISTORY_API = '/api/contract_history'
 const CONTRACT_REJECT_API = '/api/contract/reject'
 const HOST = process.env.SERVER_URL
-
+// 合同列表
 const getContractList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -16,7 +16,7 @@ const getContractList = (context, params) => {
       })
   })
 }
-
+// 收款合同列表
 const getRemindContractList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -29,7 +29,7 @@ const getRemindContractList = (context, params) => {
       })
   })
 }
-
+// 新增合同
 const saveContract = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -42,7 +42,7 @@ const saveContract = (context, params) => {
       })
   })
 }
-
+// 合同详情
 const contractDetail = (context, contractId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -55,7 +55,7 @@ const contractDetail = (context, contractId, params) => {
       })
   })
 }
-
+// 合同修改
 const modifyContract = (context, contractId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -68,7 +68,7 @@ const modifyContract = (context, contractId, params) => {
       })
   })
 }
-
+// 合同删除
 const deleteContract = (context, contractId) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -107,7 +107,7 @@ const specialAuditingContract = (context, contractId) => {
       })
   })
 }
-
+// 合同历史记录
 const contractHistory = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -120,7 +120,7 @@ const contractHistory = (context, params) => {
       })
   })
 }
-
+// 驳回
 const rejectContract = (context, contractId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http

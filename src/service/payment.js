@@ -4,7 +4,7 @@ const PAYMENT_HISTORY_API = '/api/payment_history'
 const PAYMENT_REJECT_API = '/api/payment/reject'
 
 const HOST = process.env.SERVER_URL
-
+// 付款列表
 const getPaymentList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -17,7 +17,7 @@ const getPaymentList = (context, params) => {
       })
   })
 }
-
+// 保存付款
 const savePayment = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -30,7 +30,7 @@ const savePayment = (context, params) => {
       })
   })
 }
-
+// 付款详情
 const paymentDetail = (context, paymentId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -43,7 +43,7 @@ const paymentDetail = (context, paymentId, params) => {
       })
   })
 }
-
+// 修改付款
 const modifyPayment = (context, paymentId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -56,7 +56,7 @@ const modifyPayment = (context, paymentId, params) => {
       })
   })
 }
-
+// 删除付款
 const deletePayment = (context, paymentId) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -95,7 +95,7 @@ const receivePayment = (context, paymentId) => {
       })
   })
 }
-
+// 收款人列表
 const getPayeeList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -108,7 +108,7 @@ const getPayeeList = (context, params) => {
       })
   })
 }
-
+// 保存收款人
 const savePayee = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -121,7 +121,7 @@ const savePayee = (context, params) => {
       })
   })
 }
-
+// 收款人详情
 const payeeDetail = (context, payeeId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -134,7 +134,7 @@ const payeeDetail = (context, payeeId, params) => {
       })
   })
 }
-
+// 修改收款人
 const modifyPayee = (context, payeeId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -147,7 +147,7 @@ const modifyPayee = (context, payeeId, params) => {
       })
   })
 }
-
+// 收款人历史记录
 const paymentHistory = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -160,7 +160,7 @@ const paymentHistory = (context, params) => {
       })
   })
 }
-
+// 驳回
 const paymentReject = (context, paymentId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
