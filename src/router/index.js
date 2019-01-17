@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import auth from 'service/auth'
+import app from '../main'
 import Router from 'vue-router'
 import { Message } from 'element-ui'
 import logout from 'page/logout'
@@ -59,15 +60,18 @@ router.beforeEach((to, from, next) => {
     })
     if (pathWhiteList.length < 1) {
       // next({ path: '/login' })
+      localStorage.removeItem('permissions')
       window.location.href = LOGIN_URL
     } else {
       next()
     }
     return
   }
-  if(!localStorage.getItem('permissions')){
+  if (!localStorage.getItem('permissions')) {
     auth.init()
     return
+  } else if (localStorage.getItem('permissions').data.length > 0) {
+    auth.clearLoginData(app)
   }
   // // // 登录黑名单（登录状态下，不可再访问的路由）
   let unlessLogout = ['/login']
