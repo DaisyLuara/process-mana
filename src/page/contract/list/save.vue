@@ -384,7 +384,6 @@ export default {
     },
     deleteHardware(index) {
       this.productTableData.splice(index, 1);
-      this.colorList.splice(index, 1);
     },
     productAdd() {
       let td = {
