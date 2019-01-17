@@ -70,7 +70,7 @@ router.beforeEach((to, from, next) => {
   if (!localStorage.getItem('permissions')) {
     auth.init()
     return
-  } else if (localStorage.getItem('permissions').data.length > 0) {
+  } else if (localStorage.getItem('permissions').data) {
     auth.clearLoginData(app)
   }
   // // // 登录黑名单（登录状态下，不可再访问的路由）
