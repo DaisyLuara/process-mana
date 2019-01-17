@@ -335,7 +335,7 @@ export default {
         this.rules.position[0].required = false;
         this.rules.password[0].required = false;
         company
-          .getCustomerDetial(this, this.customerID)
+          .getCustomerDetail(this, this.customerID)
           .then(result => {
             this.statusFlag = true;
             this.customerForm.name = result.name;
