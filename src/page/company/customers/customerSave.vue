@@ -69,8 +69,18 @@
               class="customer-form-input"
             />
           </el-form-item>
+          <el-form-item label="角色" prop="role_id">
+            <el-radio-group v-model="customerForm.role_id">
+              <el-radio
+                      v-for="role in allRoles"
+                      :data="role"
+                      :key="role.id"
+                      :label="role.id"
+                      class="role-radio"
+              >{{ role.display_name }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
         </div>
-
         <el-form-item>
           <el-button
             :loading="loading"
@@ -87,7 +97,7 @@
 
 <script>
 import company from "service/company";
-import { historyBack } from "service";
+import { historyBack, getSearchRole } from "service";
 import {
   Select,
   Option,
@@ -95,8 +105,8 @@ import {
   Input,
   Form,
   FormItem,
+  RadioGroup,
   Radio,
-  RadioGroup
 } from "element-ui";
 
 export default {
@@ -109,7 +119,9 @@ export default {
     "el-radio": Radio,
     "el-radio-group": RadioGroup,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-radio-group": RadioGroup,
+    "el-radio": Radio
   },
   data() {
     return {
@@ -118,8 +130,10 @@ export default {
         loading: true,
         loadingText: "拼命加载中"
       },
+      allRoles: [],
       contactFlag: true,
       customerForm: {
+        role_id: null,
         name: "",
         address: "",
         category: 0,
@@ -153,6 +167,9 @@ export default {
         name: [
           { message: "请输入公司名称", trigger: "submit", required: true }
         ],
+        role_id: [
+          { message: "角色不能为空", trigger: "submit", required: true }
+          ],
         category: [
           { message: "请选择公司属性", trigger: "submit", required: true }
         ],
@@ -221,10 +238,38 @@ export default {
   },
   created: function() {
     this.setting.loadingText = "拼命加载中";
+    this.init();
     this.customerID = this.$route.params.uid;
-    this.getCustomerDetial();
+    if (this.customerID) {
+      this.getCustomerDetail();
+    } else {
+      this.statusFlag = false;
+      this.setting.loading = false;
+    }
   },
   methods: {
+    async init() {
+      try {
+        await this.getSearchRole();
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    getSearchRole() {
+      let args = {
+        guard_name: "shop"
+      };
+      getSearchRole(this, args)
+        .then(res => {
+          this.allRoles = res.data;
+        })
+        .catch(err => {
+          this.$message({
+            type: "warning",
+            message: err.response.data.message
+          });
+        });
+    },
     categoryHandle(val) {
       if (val === 1) {
         this.contactFlag = false;
@@ -238,6 +283,7 @@ export default {
           this.setting.loading = true;
           let args = {
             name: this.customerForm.name,
+            role_id: this.customerForm.role_id,
             address: this.customerForm.address,
             description: this.customerForm.description,
             logo: this.customerForm.logo,
@@ -281,7 +327,7 @@ export default {
         }
       });
     },
-    getCustomerDetial() {
+    getCustomerDetail() {
       this.setting.loading = true;
       if (this.customerID) {
         this.rules.customer_name[0].required = false;
@@ -310,7 +356,6 @@ export default {
         this.setting.loading = false;
       }
     },
-    resetForm(formName) {},
     historyBack() {
       historyBack();
     }

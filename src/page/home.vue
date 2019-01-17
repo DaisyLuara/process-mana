@@ -218,16 +218,15 @@ export default {
       }
     },
     linkRedirect(type) {
-      let permissions = this.$cookie.get("permissions");
+      localStorage.removeItem("permissions");
+      // let permissions = this.$cookie.get('permissions')
       let userInfo = this.$cookie.get("user_info");
       let jwt_ttl = this.$cookie.get("jwt_ttl");
       let token = this.$cookie.get("jwt_token");
       let jwt_begin_time = this.$cookie.get("jwt_begin_time");
       window.location.href =
         process.env.SERVER_URL +
-        "/api/system_skip?permissions=" +
-        permissions +
-        "&user_info=" +
+        "/api/system_skip?user_info=" +
         userInfo +
         "&type=" +
         type +

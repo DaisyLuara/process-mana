@@ -34,7 +34,7 @@ export default {
   getConstactList(context, uid, args) {
     return new Promise(function(resolve, reject) {
       context.$http
-        .get(HOST + CUSTOMER_API + '/' + uid + '/customers', args)
+        .get(HOST + CUSTOMER_API + '/' + uid + '/customers', { args: args })
         .then(response => {
           resolve(response.data)
         })
@@ -69,11 +69,12 @@ export default {
       })
     }
   },
-  // 联系人详情
-  getContactDetial(context, pid, uid) {
+  getContactDetail(context, pid, uid, params) {
     return new Promise(function(resolve, reject) {
       context.$http
-        .get(HOST + CUSTOMER_API + '/' + pid + '/customers/' + uid)
+        .get(HOST + CUSTOMER_API + '/' + pid + '/customers/' + uid, {
+          params: params
+        })
         .then(response => {
           resolve(response.data)
         })
@@ -82,11 +83,12 @@ export default {
         })
     })
   },
-  // 客户详情
-  getCustomerDetial(context, pid) {
+  getCustomerDetail(context, pid, params) {
     return new Promise(function(resolve, reject) {
       context.$http
-        .get(HOST + CUSTOMER_API + '/' + pid + '?include=customers')
+        .get(HOST + CUSTOMER_API + '/' + pid + '?include=customers', {
+          params: params
+        })
         .then(response => {
           resolve(response.data)
         })

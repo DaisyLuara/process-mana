@@ -1,13 +1,13 @@
 import { Message, MessageBox } from 'element-ui'
 import { Cookies } from 'service'
+import app from '../main'
+import axios from 'axios'
 const HOST = process.env.SERVER_URL
 const DOMAIN = process.env.DOMAIN
 const LOGIN_URL = process.env.LOGIN_URL
+const USERINFO_API = '/api/user?include=roles'
 const LOGOUT_API = '/api/authorizations/current'
-const IMAGE_CAPTCHA = '/api/captchas'
 const USER_API = '/api/user'
-const SMS_CAPTCHA = '/api/verificationCodes'
-const TOWER_OUTH_TOKEN = '/api/oauth/token?include=permissions,roles'
 export default {
   checkFacility() {
     if (
@@ -57,6 +57,7 @@ export default {
     context.$cookie.delete('user_info', { domain: DOMAIN })
     context.$cookie.delete('jwt_ttl', { domain: DOMAIN })
     context.$cookie.delete('jwt_begin_time', { domain: DOMAIN })
+    localStorage.removeItem('permissions')
     context.$cookie.delete('permissions', { domain: DOMAIN })
     let setIntervalValue =
       context.$store.state.notificationCount.setIntervalValue
@@ -73,7 +74,8 @@ export default {
   },
 
   getUserInfo() {
-    let permissions = Cookies.get('permissions')
+    // let permissions = Cookies.get('permissions')
+    let permissions = localStorage.getItem('permissions')
     if (permissions) {
       return JSON.parse(permissions)
     }
@@ -91,7 +93,28 @@ export default {
     }
     return this.checkPermission(route.meta.permission)
   },
-
+  refreshUserInfo(context) {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(HOST + USERINFO_API)
+        .then(response => {
+          let result = response.data
+          localStorage.setItem(
+            'permissions',
+            JSON.stringify(result.permissions)
+          )
+          location.assign(window.location.href)
+          //context.$store.commit('setCurUserInfo', result.data)
+          resolve(result.data)
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+  async init() {
+    await this.refreshUserInfo(app)
+  },
   checkPermission(name) {
     return hasPermission(name, this.getPermission())
   },
@@ -136,19 +159,6 @@ export default {
           reject(error)
         })
     })
-  },
-
-  refreshTowerOuthToken(context) {
-    return new Promise((resolve, reject) => {
-      context.$http
-        .post(HOST + TOWER_OUTH_TOKEN)
-        .then(result => {
-          resolve(result.data)
-        })
-        .catch(error => {
-          reject(error)
-        })
-    })
   }
 }
 
@@ -156,9 +166,20 @@ function hasPermission(name, perms) {
   if (!perms) {
     return false
   }
-  for (let i in perms.data) {
-    if (name == perms.data[i]['name']) {
+  if (name == perms.name) {
+    return true
+  }
+  if (perms.children && perms.children.length == 0) {
+    return false
+  }
+  for (let i in perms) {
+    if (name == perms[i]['name']) {
       return true
+    } else if (
+      name.indexOf(perms[i]['name']) == 0 &&
+      perms[i].children.length > 0
+    ) {
+      return hasPermission(name, perms[i]['children'])
     }
   }
   return false

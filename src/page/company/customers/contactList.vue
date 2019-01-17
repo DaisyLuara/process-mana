@@ -122,7 +122,7 @@ export default {
     },
     linkToAddItem() {
       this.$router.push({
-        path: '/company/customers/contacts/add',
+        path: '/company/customers/c_add',
         query: {
           pid: this.$route.query.id,
           name: this.companyName
@@ -131,7 +131,7 @@ export default {
     },
     linkToEdit(id) {
       this.$router.push({
-        path: '/company/customers/contacts/edit',
+        path: '/company/customers/c_edit',
         query: {
           uid: id,
           pid: this.$route.query.id,

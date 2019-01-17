@@ -6,6 +6,8 @@ const GOODS_SERVICE_QUERY_API = '/api/goods_service/query'
 const RECEIVE_DATE_QUERY_API = '/api/receive_date/query'
 const PROJECT_API = '/api/projects/query'
 const INVOICE_KIND_API = '/api/invoice_kind/query'
+const PERMISSION_API = '/api/permission/query'
+const ROLE_API = '/api/role/query'
 const STORAGE_API = '/api/erp_warehouse/query'
 const SUPPLIER_API = '/api/erp_supplier/query'
 const SKU_API = '/api/erp_sku/query'
@@ -107,11 +109,37 @@ const getReceiveDate = (context, params) => {
   })
 }
 
+// 权限树状结构
+const getPermission = (context, args) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + PERMISSION_API, { params: args })
+      .then(res => {
+        resolve(response.data)
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
 // 节目
 const getSearchProjectList = (context, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + PROJECT_API, { params: args })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+// 角色
+const getSearchRole = (context, args) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + ROLE_API, { params: args })
       .then(response => {
         resolve(response.data)
       })
@@ -197,6 +225,8 @@ export {
   getPaymentPayee,
   getReceiveDate,
   getInvoiceKindList,
+  getPermission,
+  getSearchRole,
   getSearchProjectList,
   getSearchStorageList,
   getSearchSupplier,
