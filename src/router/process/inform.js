@@ -6,7 +6,7 @@ let router = {
   name: '通知',
   meta: {
     title: '通知',
-    permission: 'inform'
+    permission: ''
   },
   component: () =>
     import(/* webpackChunkName: "page/inform/informView" */ 'page/inform/informView'),
@@ -15,7 +15,7 @@ let router = {
       path: 'list',
       meta: {
         title: '消息管理',
-        permission: 'inform.list'
+        permission: ''
       },
       component: () =>
         import(/* webpackChunkName: "page/inform/list/routerView" */ 'page/inform/list/routerView'),
@@ -25,7 +25,7 @@ let router = {
           name: '消息列表',
           meta: {
             title: '消息列表',
-            permission: 'inform.list.read'
+            permission: ''
           },
           component: () =>
             import(/* webpackChunkName: "page/inform/list/index" */ 'page/inform/list/index')
@@ -36,7 +36,7 @@ let router = {
       path: 'operate',
       meta: {
         title: '操作记录',
-        permission: 'inform.operate'
+        permission: ''
       },
       component: () =>
         import(/* webpackChunkName: "page/inform/operate/routerView" */ 'page/inform/operate/routerView'),
@@ -46,7 +46,7 @@ let router = {
           name: '操作列表',
           meta: {
             title: '操作列表',
-            permission: 'inform.operate.read'
+            permission: ''
           },
           component: () =>
             import(/* webpackChunkName: "page/inform/operate/index" */ 'page/inform/operate/index')
