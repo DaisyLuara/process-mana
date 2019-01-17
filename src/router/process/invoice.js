@@ -51,7 +51,7 @@ let router = {
             import(/* webpackChunkName: "page/invoice/list/detail" */ 'page/invoice/list/detail'),
           name: '票据详情',
           meta: {
-            permission: 'invoice.list.detail'
+            permission: ''
           }
         }
       ]
@@ -156,7 +156,7 @@ let router = {
             import(/* webpackChunkName: "page/invoice/history/detail" */ 'page/invoice/history/detail'),
           name: '票据审批详情',
           meta: {
-            permission: 'invoice.history.detail'
+            permission: ''
           }
         }
       ]
