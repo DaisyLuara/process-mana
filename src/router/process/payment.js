@@ -51,7 +51,7 @@ let router = {
             import(/* webpackChunkName: "page/payment/list/detail" */ 'page/payment/list/detail'),
           name: '付款详情',
           meta: {
-            permission: 'payment.list.detail'
+            permission: ''
           }
         }
       ]
@@ -118,7 +118,7 @@ let router = {
             import(/* webpackChunkName: "page/payment/history/detail" */ 'page/payment/history/detail'),
           name: '付款审批详情',
           meta: {
-            permission: 'payment.history.detail'
+            permission: ''
           }
         }
       ]

@@ -51,7 +51,7 @@ let router = {
             import(/* webpackChunkName: "page/contract/list/detail" */ 'page/contract/list/detail'),
           name: '合同详情',
           meta: {
-            permission: 'contract.list.detail'
+            permission: ''
           }
         }
       ]
@@ -100,7 +100,7 @@ let router = {
             import(/* webpackChunkName: "page/contract/history/detail" */ 'page/contract/history/detail'),
           name: '详情',
           meta: {
-            permission: 'contract.history.detail'
+            permission: ''
           }
         }
       ]
