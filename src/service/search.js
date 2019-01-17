@@ -115,7 +115,7 @@ const getPermission = (context, args) => {
     context.$http
       .get(HOST + PERMISSION_API, { params: args })
       .then(res => {
-        resolve(response.data)
+        resolve(res.data)
       })
       .catch(err => {
         reject(err)
