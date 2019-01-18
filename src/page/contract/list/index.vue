@@ -238,7 +238,7 @@
       </div>
     </div>
     <el-dialog
-      title="硬件出厂"
+      :title="hardwareTitle"
       :show-close="false"
       :visible.sync="dialogFormVisible"
       label-width="80px"
@@ -416,6 +416,7 @@ export default {
   },
   data() {
     return {
+      hardwareTitle: "",
       locationList: [],
       productStatusList: [
         {
@@ -694,9 +695,11 @@ export default {
       this.contract_id = data.id;
       this.productStatus = data.product_status;
       if (this.productStatus === "未出厂") {
+        this.hardwareTitle = "硬件出厂";
         this.productTableData = [];
         this.loading = false;
       } else {
+        this.hardwareTitle = "硬件详情";
         this.leaveFactoryDetail();
       }
     },
