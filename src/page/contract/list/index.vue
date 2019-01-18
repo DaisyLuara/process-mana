@@ -214,10 +214,15 @@
               >特批</el-button>
               <el-button size="mini" type="info" @click="detailContract(scope.row)">详情</el-button>
               <el-button
-                v-if="scope.row.status === '已审批' && scope.row.product_status !== '无硬件' "
+                v-if="scope.row.status === '已审批' && scope.row.product_status === '未出厂' "
                 size="mini"
                 @click="hardwareHandle(scope.row)"
-              >硬件</el-button>
+              >硬件出厂</el-button>
+              <el-button
+                v-if="scope.row.status === '已审批' && scope.row.product_status === '已出厂' "
+                size="mini"
+                @click="hardwareHandle(scope.row)"
+              >硬件详情</el-button>
             </template>
           </el-table-column>
         </el-table>

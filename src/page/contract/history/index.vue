@@ -176,14 +176,14 @@
               <span>{{ scope.row.created_at }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="150">
+          <el-table-column label="操作" min-width="200">
             <template slot-scope="scope">
               <el-button size="mini" type="info" @click="detailContract(scope.row)">详情</el-button>
               <el-button
                 v-if="scope.row.status === '已审批' && scope.row.product_status === '已出厂' "
                 size="mini"
                 @click="productHandle(scope.row)"
-              >硬件</el-button>
+              >硬件详情</el-button>
             </template>
           </el-table-column>
         </el-table>
