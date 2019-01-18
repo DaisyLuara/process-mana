@@ -199,7 +199,7 @@
       </div>
     </div>
     <el-dialog
-      title="硬件出厂"
+      title="硬件详情"
       :show-close="false"
       :visible.sync="dialogFormVisible"
       label-width="80px"
