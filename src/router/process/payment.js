@@ -40,9 +40,9 @@ let router = {
           path: 'edit/:uid',
           component: () =>
             import(/* webpackChunkName: "page/payment/list/save" */ 'page/payment/list/save'),
-          name: '修改付款',
+          name: '付款再次提交',
           meta: {
-            permission: 'payment.list.update'
+            permission: 'payment.list.create'
           }
         },
         {

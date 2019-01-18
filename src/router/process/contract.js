@@ -40,9 +40,9 @@ let router = {
           path: 'edit/:uid',
           component: () =>
             import(/* webpackChunkName: "page/contract/list/save" */ 'page/contract/list/save'),
-          name: '修改合同',
+          name: '合同再次提交',
           meta: {
-            permission: 'contract.list.update'
+            permission: 'contract.list.create'
           }
         },
         {
