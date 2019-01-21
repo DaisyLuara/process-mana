@@ -179,6 +179,15 @@ let router = {
             title: '产品管理修改',
             permission: 'storage.product.update'
           }
+        },
+        {
+          path: 'detail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/storage/product/save" */ 'page/storage/product/save'),
+          meta: {
+            title: '产品管理详情',
+            permission: ''
+          }
         }
       ]
     }
