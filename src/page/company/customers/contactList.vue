@@ -31,8 +31,11 @@
           />
           <el-table-column
             prop="role"
-            label="角色"
-          />
+            label="角色">
+            <template slot-scope="scope">
+              {{ scope.row.roles ? scope.row.roles.data[0].display_name : '' }}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="phone"
             label="联系人手机号"
@@ -112,7 +115,7 @@ export default {
       this.setting.loadingText = '拼命加载中'
       this.setting.loading = true
       let args = {
-        include: 'company.user'
+        include: 'company.user,roles'
       }
       return company
         .getConstactList(this, uid, args)
