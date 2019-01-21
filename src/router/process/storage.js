@@ -183,7 +183,7 @@ let router = {
         {
           path: 'detail/:uid',
           component: () =>
-            import(/* webpackChunkName: "page/storage/product/save" */ 'page/storage/product/save'),
+            import(/* webpackChunkName: "page/storage/product/detail" */ 'page/storage/product/detail'),
           meta: {
             title: '产品管理详情',
             permission: ''
