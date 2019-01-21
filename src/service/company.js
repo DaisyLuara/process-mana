@@ -31,10 +31,10 @@ export default {
     }
   },
   // 联系人列表
-  getConstactList(context, uid, args) {
+  getContactList(context, uid, args) {
     return new Promise(function(resolve, reject) {
       context.$http
-        .get(HOST + CUSTOMER_API + '/' + uid + '/customers', { args: args })
+        .get(HOST + CUSTOMER_API + '/' + uid + '/customers', { params: args })
         .then(response => {
           resolve(response.data)
         })

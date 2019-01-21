@@ -107,10 +107,10 @@ export default {
   },
   created() {
     this.companyName = this.$route.query.name
-    this.getConstactList()
+    this.getContactList()
   },
   methods: {
-    getConstactList() {
+    getContactList() {
       let uid = this.$route.query.id
       this.setting.loadingText = '拼命加载中'
       this.setting.loading = true
@@ -118,7 +118,7 @@ export default {
         include: 'company.user,roles'
       }
       return company
-        .getConstactList(this, uid, args)
+        .getContactList(this, uid, args)
         .then(response => {
           this.contactList = response.data
           this.total = response.meta.pagination.total
