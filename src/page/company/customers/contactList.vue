@@ -30,6 +30,14 @@
             label="联系人职务"
           />
           <el-table-column
+            prop="role"
+            label="角色"
+          />
+          <el-table-column
+            prop="phone"
+            label="联系人手机号"
+          />
+          <el-table-column
             prop="phone"
             label="联系人手机号"
           />
