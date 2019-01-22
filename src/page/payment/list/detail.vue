@@ -64,7 +64,7 @@
         <el-form-item label="备注:" prop="remark">{{ paymentForm.remark }}</el-form-item>
         <el-form-item>
           <el-button
-            v-if="!hide"
+            v-if="!hide && !finance"
             type="danger"
             size="small"
             @click="dialogFormVisible = true, rejectStatus=true, agreeStatus = false"
@@ -244,6 +244,12 @@ export default {
     legalAffairsManager: function() {
       return this.roles.find(r => {
         return r.name === "legal-affairs-manager";
+      });
+    },
+    // 财务
+    finance: function() {
+      return this.roles.find(r => {
+        return r.name === "finance";
       });
     }
   },
