@@ -104,6 +104,53 @@ let router = {
           }
         }
       ]
+    },
+    {
+      path: 'cost',
+      component: () =>
+        import(/* webpackChunkName: "page/contract/cost/routerView" */ 'page/contract/cost/routerView'),
+      meta: {
+        title: '成本管理'
+        // permission: 'contract.cost'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/cost/index" */ 'page/contract/cost/index'),
+          name: '成本列表',
+          meta: {
+            // permission: 'contract.cost.read'
+          }
+        },
+        {
+          path: 'add',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/cost/save" */ 'page/contract/cost/save'),
+          name: '成本新增',
+          meta: {
+            permission: ''
+          }
+        },
+        {
+          path: 'edit/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/cost/edit" */ 'page/contract/cost/edit'),
+          name: '成本修改',
+          meta: {
+            permission: ''
+          }
+        },
+        {
+          path: 'detail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/cost/detail" */ 'page/contract/cost/detail'),
+          name: '成本详情',
+          meta: {
+            permission: ''
+          }
+        }
+      ]
     }
   ]
 }

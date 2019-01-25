@@ -46,7 +46,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同类型" prop="type">
-              <el-radio-group v-model="contractForm.type">
+              <el-radio-group v-model="contractForm.type" @change="contractTypeHandle">
                 <el-radio :label="0">收款合同</el-radio>
                 <el-radio :label="1">付款合同</el-radio>
                 <el-radio :label="2">其他合同</el-radio>
@@ -122,10 +122,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="硬件合同" prop="product_status">
+            <el-form-item v-if="contractForm.type === 0" label="合同种类" prop="product_status">
               <el-radio-group v-model="contractForm.product_status" @change="productHandle">
-                <el-radio :label="0">否</el-radio>
-                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">铺屏</el-radio>
+                <el-radio :label="1">销售</el-radio>
+                <el-radio :label="2">租赁</el-radio>
+                <el-radio :label="3">服务</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -293,7 +295,7 @@ export default {
         loadingText: "拼命加载中"
       },
       roles: [],
-      productFlag: false,
+      productFlag: true,
       contractID: "",
       contractForm: {
         company_id: "",
@@ -382,6 +384,15 @@ export default {
           });
         });
     },
+    contractTypeHandle(val) {
+      console.log(val);
+      if (this.val === 0) {
+        this.product_status = 0;
+        this.productFlag = true;
+      } else {
+        this.productFlag = false;
+      }
+    },
     deleteHardware(index) {
       this.productTableData.splice(index, 1);
     },
@@ -394,7 +405,7 @@ export default {
       this.productTableData.unshift(td);
     },
     productHandle(val) {
-      if (val === 1) {
+      if (val === 0 || val === 1 || val === 2) {
         this.productFlag = true;
       } else {
         this.productFlag = false;
@@ -432,7 +443,7 @@ export default {
               product_stock: r.product_stock
             };
           });
-          this.productTableData = product_content
+          this.productTableData = product_content;
           this.contractForm.amount = res.amount;
           mediaData.map(r => {
             mediaIds.push(r.id);
