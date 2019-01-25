@@ -1,56 +1,22 @@
 <template>
-  <div 
-    v-loading="setting.loading" 
-    :element-loading-text="setting.loadingText"
-    class="root">
-    <div 
-      class="customer-list-wrap">
-      <div 
-        class="customer-content-wrap">
-        <div 
-          class="search-wrap">
-          <el-form 
-            ref="searchForm"
-            :model="filters" 
-            :inline="true" 
-          >
-            <el-form-item 
-              label="" 
-              prop="name">
-              <el-input 
-                v-model="filters.name" 
-                placeholder="请输入公司名称" 
-                style="width: 200px;"/>
+  <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="root">
+    <div class="customer-list-wrap">
+      <div class="customer-content-wrap">
+        <div class="search-wrap">
+          <el-form ref="searchForm" :model="filters" :inline="true">
+            <el-form-item label prop="name">
+              <el-input v-model="filters.name" placeholder="请输入公司名称" style="width: 200px;"/>
             </el-form-item>
-            <el-button  
-              type="primary" 
-              size="small"
-              @click="search('searchForm')">搜索</el-button>
-            <el-button 
-              type="default" 
-              size="small"
-              @click="resetSearch">重置</el-button>
+            <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
+            <el-button type="default" size="small" @click="resetSearch">重置</el-button>
           </el-form>
         </div>
-        <div 
-          class="actions-wrap">
-          <span 
-            class="label">
-            公司数量: {{ pagination.total }}
-          </span>
-          <el-button 
-            size="small" 
-            type="success" 
-            @click="linkToAddClient">新增公司</el-button>
+        <div class="actions-wrap">
+          <span class="label">公司数量: {{ pagination.total }}</span>
+          <el-button size="small" type="success" @click="linkToAddClient">新增公司</el-button>
         </div>
-        <el-table 
-          :data="customerList" 
-          style="width: 100%">
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="name"
-            label="公司全称"
-            min-width="100"/>
+        <el-table :data="customerList" style="width: 100%">
+          <el-table-column :show-overflow-tooltip="true" prop="name" label="公司全称" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="address"
@@ -63,23 +29,11 @@
             label="内部名称"
             min-width="80"
           />
-          <el-table-column
-            prop="status"
-            label="状态"
-          >
-            <template 
-              slot-scope="scope">
-              {{ statusHanlde(scope.row) }}
-            </template>
+          <el-table-column prop="status" label="状态">
+            <template slot-scope="scope">{{ statusHanlde(scope.row) }}</template>
           </el-table-column>
-          <el-table-column
-            prop="user_name"
-            label="销售"
-          >
-            <template 
-              slot-scope="scope">
-              {{ scope.row.user.name }}
-            </template>
+          <el-table-column prop="user_name" label="销售">
+            <template slot-scope="scope">{{ scope.row.user.name }}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -93,23 +47,15 @@
             label="修改时间"
             min-width="100"
           />
-          <el-table-column 
-            label="操作" 
-            width="280">
-            <template 
-              slot-scope="scope">
-              <el-button 
-                size="small" 
-                type="primary"
-                @click="linkToEdit(scope.row.id)">修改</el-button>
-              <el-button 
-                size="small" 
-                @click="showContactDetail(scope.row.id,scope.row.name)">联系人详情</el-button>
+          <el-table-column label="操作" min-width="280">
+            <template slot-scope="scope">
+              <el-button size="small" type="primary" @click="linkToEdit(scope.row.id)">修改</el-button>
+              <el-button size="small" @click="showContactDetail(scope.row.id,scope.row.name)">联系人详情</el-button>
+              <!-- <el-button type="danger" size="small" @click="perms(scope.row.id)">权限</el-button> -->
             </template>
           </el-table-column>
         </el-table>
-        <div 
-          class="pagination-wrap">
+        <div class="pagination-wrap">
           <el-pagination
             :total="pagination.total"
             :page-size="pagination.pageSize"
@@ -124,7 +70,7 @@
 </template>
 
 <script>
-import company from 'service/company'
+import company from "service/company";
 
 import {
   Button,
@@ -135,26 +81,26 @@ import {
   Form,
   FormItem,
   MessageBox
-} from 'element-ui'
+} from "element-ui";
 
 export default {
   components: {
-    'el-table': Table,
-    'el-table-column': TableColumn,
-    'el-button': Button,
-    'el-input': Input,
-    'el-pagination': Pagination,
-    'el-form': Form,
-    'el-form-item': FormItem
+    "el-table": Table,
+    "el-table-column": TableColumn,
+    "el-button": Button,
+    "el-input": Input,
+    "el-pagination": Pagination,
+    "el-form": Form,
+    "el-form-item": FormItem
   },
   data() {
     return {
       filters: {
-        name: ''
+        name: ""
       },
       setting: {
         loading: false,
-        loadingText: '拼命加载中'
+        loadingText: "拼命加载中"
       },
       pagination: {
         total: 100,
@@ -162,83 +108,88 @@ export default {
         currentPage: 1
       },
       customerList: []
-    }
+    };
   },
   created() {
-    this.getCustomerList()
+    this.getCustomerList();
   },
   methods: {
     search(formName) {
-      this.pagination.currentPage = 1
-      this.getCustomerList()
+      this.pagination.currentPage = 1;
+      this.getCustomerList();
     },
     statusHanlde(item) {
       switch (item.status) {
         case 1:
-          return '待合作'
-          break
+          return "待合作";
+          break;
         case 2:
-          return '合作中'
-          break
+          return "合作中";
+          break;
         case 3:
-          return '已结束'
-          break
+          return "已结束";
+          break;
       }
     },
     getCustomerList() {
       if (this.setting.loading == true) {
-        return false
+        return false;
       }
-      let pageNum = this.pagination.currentPage
+      let pageNum = this.pagination.currentPage;
       let args = {
-        include: 'user',
+        include: "user",
         page: pageNum,
         name: this.filters.name
-      }
-      this.setting.loadingText = '拼命加载中'
-      this.setting.loading = true
+      };
+      this.setting.loadingText = "拼命加载中";
+      this.setting.loading = true;
       return company
         .getCustomerList(this, args)
         .then(response => {
-          this.setting.loading = false
-          this.customerList = response.data
-          this.pagination.total = response.meta.pagination.total
-          this.handleRole()
+          this.setting.loading = false;
+          this.customerList = response.data;
+          this.pagination.total = response.meta.pagination.total;
+          this.handleRole();
         })
         .catch(error => {
-          this.setting.loading = false
-        })
+          this.setting.loading = false;
+        });
     },
     changePage(currentPage) {
-      this.pagination.currentPage = currentPage
-      this.getCustomerList()
+      this.pagination.currentPage = currentPage;
+      this.getCustomerList();
     },
     linkToAddClient() {
       this.$router.push({
-        path: '/company/customers/add'
-      })
+        path: "/company/customers/add"
+      });
     },
     linkToEdit(id) {
       this.$router.push({
-        path: '/company/customers/edit/' + id
-      })
+        path: "/company/customers/edit/" + id
+      });
     },
     resetSearch() {
-      this.filters.name = ''
-      this.pagination.currentPage = 1
-      this.getCustomerList()
+      this.filters.name = "";
+      this.pagination.currentPage = 1;
+      this.getCustomerList();
     },
     showContactDetail(id, name) {
       this.$router.push({
-        path: '/company/customers/contacts',
+        path: "/company/customers/contacts",
         query: {
           id: id,
           name: name
         }
-      })
+      });
+    },
+    perms(id) {
+      this.$router.push({
+        path: "/company/perms/edit/" + id
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
