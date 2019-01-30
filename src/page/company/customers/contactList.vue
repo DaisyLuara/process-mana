@@ -22,14 +22,17 @@
           :data="contactList" 
           style="width: 100%">
           <el-table-column
+            :show-overflow-tooltip="true"
             prop="name"
             label="联系人名称"
           />
           <el-table-column
+            :show-overflow-tooltip="true"
             prop="position"
             label="联系人职务"
           />
           <el-table-column
+            :show-overflow-tooltip="true"
             prop="role"
             label="角色">
             <template slot-scope="scope">
@@ -41,18 +44,16 @@
             label="联系人手机号"
           />
           <el-table-column
-            prop="phone"
-            label="联系人手机号"
-          />
-          <el-table-column
             prop="telephone"
             label="联系人座机号"
           />
           <el-table-column
+            :show-overflow-tooltip="true"
             prop="created_at"
             label="创建时间"
           />
           <el-table-column
+            :show-overflow-tooltip="true"
             prop="updated_at"
             label="修改时间"
           />
