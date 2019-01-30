@@ -44,7 +44,7 @@
           </el-table-column>
           <el-table-column
             prop="detail"
-            label="费用明细"
+            label="成本类型"
             min-width="100"
             align="center"
             header-align="center"
@@ -71,7 +71,7 @@
           </el-table-column>
           <el-table-column
             prop="price"
-            label="费用金额"
+            label="成本金额"
             min-width="100"
             align="center"
             header-align="center"

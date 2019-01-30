@@ -123,7 +123,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="contractForm.type === 0" label="合同种类" prop="product_status">
-              <el-radio-group v-model="contractForm.product_status" @change="productHandle">
+              <el-radio-group v-model="contractForm.product_status" @change="contractKindHandle">
                 <el-radio :label="0">铺屏</el-radio>
                 <el-radio :label="1">销售</el-radio>
                 <el-radio :label="2">租赁</el-radio>
@@ -211,6 +211,36 @@
             </el-table-column>
           </el-table>
         </el-row>
+        <el-row v-if="serviceFlag">
+          <el-col :span="12">
+            <el-form-item label="服务对象" prop="service_obj">
+              <el-radio-group v-model="contractForm.service_obj">
+                <el-radio :label="0">商户</el-radio>
+                <el-radio :label="1">商场</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="预充值" prop="pay">
+              <el-radio-group v-model="contractForm.pay">
+                <el-radio :label="0">否</el-radio>
+                <el-radio :label="1">是</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="定制节目数" prop="num">
+              <el-input-number v-model="contractForm.num" :min="0"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="通用节目数" prop="num1">
+              <el-input-number v-model="contractForm.num1" :min="0" :max="max"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="备注" prop="remark">
           <el-input
             v-model="contractForm.remark"
@@ -256,7 +286,8 @@ import {
   Col,
   Upload,
   Table,
-  TableColumn
+  TableColumn,
+  InputNumber
 } from "element-ui";
 
 const SERVER_URL = process.env.SERVER_URL;
@@ -275,10 +306,12 @@ export default {
     ElRadio: Radio,
     ElUpload: Upload,
     ElTable: Table,
-    ElTableColumn: TableColumn
+    ElTableColumn: TableColumn,
+    ElInputNumber: InputNumber
   },
   data() {
     return {
+      serviceFlag: false,
       productTableData: [],
       SERVER_URL: SERVER_URL,
       formHeader: {
@@ -295,6 +328,7 @@ export default {
         loadingText: "拼命加载中"
       },
       roles: [],
+      max: 2,
       productFlag: true,
       contractID: "",
       contractForm: {
@@ -308,10 +342,18 @@ export default {
         receive_date: [],
         ids: "",
         remark: "",
-        amount: null
+        service_obj: null,
+        amount: null,
+        pay: null,
+        num: 1,
+        num1: 1
       },
       rules: {
         ids: [{ required: true, message: "请上传文件", trigger: "submit" }],
+        service_obj: [
+          { required: true, message: "请选择服务对象", trigger: "submit" }
+        ],
+        pay: [{ required: true, message: "请选择预充值", trigger: "submit" }],
         type: [
           { required: true, message: "请选择合同类型", trigger: "submit" }
         ],
@@ -352,6 +394,9 @@ export default {
     this.contractID = this.$route.params.uid;
     this.getCompany();
     this.getAttributeList();
+    if (this.legalAffairsManager) {
+      this.max = Infinity;
+    }
     if (this.contractID) {
       this.contractDetail();
     } else {
@@ -385,9 +430,8 @@ export default {
         });
     },
     contractTypeHandle(val) {
-      console.log(val);
-      if (this.val === 0) {
-        this.product_status = 0;
+      if (val === 0) {
+        this.contractForm.product_status = 0;
         this.productFlag = true;
       } else {
         this.productFlag = false;
@@ -404,11 +448,13 @@ export default {
       };
       this.productTableData.unshift(td);
     },
-    productHandle(val) {
+    contractKindHandle(val) {
       if (val === 0 || val === 1 || val === 2) {
+        this.serviceFlag = false;
         this.productFlag = true;
       } else {
         this.productFlag = false;
+        this.serviceFlag = true;
       }
     },
     contractDetail() {

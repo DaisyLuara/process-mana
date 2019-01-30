@@ -156,6 +156,9 @@
             class="text-input"
           />
         </el-form-item>
+        <el-form-item v-if="legalAffairsManager" label="通用节目数" prop="num">
+          <el-input-number v-model="contractForm.num" :min="0"/>
+        </el-form-item>
         <el-form-item
           v-if="legalAffairsManager"
           :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
@@ -279,7 +282,8 @@ export default {
         amount: "",
         bd_ma_message: "",
         legal_message: "",
-        legal_ma_message: ""
+        legal_ma_message: "",
+        num: ""
       },
       hide: null
     };
