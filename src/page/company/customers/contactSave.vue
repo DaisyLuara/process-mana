@@ -36,7 +36,7 @@
             class="customer-form-input"
           />
         </el-form-item>
-        <el-form-item label="角色" prop="role_id">
+        <el-form-item label="角色" prop="contact.role_id">
           <el-radio-group v-model="contactForm.contact.role_id">
             <el-radio
               v-for="role in allRoles"
