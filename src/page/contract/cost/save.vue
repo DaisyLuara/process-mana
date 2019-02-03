@@ -3,8 +3,18 @@
     <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
       <div class="pane-title">新增成本</div>
       <el-form ref="costForm" :model="costForm" label-position="left" label-width="130px">
-        <el-form-item label="合同编号" prop="contract_number">
-          <el-select v-model="costForm.contract_number" :loading="searchLoading">
+        <el-form-item
+          :rules="{
+            required: true, message: '请选择合同编号', trigger: 'submit'
+          }"
+          label="合同编号"
+          prop="contract_id"
+        >
+          <el-select
+            v-model="costForm.contract_id"
+            :loading="searchLoading"
+            @change="contractNumberHandle"
+          >
             <el-option
               v-for="item in contractList"
               :key="item.id"
@@ -13,13 +23,14 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="合同名称" prop="contract_name">
-          <el-input v-model="costForm.contract_name" :disabled="true" class="item-input"/>
+        <el-form-item label="合同名称" prop="name">
+          <el-input v-model="costForm.name" :disabled="true" class="item-input"/>
         </el-form-item>
-        <el-form-item label="所属BD" prop="bd">
-          <el-input v-model="costForm.bd" :disabled="true" class="item-input"/>
+        <el-form-item label="所属BD" prop="applicant_name">
+          <el-input v-model="costForm.applicant_name" :disabled="true" class="item-input"/>
         </el-form-item>
         <el-button
+          v-if="operation || auditor || legalAffairsManager"
           size="small"
           type="success"
           style="margin-bottom: 20px;"
@@ -32,18 +43,18 @@
           style="width: 100%;margin-bottom: 20px;"
         >
           <el-table-column
-            prop="create"
+            prop="creator"
             label="创建人"
             min-width="80"
             align="center"
             header-align="center"
           >
             <template slot-scope="scope">
-              <span>{{ scope.row.create }}</span>
+              <span>{{ scope.row.creator }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="detail"
+            prop="kind_id"
             label="成本类型"
             min-width="100"
             align="center"
@@ -52,7 +63,7 @@
             <template slot-scope="scope">
               <el-select
                 v-if="scope.$index !== tableData.length-1"
-                v-model="scope.row.detail"
+                v-model="scope.row.kind_id"
                 :loading="searchLoading"
                 placeholder="请选择"
                 filterable
@@ -66,18 +77,18 @@
                   :value="item.id"
                 />
               </el-select>
-              <span v-if="scope.$index === tableData.length-1">¥：{{ scope.row.detail }}</span>
+              <span v-if="scope.$index === tableData.length-1">¥：{{ scope.row.kind_id }}</span>
             </template>
           </el-table-column>
           <el-table-column
-            prop="price"
+            prop="money"
             label="成本金额"
             min-width="100"
             align="center"
             header-align="center"
           >
             <template slot-scope="scope">
-              <el-input v-model="scope.row.price" placeholder="请输入费用金额"/>
+              <el-input v-model="scope.row.money" placeholder="请输入费用金额"/>
             </template>
           </el-table-column>
           <el-table-column
@@ -91,9 +102,6 @@
               <el-input v-model="scope.row.remark" placeholder="请输入备注"/>
             </template>
           </el-table-column>
-          <!-- <el-table-column prop label="金额（含税）" min-width="100" align="center" header-align="center">
-            <template slot-scope="scope">{{ scope.row.num * scope.row.price }}</template>
-          </el-table-column>-->
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
               <el-button
@@ -106,7 +114,11 @@
           </el-table-column>
         </el-table>
         <el-form-item>
-          <el-button type="primary" @click="submit('costForm')">保存</el-button>
+          <el-button
+            v-if="operation || auditor || legalAffairsManager"
+            type="primary"
+            @click="submit('costForm')"
+          >保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>
@@ -115,7 +127,13 @@
 </template>
 
 <script>
-import { historyBack, saveCost, Cookies, getContract } from "service";
+import {
+  historyBack,
+  saveCost,
+  Cookies,
+  getContract,
+  getSearchCostKind
+} from "service";
 import {
   Form,
   FormItem,
@@ -146,18 +164,19 @@ export default {
       },
       roles: {},
       costForm: {
-        contract_number: "",
-        bd: "",
-        contract_name: ""
+        contract_id: "",
+        applicant_name: "",
+        name: ""
       },
       tableData: [
         {
-          create: "已确认总成本：",
-          detail: 0,
-          price: 0,
+          creator: "已确认总成本：",
+          kind_id: 0,
+          money: 0,
           remark: ""
         }
       ],
+      total_cost: 0,
       contractList: [],
       costDetailList: [],
       searchLoading: false,
@@ -169,14 +188,15 @@ export default {
       handler: function(val, oldVal) {
         let sum = 0;
         val.map(r => {
-          if (String(r.create).indexOf("已确认总成本：：") === -1) {
-            sum += parseFloat(r.price);
+          if (String(r.creator).indexOf("已确认总成本：：") === -1) {
+            sum += parseFloat(r.money);
           }
         });
         let length = this.tableData.length;
         let data = this.tableData[length - 1];
-        data.create = "已确认总成本:";
-        data.detail = sum;
+        data.creator = "已确认总成本:";
+        data.kind_id = sum;
+        this.total_cost = sum;
       },
       deep: true
     }
@@ -206,8 +226,34 @@ export default {
     this.name = user_info.name;
     this.roles = user_info.roles.data;
     this.getContract();
+    this.getSearchCostKind();
   },
   methods: {
+    getSearchCostKind() {
+      this.searchLoading = true;
+      getSearchCostKind(this)
+        .then(res => {
+          this.searchLoading = false;
+          this.costDetailList = res;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+          this.$message({
+            type: "warning",
+            message: err.response.data.message
+          });
+        });
+    },
+    contractNumberHandle(val) {
+      this.contractList.map(r => {
+        if (r.id === val) {
+          this.costForm.contract_id = r.id;
+          this.costForm.name = r.name;
+          this.costForm.applicant_name = r.applicant_name;
+          return;
+        }
+      });
+    },
     arraySpanMethod({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === this.tableData.length - 1) {
         if (columnIndex === 1) {
@@ -220,9 +266,9 @@ export default {
     },
     costAddDetail() {
       let td = {
-        create: this.name,
-        detail: "",
-        price: 0,
+        creator: this.name,
+        kind_id: "",
+        money: 0,
         remark: ""
       };
       this.tableData.unshift(td);
@@ -249,7 +295,16 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setting.loading = true;
-          let args = {};
+          let cost_content = [];
+          let args = {
+            contract_id: this.costForm.contract_id,
+            applicant_name: this.costForm.applicant_name,
+            total_cost: this.total_cost
+          };
+          // 删除数据最后一个
+          this.tableData.pop();
+          cost_content = this.tableData;
+          args.cost_content = cost_content;
           saveCost(this, args)
             .then(res => {
               this.$message({

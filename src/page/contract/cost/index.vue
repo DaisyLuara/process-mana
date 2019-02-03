@@ -9,9 +9,6 @@
         <!-- 搜索 -->
         <div class="search-wrap">
           <el-form ref="searchForm" :model="searchForm" :inline="true">
-            <el-form-item label prop="company_name">
-              <el-input v-model="searchForm.company_name" placeholder="请输入所属公司" clearable/>
-            </el-form-item>
             <el-form-item label prop="contract_name">
               <el-input v-model="searchForm.contract_name" placeholder="请输入合同名称" clearable/>
             </el-form-item>
@@ -64,7 +61,7 @@
                   <span>{{ scope.row.contract_name }}</span>
                 </el-form-item>
                 <el-form-item label="所属BD:">
-                  <span>{{ scope.row.bd }}</span>
+                  <span>{{ scope.row.applicant_name }}</span>
                 </el-form-item>
                 <el-form-item label="状态:">
                   <span>{{ scope.row.status }}</span>
@@ -90,7 +87,12 @@
             label="合同名称"
             min-width="80"
           />
-          <el-table-column :show-overflow-tooltip="true" prop="bd" label="所属BD" min-width="80"/>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="applicant_name"
+            label="所属BD"
+            min-width="80"
+          />
           <el-table-column :show-overflow-tooltip="true" prop="status" label="状态" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -106,7 +108,8 @@
           />
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
-              <el-button size="mini" type="warning" @click="detailCost(scope.row)">详情</el-button>
+              <el-button size="mini" @click="detailCost(scope.row)">详情</el-button>
+              <el-button size="mini" type="warning" @click="editCost(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -163,7 +166,6 @@ export default {
   data() {
     return {
       searchForm: {
-        company_name: "",
         status: "",
         dataValue: [],
         contract_name: "",
@@ -243,16 +245,7 @@ export default {
         pageSize: 10,
         currentPage: 1
       },
-      tableData: [
-        {
-          contract_number: "33243",
-          contract_name: "dfd",
-          bd: "bd",
-          status: "运营已确认",
-          created_at: "2018-09-09 10:20:20",
-          updated_at: "2018-09-09 10:20:20"
-        }
-      ]
+      tableData: []
     };
   },
   computed: {
@@ -278,24 +271,19 @@ export default {
   created() {
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
-    // this.getCostList();
+    this.getCostList();
   },
   methods: {
     getCostList() {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        include: "receiveDate.contract",
-        company_name: this.searchForm.company_name,
         status: this.searchForm.status,
         contract_name: this.searchForm.contract_name,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
         end_date: handleDateTransform(this.searchForm.dataValue[1])
       };
-      if (!this.searchForm.company_name === "") {
-        delete args.company_name;
-      }
       if (this.searchForm.status === "") {
         delete args.status;
       }
@@ -326,7 +314,7 @@ export default {
         path: "/contract/cost/add"
       });
     },
-    editReceipt(data) {
+    editCost(data) {
       this.$router.push({
         path: "/contract/cost/edit/" + data.id
       });

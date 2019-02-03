@@ -122,12 +122,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="contractForm.type === 0" label="合同种类" prop="product_status">
-              <el-radio-group v-model="contractForm.product_status" @change="contractKindHandle">
-                <el-radio :label="0">铺屏</el-radio>
-                <el-radio :label="1">销售</el-radio>
-                <el-radio :label="2">租赁</el-radio>
-                <el-radio :label="3">服务</el-radio>
+            <el-form-item v-if="contractForm.type === 0" label="合同种类" prop="kind">
+              <el-radio-group v-model="contractForm.kind" @change="contractKindHandle">
+                <el-radio :label="1">铺屏</el-radio>
+                <el-radio :label="2">销售</el-radio>
+                <el-radio :label="3">租赁</el-radio>
+                <el-radio :label="4">服务</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -213,16 +213,16 @@
         </el-row>
         <el-row v-if="serviceFlag">
           <el-col :span="12">
-            <el-form-item label="服务对象" prop="service_obj">
-              <el-radio-group v-model="contractForm.service_obj">
-                <el-radio :label="0">商户</el-radio>
-                <el-radio :label="1">商场</el-radio>
+            <el-form-item label="服务对象" prop="serve_target">
+              <el-radio-group v-model="contractForm.serve_target">
+                <el-radio :label="1">商户</el-radio>
+                <el-radio :label="2">商场</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预充值" prop="pay">
-              <el-radio-group v-model="contractForm.pay">
+            <el-form-item label="预充值" prop="recharge">
+              <el-radio-group v-model="contractForm.recharge">
                 <el-radio :label="0">否</el-radio>
                 <el-radio :label="1">是</el-radio>
               </el-radio-group>
@@ -231,13 +231,13 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="定制节目数" prop="num">
-              <el-input-number v-model="contractForm.num" :min="0"/>
+            <el-form-item label="定制节目数" prop="special_num">
+              <el-input-number v-model="contractForm.special_num" :min="0"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="通用节目数" prop="num1">
-              <el-input-number v-model="contractForm.num1" :min="0" :max="max"/>
+            <el-form-item label="通用节目数" prop="common_num">
+              <el-input-number v-model="contractForm.common_num" :min="0" :max="max"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -336,24 +336,32 @@ export default {
         applicant_name: "",
         contract_number: "",
         name: "",
-        product_status: 0,
+        kind: 1,
         type: 0,
         applicant: 0,
         receive_date: [],
         ids: "",
         remark: "",
-        service_obj: null,
+        serve_target: null,
         amount: null,
-        pay: null,
-        num: 1,
-        num1: 1
+        recharge: null,
+        special_num: 1,
+        common_num: 1
       },
       rules: {
         ids: [{ required: true, message: "请上传文件", trigger: "submit" }],
-        service_obj: [
+        special_num: [
+          { required: true, message: "请填写定制节目数量", trigger: "submit" }
+        ],
+        common_num: [
+          { required: true, message: "请填写通用节目数量", trigger: "submit" }
+        ],
+        serve_target: [
           { required: true, message: "请选择服务对象", trigger: "submit" }
         ],
-        pay: [{ required: true, message: "请选择预充值", trigger: "submit" }],
+        recharge: [
+          { required: true, message: "请选择预充值", trigger: "submit" }
+        ],
         type: [
           { required: true, message: "请选择合同类型", trigger: "submit" }
         ],
@@ -431,7 +439,7 @@ export default {
     },
     contractTypeHandle(val) {
       if (val === 0) {
-        this.contractForm.product_status = 0;
+        this.contractForm.kind = 1;
         this.productFlag = true;
       } else {
         this.productFlag = false;
@@ -449,7 +457,7 @@ export default {
       this.productTableData.unshift(td);
     },
     contractKindHandle(val) {
-      if (val === 0 || val === 1 || val === 2) {
+      if (val === 1 || val === 2 || val === 3) {
         this.serviceFlag = false;
         this.productFlag = true;
       } else {
@@ -476,10 +484,8 @@ export default {
             : [];
           this.contractForm.remark = res.remark;
           this.contractForm.contract_number = res.contract_number;
-          this.contractForm.product_status =
-            res.product_status === "无硬件" ? 0 : 1;
-          this.productFlag =
-            this.contractForm.product_status === 1 ? true : false;
+          this.contractForm.kind = res.kind === "无硬件" ? 0 : 1;
+          this.productFlag = this.contractForm.kind === 1 ? true : false;
           let product_content = res.product_content;
 
           product_content.map(r => {
@@ -582,8 +588,10 @@ export default {
             applicant: this.contractForm.applicant,
             type: this.contractForm.type,
             ids: this.contractForm.ids,
-            product_status: this.contractForm.product_status,
-            remark: this.contractForm.remark
+            kind: this.contractForm.kind,
+            remark: this.contractForm.remark,
+            special_num: this.contractForm.special_num,
+            common_num: this.contractForm.common_num
           };
           if (this.contractForm.type === 0) {
             if (!this.contractForm.receive_date.length) {
@@ -623,7 +631,7 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number;
           }
-          if (this.contractForm.product_status === 1) {
+          if (this.contractForm.kind !== 4) {
             let length = this.productTableData.length;
             if (length <= 0) {
               this.$message({
@@ -634,6 +642,8 @@ export default {
               return;
             }
           } else {
+            args.recharge = this.contractForm.recharge;
+            args.serve_target = this.contractForm.serve_target;
             this.productTableData = [];
           }
           args.product_content = this.productTableData;

@@ -1,4 +1,5 @@
-const COST_API = '/api/cost'
+const COST_API = '/api/contract_cost'
+const COST_CONFIRM_API = '/api/cost_content'
 const HOST = process.env.SERVER_URL
 // 成本列表
 const getCostList = (context, params) => {
@@ -40,11 +41,14 @@ const costDetail = (context, costId, params) => {
   })
 }
 
-// 编辑成本
-const editCost = (context, costId, params) => {
+// 编辑明细成本
+const editCostDetail = (context, costParentId, costChildId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .patch(HOST + COST_API + '/' + costId, params)
+      .patch(
+        HOST + COST_API + '/' + costParentId + '/cost_content/' + costChildId,
+        params
+      )
       .then(response => {
         resolve(response.data)
       })
@@ -54,4 +58,57 @@ const editCost = (context, costId, params) => {
   })
 }
 
-export { getCostList, saveCost, costDetail, editCost }
+// 删除明细成本
+const deleteCost = (context, costParentId, costChildId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .delete(
+        HOST + COST_API + '/' + costParentId + '/cost_content/' + costChildId,
+        { params: params }
+      )
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+// 明细成本确认
+const confirmCost = (context, costChildId) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + COST_CONFIRM_API + '/' + costChildId + '/confirm')
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+// 明细成本新增
+const addCostDetail = (context, costParentId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(HOST + COST_API + '/' + costParentId + '/cost_content', params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+export {
+  getCostList,
+  saveCost,
+  costDetail,
+  editCostDetail,
+  deleteCost,
+  confirmCost,
+  addCostDetail
+}

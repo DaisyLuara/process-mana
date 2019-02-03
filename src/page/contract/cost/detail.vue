@@ -11,7 +11,7 @@
             <el-form-item label="合同名称:" prop="contract_name">{{ costForm.contract_name }}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属BD:" prop="bd">{{ costForm.bd }}</el-form-item>
+        <el-form-item label="所属BD:" prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
         <el-table :data="tableData" border style="width: 100%;margin-bottom: 20px;">
           <el-table-column
             prop="creator"
@@ -22,14 +22,14 @@
           />
           <el-table-column
             prop="cost_details"
-            label="费用明细"
+            label="成本类型"
             min-width="80"
             align="center"
             header-align="center"
           />
           <el-table-column
-            prop="amount"
-            label="费用金额"
+            prop="money"
+            label="成本金额"
             min-width="100"
             align="center"
             header-align="center"
@@ -47,7 +47,9 @@
             min-width="100"
             align="center"
             header-align="center"
-          />
+          >
+            <template slot-scope="scope">{{ scope.row.status===0 ? '未确认' : '已确认' }}</template>
+          </el-table-column>
           <el-table-column
             prop="updated_at"
             label="操作时间"
@@ -99,27 +101,15 @@ export default {
       tableData: [],
       costID: null,
       costForm: {
-        company_name: "",
-        company_id: "",
-        applicant_name: "",
-        applicant: "",
-        name: "",
+        contract_name: "",
         contract_number: "",
-        type: "",
-        type_name: "",
-        date: [],
-        product_status: "",
-        receive_date: "",
-        remark: "",
-        bd_ma_message: "",
-        legal_message: "",
-        legal_ma_message: ""
+        applicant_name: ""
       }
     };
   },
   created() {
     this.costID = this.$route.params.uid;
-    // this.costDetail();
+    this.costDetail();
   },
   methods: {
     historyBack() {
@@ -127,32 +117,15 @@ export default {
     },
     costDetail() {
       this.setting.loading = true;
-
-      costDetail(this, this.costID)
+      let args = {
+        include: "costContent"
+      };
+      costDetail(this, this.costID, args)
         .then(res => {
-          let mediaIds = [];
-          let mediaData = res.media.data;
-          this.costForm.applicant_name = res.applicant_name;
-          this.costForm.type =
-            res.type === "收款合同" ? 0 : res.type === "付款合同" ? 1 : 2;
-          this.costForm.type_name = res.type;
-          this.costForm.applicant = res.applicant;
-          this.costForm.name = res.name;
+          this.tableData = res.costContent.data;
+          this.costForm.contract_name = res.contract_name;
           this.costForm.contract_number = res.contract_number;
-          this.costForm.company_id = res.company_id;
-          this.costForm.company_name = res.company_name;
-          this.costForm.date = res.receive_date.split(",");
-          this.costForm.receive_date = res.receive_date;
-          this.costForm.remark = res.remark;
-          this.costForm.bd_ma_message = res.bd_ma_message;
-          this.costForm.legal_message = res.legal_message;
-          this.costForm.legal_ma_message = res.legal_ma_message;
-          this.costForm.product_status =
-            res.product_status === "无硬件" ? "否" : "是";
-          if (res.product_content) {
-            this.tableData = res.product_content;
-          }
-
+          this.costForm.applicant_name = res.applicant_name;
           this.setting.loading = false;
         })
         .catch(err => {
