@@ -186,8 +186,8 @@ export default {
   },
   data() {
     return {
-        btnLoading: false,
-        setting: {
+      btnLoading: false,
+      setting: {
         isOpenSelectAll: true,
         loading: false,
         loadingText: "拼命加载中"
@@ -355,7 +355,7 @@ export default {
     },
     addCostDetail(data) {
       let args = data;
-      this.btnLoading = true
+      this.btnLoading = true;
       args.total_cost = this.total_cost;
       addCostDetail(this, this.costID, args)
         .then(res => {
@@ -363,11 +363,11 @@ export default {
             type: "success",
             message: "保存成功"
           });
-            this.btnLoading = false
+          this.btnLoading = false;
           this.costDetail();
         })
         .catch(err => {
-            this.btnLoading = false
+          this.btnLoading = false;
           this.$message({
             type: "warning",
             message: err.response.data.message
