@@ -29,7 +29,7 @@
         <el-form-item label="所属BD" prop="applicant_name">
           <el-input v-model="costForm.applicant_name" :disabled="true" class="item-input"/>
         </el-form-item>
-          <!-- v-if="operation || auditor || legalAffairsManager" -->
+        <!-- v-if="operation || auditor || legalAffairsManager" -->
         <el-button
           size="small"
           type="success"
@@ -114,11 +114,8 @@
           </el-table-column>
         </el-table>
         <el-form-item>
-            <!-- v-if="operation || auditor || legalAffairsManager" -->
-          <el-button
-            type="primary"
-            @click="submit('costForm')"
-          >保存</el-button>
+          <!-- v-if="operation || auditor || legalAffairsManager" -->
+          <el-button type="primary" @click="submit('costForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>
@@ -180,6 +177,7 @@ export default {
       contractList: [],
       costDetailList: [],
       searchLoading: false,
+      userId: null,
       name: null
     };
   },
@@ -223,6 +221,7 @@ export default {
   },
   created() {
     let user_info = JSON.parse(Cookies.get("user_info"));
+    this.userId = user_info.id;
     this.name = user_info.name;
     this.roles = user_info.roles.data;
     this.getContract();
@@ -269,7 +268,8 @@ export default {
         creator: this.name,
         kind_id: "",
         money: 0,
-        remark: ""
+        remark: "",
+        creator_id: this.userId
       };
       this.tableData.unshift(td);
     },

@@ -99,8 +99,9 @@
                 circle
                 @click="editCostDetail(scope.row)"
               />
+              <!-- && legalAffairsManager -->
               <el-button
-                v-if="scope.row.status !== undefined && scope.row.status === 0 && legalAffairsManager"
+                v-if="scope.row.status !== undefined && scope.row.status === 0"
                 type="success"
                 icon="el-icon-check"
                 circle
@@ -206,7 +207,8 @@ export default {
         applicant_name: ""
       },
       total_cost: null,
-      name: "",
+      name: null,
+      user_Id: null,
       roles: {}
     };
   },
@@ -252,6 +254,7 @@ export default {
     this.costID = this.$route.params.uid;
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.name = user_info.name;
+    this.user_Id = user_info.id;
     this.roles = user_info.roles.data;
     this.costDetail();
     this.getSearchCostKind();
@@ -294,7 +297,8 @@ export default {
         kind_id: data.kind_id,
         money: data.money,
         remark: data.remark,
-        total_cost: this.total_cost
+        total_cost: this.total_cost,
+        creator_id: data.creator_id
       };
       editCostDetail(this, this.costID, id, args)
         .then(res => {
@@ -370,7 +374,8 @@ export default {
         creator: this.name,
         kind_id: "",
         money: 0,
-        remark: ""
+        remark: "",
+        creator_id: this.user_Id
       };
       this.tableData.unshift(td);
     },
@@ -415,6 +420,7 @@ export default {
             }
           ];
           res.costContent.data.map(r => {
+            r.creator_id = this.user_Id;
             this.tableData.unshift(r);
           });
           this.costForm.contract_name = res.contract_name;
