@@ -50,7 +50,7 @@
                 <el-form-item label="合同名称:">
                   <span>{{ scope.row.contract_name }}</span>
                 </el-form-item>
-                <el-form-item label="所属BD:">
+                <el-form-item label="所属人:">
                   <span>{{ scope.row.applicant_name }}</span>
                 </el-form-item>
                 <el-form-item label="成本总额:">
@@ -80,7 +80,7 @@
           <el-table-column
             :show-overflow-tooltip="true"
             prop="applicant_name"
-            label="所属BD"
+            label="所属人"
             min-width="80"
           />
           <el-table-column

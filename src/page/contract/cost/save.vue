@@ -27,7 +27,7 @@
         <el-form-item label="合同名称" prop="name">
           <el-input v-model="costForm.name" :disabled="true" class="item-input"/>
         </el-form-item>
-        <el-form-item label="所属BD" prop="applicant_name">
+        <el-form-item label="所属人" prop="applicant_name">
           <el-input v-model="costForm.applicant_name" :disabled="true" class="item-input"/>
         </el-form-item>
         <!-- v-if="operation || auditor || legalAffairsManager" -->
