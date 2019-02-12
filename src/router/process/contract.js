@@ -81,8 +81,8 @@ let router = {
       component: () =>
         import(/* webpackChunkName: "page/contract/cost/routerView" */ 'page/contract/cost/routerView'),
       meta: {
-        title: '成本管理'
-        // permission: 'contract.cost'
+        title: '成本管理',
+        permission: 'contract.cost'
       },
       children: [
         {
@@ -90,8 +90,8 @@ let router = {
           component: () =>
             import(/* webpackChunkName: "page/contract/cost/index" */ 'page/contract/cost/index'),
           meta: {
-            title: '成本列表'
-            // permission: 'contract.cost.read'
+            title: '成本列表',
+            permission: 'contract.cost.read'
           }
         },
         {
@@ -99,8 +99,8 @@ let router = {
           component: () =>
             import(/* webpackChunkName: "page/contract/cost/save" */ 'page/contract/cost/save'),
           meta: {
-            title: '成本新增'
-            // permission: 'contract.cost.create'
+            title: '成本新增',
+            permission: 'contract.cost.create'
           }
         },
         {
@@ -108,8 +108,8 @@ let router = {
           component: () =>
             import(/* webpackChunkName: "page/contract/cost/edit" */ 'page/contract/cost/edit'),
           meta: {
-            title: '成本修改'
-            // permission: 'contract.cost.update'
+            title: '成本修改',
+            permission: 'contract.cost.update'
           }
         },
         {
