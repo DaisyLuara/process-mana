@@ -65,7 +65,13 @@
           />
           <el-table-column label="操作" min-width="100">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="editProduct(scope.row)">{{ purchasing ? '编辑' : '详情'}}</el-button>
+              <el-button
+                v-if="purchasing"
+                size="mini"
+                type="primary"
+                @click="editProduct(scope.row)"
+              >编辑</el-button>
+              <el-button size="mini" type="warning" @click="detailProduct(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -191,6 +197,11 @@ export default {
     editProduct(data) {
       this.$router.push({
         path: "/storage/product/edit/" + data.id
+      });
+    },
+    detailProduct(data) {
+      this.$router.push({
+        path: "/storage/product/detail/" + data.id
       });
     },
     getProductList() {

@@ -214,10 +214,15 @@
               >特批</el-button>
               <el-button size="mini" type="info" @click="detailContract(scope.row)">详情</el-button>
               <el-button
-                v-if="scope.row.status === '已审批' && scope.row.product_status !== '无硬件' "
+                v-if="scope.row.status === '已审批' && scope.row.product_status === '未出厂' "
                 size="mini"
                 @click="hardwareHandle(scope.row)"
-              >硬件</el-button>
+              >硬件出厂</el-button>
+              <el-button
+                v-if="scope.row.status === '已审批' && scope.row.product_status === '已出厂' "
+                size="mini"
+                @click="hardwareHandle(scope.row)"
+              >硬件详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -233,7 +238,7 @@
       </div>
     </div>
     <el-dialog
-      title="硬件出厂"
+      :title="hardwareTitle"
       :show-close="false"
       :visible.sync="dialogFormVisible"
       label-width="80px"
@@ -411,6 +416,7 @@ export default {
   },
   data() {
     return {
+      hardwareTitle: "",
       locationList: [],
       productStatusList: [
         {
@@ -587,6 +593,13 @@ export default {
       };
       leaveFactory(this, args)
         .then(res => {
+          if (res.error_code && res.error_code === "110") {
+            this.$message({
+              message: "库存不足",
+              type: "warning"
+            });
+            return;
+          }
           this.dialogFormVisible = false;
           this.getContractList();
         })
@@ -682,9 +695,11 @@ export default {
       this.contract_id = data.id;
       this.productStatus = data.product_status;
       if (this.productStatus === "未出厂") {
+        this.hardwareTitle = "硬件出厂";
         this.productTableData = [];
         this.loading = false;
       } else {
+        this.hardwareTitle = "硬件详情";
         this.leaveFactoryDetail();
       }
     },

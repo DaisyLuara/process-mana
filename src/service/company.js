@@ -30,7 +30,7 @@ const saveCustomer = (context, args, uid) => {
   }
 }
 // 联系人列表
-const getConstactList = (context, uid, args) => {
+const getContactList = (context, uid, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + CUSTOMER_API + '/' + uid + '/customers', args)
@@ -69,7 +69,7 @@ const saveContact = (context, pid, args, uid) => {
   }
 }
 // 联系人详情
-const getContactDetial = (context, pid, uid) => {
+const getContactDetail = (context, pid, uid) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + CUSTOMER_API + '/' + pid + '/customers/' + uid)
@@ -109,9 +109,9 @@ const getCustomerList = (context, args) => {
 }
 export {
   saveCustomer,
-  getConstactList,
+  getContactList,
   saveContact,
-  getContactDetial,
+  getContactDetail,
   getCustomerDetial,
   getCustomerList
 }

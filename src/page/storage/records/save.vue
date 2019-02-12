@@ -155,7 +155,9 @@ export default {
         remark: ""
       },
       rules: {
-        product_id: [{ required: true, message: "请选择SKU", trigger: "submit" }],
+        product_id: [
+          { required: true, message: "请选择SKU", trigger: "submit" }
+        ],
         name: [
           { required: true, message: "请输入产品名称", trigger: "submit" }
         ],

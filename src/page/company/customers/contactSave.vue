@@ -36,6 +36,17 @@
             class="customer-form-input"
           />
         </el-form-item>
+        <el-form-item label="角色" prop="contact.role_id">
+          <el-radio-group v-model="contactForm.contact.role_id">
+            <el-radio
+              v-for="role in allRoles"
+              :data="role"
+              :key="role.id"
+              :label="role.id"
+              class="role-radio"
+            >{{ role.display_name }}</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item>
           <el-button
             :loading="loading"
@@ -51,8 +62,22 @@
 </template>
 
 <script>
-import { historyBack, getContactDetial, saveContact } from "service";
-import { Select, Option, Button, Input, Form, FormItem } from "element-ui";
+import {
+  historyBack,
+  getContactDetail,
+  saveContact,
+  getSearchRole
+} from "service";
+import {
+  Select,
+  Option,
+  Button,
+  Input,
+  Form,
+  FormItem,
+  RadioGroup,
+  Radio
+} from "element-ui";
 
 export default {
   name: "AddContact",
@@ -62,7 +87,9 @@ export default {
     "el-button": Button,
     "el-input": Input,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-radio-group": RadioGroup,
+    "el-radio": Radio
   },
   data() {
     return {
@@ -71,8 +98,10 @@ export default {
         loading: false,
         loadingText: "拼命加载中"
       },
+      allRoles: [],
       contactForm: {
         contact: {
+          role_id: null,
           name: "",
           phone: "",
           position: "",
@@ -94,7 +123,7 @@ export default {
                 callback();
               }
             },
-            trigger: "blur",
+            trigger: "submit",
             required: true
           }
         ],
@@ -111,14 +140,17 @@ export default {
                 callback();
               }
             },
-            trigger: "blur"
+            trigger: "submit"
           }
         ],
         "contact.name": [
-          { message: "请输入联系人名称", trigger: "blur", required: true }
+          { message: "请输入联系人名称", trigger: "submit", required: true }
+        ],
+        "contact.role_id": [
+          { message: "请选择角色", trigger: "submit", required: true }
         ],
         "contact.position": [
-          { message: "请输入联系人职务", trigger: "blur", required: true }
+          { message: "请输入联系人职务", trigger: "submit", required: true }
         ],
         "contact.password": [
           {
@@ -145,10 +177,28 @@ export default {
     this.contactID = this.$route.query.uid;
     this.pid = this.$route.query.pid;
     this.contactName = this.$route.query.name;
-    this.getContactDetial();
+    this.getSearchRole();
+    if (this.contactID) {
+      this.getContactDetail();
+    }
     this.setting.loadingText = "拼命加载中";
   },
   methods: {
+    getSearchRole() {
+      let args = {
+        guard_name: "shop"
+      };
+      getSearchRole(this, args)
+        .then(res => {
+          this.allRoles = res.data;
+        })
+        .catch(err => {
+          this.$message({
+            type: "warning",
+            message: err.response.data.message
+          });
+        });
+    },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
@@ -161,7 +211,8 @@ export default {
             phone: this.contactForm.contact.phone,
             position: this.contactForm.contact.position,
             password: this.contactForm.contact.password,
-            telephone: this.contactForm.contact.telephone
+            telephone: this.contactForm.contact.telephone,
+            role_id: this.contactForm.contact.role_id
           };
           if (this.contactForm.contact.password === "") {
             delete args.password;
@@ -192,11 +243,11 @@ export default {
         }
       });
     },
-    getContactDetial() {
+    getContactDetail() {
       let uid = this.$route.query.uid;
       if (uid) {
         this.setting.loading = true;
-        getContactDetial(this, this.pid, uid)
+        getContactDetail(this, this.pid, uid)
           .then(result => {
             this.contactForm.contact = result;
             this.setting.loading = false;
