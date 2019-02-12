@@ -116,7 +116,7 @@
         </el-table>
         <el-form-item>
           <!-- v-if="operation || auditor || legalAffairsManager" -->
-          <el-button type="primary" @click="submit('costForm')">保存</el-button>
+          <el-button type="primary" @click="submit('costForm')" >保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>
@@ -164,7 +164,8 @@ export default {
       costForm: {
         contract_id: "",
         applicant_name: "",
-        name: ""
+        name: "",
+        applicant_id: null
       },
       tableData: [
         {
@@ -247,6 +248,7 @@ export default {
     contractNumberHandle(val) {
       this.contractList.map(r => {
         if (r.id === val) {
+          this.costForm.applicant_id = r.applicant;
           this.costForm.contract_id = r.id;
           this.costForm.name = r.name;
           this.costForm.applicant_name = r.applicant_name;
@@ -303,6 +305,7 @@ export default {
           let args = {
             contract_id: this.costForm.contract_id,
             applicant_name: this.costForm.applicant_name,
+            applicant_id: this.costForm.applicant_id,
             total_cost: this.total_cost
           };
           // 删除数据最后一个
