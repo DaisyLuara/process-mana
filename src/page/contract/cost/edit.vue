@@ -420,7 +420,6 @@ export default {
             }
           ];
           res.costContent.data.map(r => {
-            r.creator_id = this.user_Id;
             this.tableData.unshift(r);
           });
           this.costForm.contract_name = res.contract_name;
