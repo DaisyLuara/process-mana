@@ -18,7 +18,7 @@
             <el-option
               v-for="item in contractList"
               :key="item.id"
-              :label="item.name"
+              :label="item.contract_number"
               :value="item.id"
             />
           </el-select>
