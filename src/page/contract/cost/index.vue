@@ -15,16 +15,6 @@
             <el-form-item label prop="contract_number">
               <el-input v-model="searchForm.contract_number" placeholder="请输入合同编号" clearable/>
             </el-form-item>
-            <el-form-item label prop="status">
-              <el-select v-model="searchForm.status" placeholder="请选择状态">
-                <el-option
-                  v-for="item in statusList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
-            </el-form-item>
             <el-form-item label prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
@@ -63,9 +53,6 @@
                 <el-form-item label="所属BD:">
                   <span>{{ scope.row.applicant_name }}</span>
                 </el-form-item>
-                <el-form-item label="状态:">
-                  <span>{{ scope.row.status }}</span>
-                </el-form-item>
                 <el-form-item label="创建时间:">
                   <span>{{ scope.row.created_at }}</span>
                 </el-form-item>
@@ -93,7 +80,6 @@
             label="所属BD"
             min-width="80"
           />
-          <el-table-column :show-overflow-tooltip="true" prop="status" label="状态" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="created_at"
@@ -166,7 +152,6 @@ export default {
   data() {
     return {
       searchForm: {
-        status: "",
         dataValue: [],
         contract_name: "",
         contract_number: ""
@@ -278,15 +263,11 @@ export default {
       this.setting.loading = true;
       let args = {
         page: this.pagination.currentPage,
-        status: this.searchForm.status,
         contract_name: this.searchForm.contract_name,
         contract_number: this.searchForm.contract_number,
         start_date: handleDateTransform(this.searchForm.dataValue[0]),
         end_date: handleDateTransform(this.searchForm.dataValue[1])
       };
-      if (this.searchForm.status === "") {
-        delete args.status;
-      }
       if (this.searchForm.contract_name === "") {
         delete args.contract_name;
       }

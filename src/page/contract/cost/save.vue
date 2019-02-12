@@ -29,8 +29,8 @@
         <el-form-item label="所属BD" prop="applicant_name">
           <el-input v-model="costForm.applicant_name" :disabled="true" class="item-input"/>
         </el-form-item>
+          <!-- v-if="operation || auditor || legalAffairsManager" -->
         <el-button
-          v-if="operation || auditor || legalAffairsManager"
           size="small"
           type="success"
           style="margin-bottom: 20px;"
@@ -114,8 +114,8 @@
           </el-table-column>
         </el-table>
         <el-form-item>
+            <!-- v-if="operation || auditor || legalAffairsManager" -->
           <el-button
-            v-if="operation || auditor || legalAffairsManager"
             type="primary"
             @click="submit('costForm')"
           >保存</el-button>

@@ -77,35 +77,6 @@ let router = {
       ]
     },
     {
-      path: 'history',
-      component: () =>
-        import(/* webpackChunkName: "page/contract/history/routerView" */ 'page/contract/history/routerView'),
-      meta: {
-        title: '我已审批的',
-        permission: 'contract.history'
-      },
-      children: [
-        {
-          path: '/',
-          component: () =>
-            import(/* webpackChunkName: "page/contract/history/index" */ 'page/contract/history/index'),
-          name: '我已审批的列表',
-          meta: {
-            permission: 'contract.history.read'
-          }
-        },
-        {
-          path: 'detail/:uid',
-          component: () =>
-            import(/* webpackChunkName: "page/contract/history/detail" */ 'page/contract/history/detail'),
-          name: '详情',
-          meta: {
-            permission: ''
-          }
-        }
-      ]
-    },
-    {
       path: 'cost',
       component: () =>
         import(/* webpackChunkName: "page/contract/cost/routerView" */ 'page/contract/cost/routerView'),
@@ -129,7 +100,7 @@ let router = {
             import(/* webpackChunkName: "page/contract/cost/save" */ 'page/contract/cost/save'),
           name: '成本新增',
           meta: {
-            permission: ''
+            // permission: 'contract.cost.create'
           }
         },
         {
@@ -138,7 +109,7 @@ let router = {
             import(/* webpackChunkName: "page/contract/cost/edit" */ 'page/contract/cost/edit'),
           name: '成本修改',
           meta: {
-            permission: ''
+            // permission: 'contract.cost.update'
           }
         },
         {
@@ -146,6 +117,35 @@ let router = {
           component: () =>
             import(/* webpackChunkName: "page/contract/cost/detail" */ 'page/contract/cost/detail'),
           name: '成本详情',
+          meta: {
+            permission: ''
+          }
+        }
+      ]
+    },
+    {
+      path: 'history',
+      component: () =>
+        import(/* webpackChunkName: "page/contract/history/routerView" */ 'page/contract/history/routerView'),
+      meta: {
+        title: '我已审批的',
+        permission: 'contract.history'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/history/index" */ 'page/contract/history/index'),
+          name: '我已审批的列表',
+          meta: {
+            permission: 'contract.history.read'
+          }
+        },
+        {
+          path: 'detail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/history/detail" */ 'page/contract/history/detail'),
+          name: '详情',
           meta: {
             permission: ''
           }
