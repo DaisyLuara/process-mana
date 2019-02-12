@@ -33,6 +33,11 @@
             class="customer-form-input"
           />
         </el-form-item>
+        <el-form-item label="所属BD" prop="bd_user_id">
+          <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属BD">
+            <el-option v-for="item in bdList" :key="item.id" :label="item.name" :value="item.id"/>
+          </el-select>
+        </el-form-item>
         <el-form-item v-if="statusFlag" label="状态" prop="selectedStatus">
           <el-select v-model="customerForm.selectedStatus" placeholder="请选择状态">
             <el-option
@@ -72,11 +77,11 @@
           <el-form-item label="角色" prop="role_id">
             <el-radio-group v-model="customerForm.role_id">
               <el-radio
-                      v-for="role in allRoles"
-                      :data="role"
-                      :key="role.id"
-                      :label="role.id"
-                      class="role-radio"
+                v-for="role in allRoles"
+                :data="role"
+                :key="role.id"
+                :label="role.id"
+                class="role-radio"
               >{{ role.display_name }}</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -96,8 +101,14 @@
 </template>
 
 <script>
-import company from "service/company";
-import { historyBack, getSearchRole } from "service";
+import {
+  historyBack,
+  getSearchBDList,
+  getCustomerDetial,
+  saveCustomer,
+  getSearchRole
+} from "service";
+
 import {
   Select,
   Option,
@@ -106,7 +117,7 @@ import {
   Form,
   FormItem,
   RadioGroup,
-  Radio,
+  Radio
 } from "element-ui";
 
 export default {
@@ -133,6 +144,7 @@ export default {
       allRoles: [],
       contactFlag: true,
       customerForm: {
+        bd_user_id: null,
         role_id: null,
         name: "",
         address: "",
@@ -148,6 +160,7 @@ export default {
         selectedStatus: ""
       },
       statusFlag: false,
+      bdList: [],
       statusOption: [
         {
           value: 1,
@@ -169,7 +182,7 @@ export default {
         ],
         role_id: [
           { message: "角色不能为空", trigger: "submit", required: true }
-          ],
+        ],
         category: [
           { message: "请选择公司属性", trigger: "submit", required: true }
         ],
@@ -178,6 +191,9 @@ export default {
         ],
         description: [
           { message: "请输入公司详情", trigger: "submit", required: true }
+        ],
+        bd_user_id: [
+          { message: "请选择所属BD", trigger: "submit", required: true }
         ],
         phone: [
           {
@@ -240,6 +256,7 @@ export default {
     this.setting.loadingText = "拼命加载中";
     this.init();
     this.customerID = this.$route.params.uid;
+    this.getSearchBDList();
     if (this.customerID) {
       this.getCustomerDetail();
     } else {
@@ -288,7 +305,8 @@ export default {
             description: this.customerForm.description,
             logo: this.customerForm.logo,
             category: this.customerForm.category,
-            internal_name: this.customerForm.internal_name
+            internal_name: this.customerForm.internal_name,
+            bd_user_id: this.customerForm.bd_user_id
           };
           if (this.customerID || !this.contactFlag) {
             args.status = this[formName].selectedStatus;
@@ -302,8 +320,7 @@ export default {
           if (!this.customerForm.telephone) {
             delete args.telephone;
           }
-          company
-            .saveCustomer(this, args, this.customerID)
+          saveCustomer(this, args, this.customerID)
             .then(result => {
               this.setting.loading = false;
               this.$message({
@@ -327,6 +344,18 @@ export default {
         }
       });
     },
+    getSearchBDList() {
+      getSearchBDList(this)
+        .then(res => {
+          this.bdList = res;
+        })
+        .catch(err => {
+          this.$message({
+            type: "warning",
+            message: err.response.data.message
+          });
+        });
+    },
     getCustomerDetail() {
       this.setting.loading = true;
       if (this.customerID) {
@@ -334,8 +363,7 @@ export default {
         this.rules.phone[0].required = false;
         this.rules.position[0].required = false;
         this.rules.password[0].required = false;
-        company
-          .getCustomerDetail(this, this.customerID)
+        getCustomerDetial(this, this.customerID)
           .then(result => {
             this.statusFlag = true;
             this.customerForm.name = result.name;
@@ -345,6 +373,9 @@ export default {
             this.customerForm.selectedStatus = result.status;
             this.customerForm.logo = result.logo;
             this.customerForm.internal_name = result.internal_name;
+            this.customerForm.bd_user_id = result.bdUser
+              ? result.bdUser.id
+              : null;
             this.setting.loading = false;
           })
           .catch(err => {

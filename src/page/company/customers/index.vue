@@ -33,7 +33,7 @@
             <template slot-scope="scope">{{ statusHanlde(scope.row) }}</template>
           </el-table-column>
           <el-table-column prop="user_name" label="销售">
-            <template slot-scope="scope">{{ scope.row.user.name }}</template>
+            <template slot-scope="scope">{{ scope.row.bdUser ? scope.row.bdUser.name :''}}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -47,11 +47,10 @@
             label="修改时间"
             min-width="100"
           />
-          <el-table-column label="操作" min-width="280">
+          <el-table-column label="操作" width="280">
             <template slot-scope="scope">
               <el-button size="small" type="primary" @click="linkToEdit(scope.row.id)">修改</el-button>
               <el-button size="small" @click="showContactDetail(scope.row.id,scope.row.name)">联系人详情</el-button>
-              <!-- <el-button type="danger" size="small" @click="perms(scope.row.id)">权限</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -70,7 +69,7 @@
 </template>
 
 <script>
-import company from "service/company";
+import { getCustomerList } from "service";
 
 import {
   Button,
@@ -137,14 +136,16 @@ export default {
       }
       let pageNum = this.pagination.currentPage;
       let args = {
-        include: "user",
+        include: "user,bdUser",
         page: pageNum,
         name: this.filters.name
       };
       this.setting.loadingText = "拼命加载中";
       this.setting.loading = true;
-      return company
-        .getCustomerList(this, args)
+      if (this.filters.name === "") {
+        delete args.name;
+      }
+      return getCustomerList(this, args)
         .then(response => {
           this.setting.loading = false;
           this.customerList = response.data;
@@ -181,11 +182,6 @@ export default {
           id: id,
           name: name
         }
-      });
-    },
-    perms(id) {
-      this.$router.push({
-        path: "/company/perms/edit/" + id
       });
     }
   }
