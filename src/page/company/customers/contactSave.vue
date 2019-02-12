@@ -62,8 +62,12 @@
 </template>
 
 <script>
-import company from "service/company";
-import { historyBack, getSearchRole } from "service";
+import {
+  historyBack,
+  getContactDetail,
+  saveContact,
+  getSearchRole
+} from "service";
 import {
   Select,
   Option,
@@ -216,8 +220,7 @@ export default {
           if (!this.contactForm.contact.telephone) {
             delete args.telephone;
           }
-          company
-            .saveContact(this, pid, args, uid)
+          saveContact(this, pid, args, uid)
             .then(result => {
               this.setting.loading = false;
               this.$message({
@@ -241,29 +244,22 @@ export default {
       });
     },
     getContactDetail() {
-      this.setting.loading = true;
-      let args = {
-        include: "roles"
-      };
-      company
-        .getContactDetail(this, this.pid, this.contactID, args)
-        .then(result => {
-          this.contactForm.contact.name = result.name;
-          this.contactForm.contact.phone = result.phone;
-          this.contactForm.contact.position = result.position;
-          this.contactForm.contact.telephone = result.telephone;
-          if (result.roles) {
-            this.contactForm.contact.role_id = result.roles.data[0].id;
-          }
-          this.setting.loading = false;
-        })
-        .catch(err => {
-          this.setting.loading = false;
-          this.$message({
-            message: err.response.message.data,
-            type: "error"
+      let uid = this.$route.query.uid;
+      if (uid) {
+        this.setting.loading = true;
+        getContactDetail(this, this.pid, uid)
+          .then(result => {
+            this.contactForm.contact = result;
+            this.setting.loading = false;
+          })
+          .catch(err => {
+            this.setting.loading = false;
+            this.$message({
+              message: error.response.message.data,
+              type: "error"
+            });
           });
-        });
+      }
     },
     resetForm(formName) {
       historyBack();

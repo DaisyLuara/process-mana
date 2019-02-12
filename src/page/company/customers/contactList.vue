@@ -1,71 +1,26 @@
 <template>
-  <div  
-    v-loading="setting.loading"
-    :element-loading-text="setting.loadingText" 
-    class="root">
-    <div 
-      class="item-list-wrap">
-      <div 
-        class="item-content-wrap">
-        <div 
-          class="actions-wrap">
-          <span 
-            class="label">
-            {{ companyName }} {{ total }} 人
-          </span>
-          <el-button 
-            size="small" 
-            type="success" 
-            @click="linkToAddItem">新增联系人</el-button>
+  <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="root">
+    <div class="item-list-wrap">
+      <div class="item-content-wrap">
+        <div class="actions-wrap">
+          <span class="label">{{ companyName }} {{ total }} 人</span>
+          <el-button size="small" type="success" @click="linkToAddItem">新增联系人</el-button>
         </div>
-        <el-table 
-          :data="contactList" 
-          style="width: 100%">
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="name"
-            label="联系人名称"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="position"
-            label="联系人职务"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="role"
-            label="角色">
-            <template slot-scope="scope">
-              {{ scope.row.roles ? scope.row.roles.data[0].display_name : '' }}
-            </template>
+        <el-table :data="contactList" style="width: 100%">
+          <el-table-column :show-overflow-tooltip="true" prop="name" label="联系人名称"/>
+          <el-table-column :show-overflow-tooltip="true" prop="position" label="联系人职务"/>
+          <el-table-column :show-overflow-tooltip="true" prop="role" label="角色">
+            <template
+              slot-scope="scope"
+            >{{ scope.row.roles ? scope.row.roles.data[0].display_name : '' }}</template>
           </el-table-column>
-          <el-table-column
-            prop="phone"
-            label="联系人手机号"
-          />
-          <el-table-column
-            prop="telephone"
-            label="联系人座机号"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="created_at"
-            label="创建时间"
-          />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="updated_at"
-            label="修改时间"
-          />
-          <el-table-column 
-            label="操作" 
-            width="130">
-            <template 
-              slot-scope="scope">
-              <el-button 
-                size="small" 
-                type="primary"
-                @click="linkToEdit(scope.row.id)">修改</el-button>
+          <el-table-column prop="phone" label="联系人手机号"/>
+          <el-table-column prop="telephone" label="联系人座机号"/>
+          <el-table-column :show-overflow-tooltip="true" prop="created_at" label="创建时间"/>
+          <el-table-column :show-overflow-tooltip="true" prop="updated_at" label="修改时间"/>
+          <el-table-column label="操作" width="130">
+            <template slot-scope="scope">
+              <el-button size="small" type="primary" @click="linkToEdit(scope.row.id)">修改</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -75,7 +30,7 @@
 </template>
 
 <script>
-import company from 'service/company'
+import { getContactList } from "service";
 import {
   Button,
   Input,
@@ -84,75 +39,74 @@ import {
   Form,
   FormItem,
   MessageBox
-} from 'element-ui'
+} from "element-ui";
 
 export default {
   components: {
-    'el-table': Table,
-    'el-table-column': TableColumn,
-    'el-button': Button,
-    'el-input': Input,
-    'el-form': Form,
-    'el-form-item': FormItem
+    "el-table": Table,
+    "el-table-column": TableColumn,
+    "el-button": Button,
+    "el-input": Input,
+    "el-form": Form,
+    "el-form-item": FormItem
   },
   data() {
     return {
       setting: {
         loading: false,
-        loadingText: '拼命加载中'
+        loadingText: "拼命加载中"
       },
-      companyName: '',
+      companyName: "",
       total: 0,
       contactList: []
-    }
+    };
   },
   created() {
-    this.companyName = this.$route.query.name
-    this.getContactList()
+    this.companyName = this.$route.query.name;
+    this.getContactList();
   },
   methods: {
     getContactList() {
-      let uid = this.$route.query.id
-      this.setting.loadingText = '拼命加载中'
-      this.setting.loading = true
+      let uid = this.$route.query.id;
+      this.setting.loadingText = "拼命加载中";
+      this.setting.loading = true;
       let args = {
-        include: 'company.user,roles'
-      }
-      return company
-        .getContactList(this, uid, args)
+        include: "company.user,roles"
+      };
+      getContactList(this, uid, args)
         .then(response => {
-          this.contactList = response.data
-          this.total = response.meta.pagination.total
-          this.setting.loading = false
+          this.contactList = response.data;
+          this.total = response.meta.pagination.total;
+          this.setting.loading = false;
         })
         .catch(error => {
-          this.setting.loading = false
-        })
+          this.setting.loading = false;
+        });
     },
     changePage(currentPage) {
-      this.pagination.currentPage = currentPage
+      this.pagination.currentPage = currentPage;
     },
     linkToAddItem() {
       this.$router.push({
-        path: '/company/customers/c_add',
+        path: "/company/customers/c_add",
         query: {
           pid: this.$route.query.id,
           name: this.companyName
         }
-      })
+      });
     },
     linkToEdit(id) {
       this.$router.push({
-        path: '/company/customers/c_edit',
+        path: "/company/customers/c_edit",
         query: {
           uid: id,
           pid: this.$route.query.id,
           name: this.companyName
         }
-      })
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
