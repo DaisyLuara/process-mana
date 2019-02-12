@@ -164,7 +164,8 @@ export default {
       costForm: {
         contract_id: "",
         applicant_name: "",
-        name: ""
+        name: "",
+        applicant_id: null
       },
       tableData: [
         {
@@ -247,6 +248,7 @@ export default {
     contractNumberHandle(val) {
       this.contractList.map(r => {
         if (r.id === val) {
+          this.costForm.applicant_id = r.applicant;
           this.costForm.contract_id = r.id;
           this.costForm.name = r.name;
           this.costForm.applicant_name = r.applicant_name;
