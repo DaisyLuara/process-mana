@@ -116,7 +116,7 @@
         </el-table>
         <el-form-item>
           <!-- v-if="operation || auditor || legalAffairsManager" -->
-          <el-button type="primary" @click="submit('costForm')" :loading="btnLoading">保存</el-button>
+          <el-button type="primary" @click="submit('costForm')" >保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>
@@ -161,7 +161,6 @@ export default {
         loadingText: "拼命加载中"
       },
       roles: {},
-      btnLoading: false,
       costForm: {
         contract_id: "",
         applicant_name: "",
@@ -302,7 +301,6 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setting.loading = true;
-          this.btnLoading = true;
           let cost_content = [];
           let args = {
             contract_id: this.costForm.contract_id,
@@ -323,11 +321,9 @@ export default {
               this.$router.push({
                 path: "/contract/cost"
               });
-              this.btnLoading = false;
               this.setting.loading = false;
             })
             .catch(err => {
-              this.btnLoading = false;
               this.setting.loading = false;
               this.$message({
                 message: err.response.data.message,
