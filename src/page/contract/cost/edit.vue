@@ -265,10 +265,7 @@ export default {
       })
         .then(() => {
           let id = data.id;
-          let args = {
-            total_cost: this.total_cost
-          };
-          confirmCost(this, this.costID, id, args)
+          confirmCost(this, id)
             .then(res => {
               this.$message({
                 type: "success",

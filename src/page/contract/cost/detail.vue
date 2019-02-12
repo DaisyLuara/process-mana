@@ -21,7 +21,7 @@
             header-align="center"
           />
           <el-table-column
-            prop="cost_details"
+            prop="kind"
             label="成本类型"
             min-width="80"
             align="center"
