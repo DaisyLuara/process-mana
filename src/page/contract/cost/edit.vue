@@ -11,7 +11,7 @@
             <el-form-item label="合同名称:" prop="contract_name">{{ costForm.contract_name }}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属BD:" prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
+        <el-form-item label="所属人:" prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
         <el-button
           size="small"
           type="success"
