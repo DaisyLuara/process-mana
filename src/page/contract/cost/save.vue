@@ -11,6 +11,7 @@
           prop="contract_id"
         >
           <el-select
+            filterable
             v-model="costForm.contract_id"
             :loading="searchLoading"
             @change="contractNumberHandle"
