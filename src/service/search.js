@@ -14,6 +14,7 @@ const SKU_API = '/api/erp_sku/query'
 const LOCATION_API = '/api/erp_location/query'
 const USER_API = '/api/user/query'
 const BD_API = '/api/bd_users/query'
+const COST_KIND_API = '/api/cost_kind/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
 const getCompanyList = (context, params) => {
@@ -219,6 +220,7 @@ const getSearchUserList = (context, params) => {
 }
 
 // bd
+
 const getSearchBDList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -231,6 +233,21 @@ const getSearchBDList = (context, params) => {
       })
   })
 }
+
+// 成本种类
+const getSearchCostKind = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + COST_KIND_API, { params: params })
+      .then(response => {
+        resolve(response.data.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getCompanyList,
   getContract,
@@ -247,5 +264,6 @@ export {
   getSearchSku,
   getSearchLocation,
   getSearchUserList,
-  getSearchBDList
+  getSearchBDList,
+  getSearchCostKind
 }

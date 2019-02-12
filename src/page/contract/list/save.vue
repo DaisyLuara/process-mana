@@ -46,7 +46,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同类型" prop="type">
-              <el-radio-group v-model="contractForm.type">
+              <el-radio-group v-model="contractForm.type" @change="contractTypeHandle">
                 <el-radio :label="0">收款合同</el-radio>
                 <el-radio :label="1">付款合同</el-radio>
                 <el-radio :label="2">其他合同</el-radio>
@@ -122,10 +122,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="硬件合同" prop="product_status">
-              <el-radio-group v-model="contractForm.product_status" @change="productHandle">
-                <el-radio :label="0">否</el-radio>
-                <el-radio :label="1">是</el-radio>
+            <el-form-item v-if="contractForm.type === 0" label="合同种类" prop="kind">
+              <el-radio-group v-model="contractForm.kind" @change="contractKindHandle">
+                <el-radio :label="1">铺屏</el-radio>
+                <el-radio :label="2">销售</el-radio>
+                <el-radio :label="3">租赁</el-radio>
+                <el-radio :label="4">服务</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -209,6 +211,36 @@
             </el-table-column>
           </el-table>
         </el-row>
+        <el-row v-if="serviceFlag">
+          <el-col :span="12">
+            <el-form-item label="服务对象" prop="serve_target">
+              <el-radio-group v-model="contractForm.serve_target">
+                <el-radio :label="1">商户</el-radio>
+                <el-radio :label="2">商场</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="预充值" prop="recharge">
+              <el-radio-group v-model="contractForm.recharge">
+                <el-radio :label="0">否</el-radio>
+                <el-radio :label="1">是</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="定制节目数" prop="special_num">
+              <el-input-number v-model="contractForm.special_num" :min="0"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="通用节目数" prop="common_num">
+              <el-input-number v-model="contractForm.common_num" :min="0" :max="max"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="备注" prop="remark">
           <el-input
             v-model="contractForm.remark"
@@ -254,7 +286,8 @@ import {
   Col,
   Upload,
   Table,
-  TableColumn
+  TableColumn,
+  InputNumber
 } from "element-ui";
 
 const SERVER_URL = process.env.SERVER_URL;
@@ -273,10 +306,12 @@ export default {
     ElRadio: Radio,
     ElUpload: Upload,
     ElTable: Table,
-    ElTableColumn: TableColumn
+    ElTableColumn: TableColumn,
+    ElInputNumber: InputNumber
   },
   data() {
     return {
+      serviceFlag: false,
       productTableData: [],
       SERVER_URL: SERVER_URL,
       formHeader: {
@@ -293,23 +328,40 @@ export default {
         loadingText: "拼命加载中"
       },
       roles: [],
-      productFlag: false,
+      max: 2,
+      productFlag: true,
       contractID: "",
       contractForm: {
         company_id: "",
         applicant_name: "",
         contract_number: "",
         name: "",
-        product_status: 0,
+        kind: 1,
         type: 0,
         applicant: 0,
         receive_date: [],
         ids: "",
         remark: "",
-        amount: null
+        serve_target: null,
+        amount: null,
+        recharge: null,
+        special_num: 1,
+        common_num: 1
       },
       rules: {
         ids: [{ required: true, message: "请上传文件", trigger: "submit" }],
+        special_num: [
+          { required: true, message: "请填写定制节目数量", trigger: "submit" }
+        ],
+        common_num: [
+          { required: true, message: "请填写通用节目数量", trigger: "submit" }
+        ],
+        serve_target: [
+          { required: true, message: "请选择服务对象", trigger: "submit" }
+        ],
+        recharge: [
+          { required: true, message: "请选择预充值", trigger: "submit" }
+        ],
         type: [
           { required: true, message: "请选择合同类型", trigger: "submit" }
         ],
@@ -350,6 +402,9 @@ export default {
     this.contractID = this.$route.params.uid;
     this.getCompany();
     this.getAttributeList();
+    if (this.legalAffairsManager) {
+      this.max = Infinity;
+    }
     if (this.contractID) {
       this.contractDetail();
     } else {
@@ -382,6 +437,14 @@ export default {
           });
         });
     },
+    contractTypeHandle(val) {
+      if (val === 0) {
+        this.contractForm.kind = 1;
+        this.productFlag = true;
+      } else {
+        this.productFlag = false;
+      }
+    },
     deleteHardware(index) {
       this.productTableData.splice(index, 1);
     },
@@ -393,11 +456,13 @@ export default {
       };
       this.productTableData.unshift(td);
     },
-    productHandle(val) {
-      if (val === 1) {
+    contractKindHandle(val) {
+      if (val === 1 || val === 2 || val === 3) {
+        this.serviceFlag = false;
         this.productFlag = true;
       } else {
         this.productFlag = false;
+        this.serviceFlag = true;
       }
     },
     contractDetail() {
@@ -419,10 +484,8 @@ export default {
             : [];
           this.contractForm.remark = res.remark;
           this.contractForm.contract_number = res.contract_number;
-          this.contractForm.product_status =
-            res.product_status === "无硬件" ? 0 : 1;
-          this.productFlag =
-            this.contractForm.product_status === 1 ? true : false;
+          this.contractForm.kind = res.kind === "无硬件" ? 0 : 1;
+          this.productFlag = this.contractForm.kind === 1 ? true : false;
           let product_content = res.product_content;
 
           product_content.map(r => {
@@ -432,7 +495,7 @@ export default {
               product_stock: r.product_stock
             };
           });
-          this.productTableData = product_content
+          this.productTableData = product_content;
           this.contractForm.amount = res.amount;
           mediaData.map(r => {
             mediaIds.push(r.id);
@@ -525,8 +588,10 @@ export default {
             applicant: this.contractForm.applicant,
             type: this.contractForm.type,
             ids: this.contractForm.ids,
-            product_status: this.contractForm.product_status,
-            remark: this.contractForm.remark
+            kind: this.contractForm.kind,
+            remark: this.contractForm.remark,
+            special_num: this.contractForm.special_num,
+            common_num: this.contractForm.common_num
           };
           if (this.contractForm.type === 0) {
             if (!this.contractForm.receive_date.length) {
@@ -566,7 +631,7 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number;
           }
-          if (this.contractForm.product_status === 1) {
+          if (this.contractForm.kind !== 4) {
             let length = this.productTableData.length;
             if (length <= 0) {
               this.$message({
@@ -577,6 +642,8 @@ export default {
               return;
             }
           } else {
+            args.recharge = this.contractForm.recharge;
+            args.serve_target = this.contractForm.serve_target;
             this.productTableData = [];
           }
           args.product_content = this.productTableData;

@@ -77,6 +77,52 @@ let router = {
       ]
     },
     {
+      path: 'cost',
+      component: () =>
+        import(/* webpackChunkName: "page/contract/cost/routerView" */ 'page/contract/cost/routerView'),
+      meta: {
+        title: '成本管理'
+        // permission: 'contract.cost'
+      },
+      children: [
+        {
+          path: '/',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/cost/index" */ 'page/contract/cost/index'),
+          meta: {
+            title: '成本列表'
+            // permission: 'contract.cost.read'
+          }
+        },
+        {
+          path: 'add',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/cost/save" */ 'page/contract/cost/save'),
+          meta: {
+            title: '成本新增'
+            // permission: 'contract.cost.create'
+          }
+        },
+        {
+          path: 'edit/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/cost/edit" */ 'page/contract/cost/edit'),
+          meta: {
+            title: '成本修改'
+            // permission: 'contract.cost.update'
+          }
+        },
+        {
+          path: 'detail/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/cost/detail" */ 'page/contract/cost/detail'),
+          meta: {
+            title: '成本详情'
+          }
+        }
+      ]
+    },
+    {
       path: 'history',
       component: () =>
         import(/* webpackChunkName: "page/contract/history/routerView" */ 'page/contract/history/routerView'),

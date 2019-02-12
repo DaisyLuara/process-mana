@@ -40,7 +40,30 @@
             <el-form-item label="预估收款日期:" prop="receive_date">{{ contractForm.receive_date }}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="硬件合同:" prop="product_status">{{ contractForm.product_status }}</el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="合同种类:" prop="kind">{{ contractForm.kind }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="备注:" prop="remark">{{ contractForm.remark }}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="contractForm.kind === '服务'">
+          <el-col :span="12">
+            <el-form-item label="服务对象:" prop="serve_target">{{ contractForm.serve_target }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="预充值:" prop="recharge">{{ contractForm.recharge }}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="定制节目数量:" prop="special_num">{{ contractForm.special_num }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="通用节目数量:" prop="common_num">{{ contractForm.common_num }}</el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item
           v-if="contractForm.legal_message"
           label="法务意见:"
@@ -56,9 +79,9 @@
           label="bd主管意见:"
           prop="bd_ma_message"
         >{{ contractForm.bd_ma_message }}</el-form-item>
-        <el-form-item label="备注:" prop="remark">{{ contractForm.remark }}</el-form-item>
+
         <el-table
-          v-if="contractForm.product_status === '是'"
+          v-if="contractForm.kind !== '服务'"
           :data="productTableData"
           border
           style="width: 100%;margin-bottom: 20px;"
@@ -156,6 +179,12 @@
             class="text-input"
           />
         </el-form-item>
+        <el-form-item v-if="legalAffairsManager" label="定制节目数" prop="special_num">
+          <el-input-number v-model="contractForm.special_num" :min="0"/>
+        </el-form-item>
+        <el-form-item v-if="legalAffairsManager" label="通用节目数" prop="common_num">
+          <el-input-number v-model="contractForm.common_num" :min="0"/>
+        </el-form-item>
         <el-form-item
           v-if="legalAffairsManager"
           :rules="[{ required: true, message: '请填写意见', trigger: 'submit' }]"
@@ -228,7 +257,8 @@ import {
   Upload,
   Dialog,
   Table,
-  TableColumn
+  TableColumn,
+  InputNumber
 } from "element-ui";
 const SERVER_URL = process.env.SERVER_URL;
 
@@ -243,7 +273,8 @@ export default {
     ElDialog: Dialog,
     ElUpload: Upload,
     ElTable: Table,
-    ElTableColumn: TableColumn
+    ElTableColumn: TableColumn,
+    ElInputNumber: InputNumber
   },
   data() {
     return {
@@ -263,7 +294,7 @@ export default {
       },
       productTableData: [],
       contractForm: {
-        product_status: "",
+        kind: "",
         company_name: "",
         company_id: "",
         applicant_name: "",
@@ -277,9 +308,13 @@ export default {
         ids: "",
         remark: "",
         amount: "",
+        serve_target: "",
+        recharge: "",
         bd_ma_message: "",
         legal_message: "",
-        legal_ma_message: ""
+        legal_ma_message: "",
+        special_num: null,
+        common_num: null
       },
       hide: null
     };
@@ -388,8 +423,11 @@ export default {
           this.contractForm.bd_ma_message = res.bd_ma_message;
           this.contractForm.legal_message = res.legal_message;
           this.contractForm.legal_ma_message = res.legal_ma_message;
-          this.contractForm.product_status =
-            res.product_status === "无硬件" ? "否" : "是";
+          this.contractForm.kind = res.kind;
+          this.contractForm.special_num = res.special_num;
+          this.contractForm.common_num = res.common_num;
+          this.contractForm.serve_target = res.serve_target;
+          this.contractForm.recharge = res.recharge;
           this.productTableData = res.product_content;
           mediaData.map(r => {
             mediaIds.push(r.id);
@@ -445,6 +483,8 @@ export default {
           return;
         } else {
           args.contract_number = this.contractForm.contract_number;
+          args.common_num = this.contractForm.common_num;
+          args.special_num = this.contractForm.special_num;
         }
         this.auditing(this, this.contractID, args);
         return;
