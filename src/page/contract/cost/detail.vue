@@ -11,7 +11,15 @@
             <el-form-item label="合同名称:" prop="contract_name">{{ costForm.contract_name }}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属BD:" prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="总成本:" prop="total_cost">{{ costForm.total_cost }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="已确认成本:" prop="confirm_cost">{{ costForm.confirm_cost }}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="所属人:" prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
         <el-table :data="tableData" border style="width: 100%;margin-bottom: 20px;">
           <el-table-column
             prop="creator"
@@ -58,6 +66,7 @@
             header-align="center"
           />
         </el-table>
+
         <el-form-item>
           <el-button size="small" @click="historyBack">返回</el-button>
         </el-form-item>
@@ -101,6 +110,8 @@ export default {
       tableData: [],
       costID: null,
       costForm: {
+        total_cost: 0,
+        confirm_cost: 0,
         contract_name: "",
         contract_number: "",
         applicant_name: ""
@@ -122,7 +133,9 @@ export default {
       };
       costDetail(this, this.costID, args)
         .then(res => {
+          this.costForm.total_cost = res.total_cost;
           this.tableData = res.costContent.data;
+          this.costForm.confirm_cost = res.confirm_cost;
           this.costForm.contract_name = res.contract_name;
           this.costForm.contract_number = res.contract_number;
           this.costForm.applicant_name = res.applicant_name;
