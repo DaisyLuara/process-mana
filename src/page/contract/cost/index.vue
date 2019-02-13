@@ -56,6 +56,9 @@
                 <el-form-item label="成本总额:">
                   <span>{{ scope.row.total_cost }}</span>
                 </el-form-item>
+                <el-form-item label="已确认成本:">
+                  <span>{{ scope.row.confirm_cost }}</span>
+                </el-form-item>
                 <el-form-item label="创建时间:">
                   <span>{{ scope.row.created_at }}</span>
                 </el-form-item>
@@ -87,6 +90,12 @@
             :show-overflow-tooltip="true"
             prop="total_cost"
             label="成本总额"
+            min-width="80"
+          />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="confirm_cost"
+            label="已确认成本"
             min-width="80"
           />
           <el-table-column
