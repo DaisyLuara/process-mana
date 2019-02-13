@@ -99,16 +99,15 @@
                 circle
                 @click="editCostDetail(scope.row)"
               />
-              <!-- && legalAffairsManager -->
               <el-button
-                v-if="scope.row.status !== undefined && scope.row.status === 0"
+                v-if="scope.row.status !== undefined && scope.row.status === 0 && legalAffairsManager"
                 type="success"
                 icon="el-icon-check"
                 circle
                 @click="confirmCost(scope.row)"
               />
               <el-button
-                v-if="scope.row.status !== undefined && scope.row.status===0"
+                v-if="scope.row.status !== undefined && scope.row.status===0 && scope.row.creator_id === user_Id"
                 type="danger"
                 icon="el-icon-delete"
                 circle

@@ -631,7 +631,7 @@ export default {
             }
             args.contract_number = this.contractForm.contract_number;
           }
-          if (this.contractForm.kind !== 4) {
+          if (this.contractForm.kind !== 4 && this.contractForm.type === 0) {
             let length = this.productTableData.length;
             if (length <= 0) {
               this.$message({
