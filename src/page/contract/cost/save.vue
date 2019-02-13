@@ -116,7 +116,7 @@
         </el-table>
         <el-form-item>
           <!-- v-if="operation || auditor || legalAffairsManager" -->
-          <el-button type="primary" @click="submit('costForm')" >保存</el-button>
+          <el-button type="primary" @click="submit('costForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>
@@ -169,7 +169,7 @@ export default {
       },
       tableData: [
         {
-          creator: "已确认总成本：",
+          creator: "总成本：",
           kind_id: 0,
           money: 0,
           remark: ""
@@ -188,13 +188,13 @@ export default {
       handler: function(val, oldVal) {
         let sum = 0;
         val.map(r => {
-          if (String(r.creator).indexOf("已确认总成本：：") === -1) {
+          if (String(r.creator).indexOf("总成本：") === -1) {
             sum += parseFloat(r.money);
           }
         });
         let length = this.tableData.length;
         let data = this.tableData[length - 1];
-        data.creator = "已确认总成本:";
+        data.creator = "总成本：";
         data.kind_id = sum;
         this.total_cost = sum;
       },

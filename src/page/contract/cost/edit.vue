@@ -70,7 +70,12 @@
             header-align="center"
           >
             <template slot-scope="scope">
-              <el-input v-model="scope.row.money" placeholder="请输入费用金额"/>
+              <span v-if="scope.$index === tableData.length-1">{{ scope.row.money }}</span>
+              <el-input
+                v-if="scope.$index  !== tableData.length-1"
+                v-model="scope.row.money"
+                placeholder="请输入费用金额"
+              />
             </template>
           </el-table-column>
           <el-table-column
@@ -81,7 +86,12 @@
             header-align="center"
           >
             <template slot-scope="scope">
-              <el-input v-model="scope.row.remark" placeholder="请输入备注"/>
+              <span v-if="scope.$index === tableData.length-1">¥： {{ confirm_cost }}</span>
+              <el-input
+                v-if="scope.$index  !== tableData.length-1"
+                v-model="scope.row.remark"
+                placeholder="请输入备注"
+              />
             </template>
           </el-table-column>
           <el-table-column
@@ -195,12 +205,13 @@ export default {
       costDetailList: [],
       tableData: [
         {
-          creator: "已确认总成本：",
+          creator: "总成本:",
           kind_id: 0,
           money: 0,
           remark: ""
         }
       ],
+      confirm_cost: 0,
       costID: null,
       costForm: {
         contract_name: "",
@@ -218,13 +229,14 @@ export default {
       handler: function(val, oldVal) {
         let sum = 0;
         val.map(r => {
-          if (String(r.creator).indexOf("已确认总成本：：") === -1) {
+          if (String(r.creator).indexOf("总成本:") === -1) {
             sum += parseFloat(r.money);
           }
         });
         let length = this.tableData.length;
         let data = this.tableData[length - 1];
-        data.creator = "已确认总成本:";
+        data.creator = "总成本:";
+        data.money = "已确认成本:";
         data.kind_id = sum;
         this.total_cost = sum;
       },
@@ -404,6 +416,9 @@ export default {
     arraySpanMethod({ row, column, rowIndex, columnIndex }) {
       if (rowIndex === this.tableData.length - 1) {
         if (columnIndex === 1) {
+          return [1, 2];
+        }
+        if (columnIndex === 3) {
           return [4, 5];
         }
       }
@@ -426,6 +441,7 @@ export default {
           res.costContent.data.map(r => {
             this.tableData.unshift(r);
           });
+          this.confirm_cost = res.confirm_cost;
           this.costForm.contract_name = res.contract_name;
           this.costForm.contract_number = res.contract_number;
           this.costForm.applicant_name = res.applicant_name;
