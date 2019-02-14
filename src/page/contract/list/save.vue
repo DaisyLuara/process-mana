@@ -442,6 +442,7 @@ export default {
         this.contractForm.kind = 1;
         this.productFlag = true;
       } else {
+        this.serviceFlag = false;
         this.productFlag = false;
       }
     },
@@ -462,7 +463,7 @@ export default {
         this.productFlag = true;
       } else {
         this.productFlag = false;
-        this.serviceFlag = true;
+        this.serviceFlag = false;
       }
     },
     contractDetail() {
