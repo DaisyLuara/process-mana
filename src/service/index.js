@@ -32,3 +32,6 @@ export * from './permission'
 
 // 采购
 export * from './store'
+
+// 成本
+export * from './cost'
