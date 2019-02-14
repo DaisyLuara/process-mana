@@ -442,6 +442,8 @@ export default {
         this.contractForm.kind = 1;
         this.productFlag = true;
       } else {
+          this.contractForm.kind = 1;
+          this.serviceFlag = false;
         this.productFlag = false;
       }
     },
