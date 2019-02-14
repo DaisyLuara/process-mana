@@ -266,7 +266,7 @@ export default {
       paymentForm: {
         payment_payee_id: '',
         applicant: '',
-        type: 1,
+        type: 3,
         contract_id: '',
         reason: '',
         amount: '',
