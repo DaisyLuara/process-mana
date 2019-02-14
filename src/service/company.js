@@ -82,10 +82,12 @@ const getContactDetail = (context, pid, uid) => {
   })
 }
 // 客户详情
-const getCustomerDetial = (context, pid) => {
+const getCustomerDetial = (context, pid, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + CUSTOMER_API + '/' + pid + '?include=customers,bdUser')
+      .get(HOST + CUSTOMER_API + '/' + pid, {
+        params: params
+      })
       .then(response => {
         resolve(response.data)
       })
