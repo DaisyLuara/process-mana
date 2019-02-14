@@ -426,7 +426,10 @@ export default {
         this.rules.phone[0].required = false;
         this.rules.position[0].required = false;
         this.rules.password[0].required = false;
-        getCustomerDetial(this, this.customerID)
+        let args = {
+          include: "customers,bdUser,media"
+        };
+        getCustomerDetial(this, this.customerID, args)
           .then(result => {
             this.statusFlag = true;
             this.customerForm.name = result.name;
@@ -434,7 +437,10 @@ export default {
             this.customerForm.category = result.category;
             this.customerForm.description = result.description;
             this.customerForm.selectedStatus = result.status;
-            this.customerForm.logo = result.logo;
+            // this.customerForm.logo = result.logo;
+            if (res.media) {
+              this.customerForm.logo_media_id = result.media.id;
+            }
             this.customerForm.internal_name = result.internal_name;
             this.customerForm.bd_user_id = result.bdUser
               ? result.bdUser.id
