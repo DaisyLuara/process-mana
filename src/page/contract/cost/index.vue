@@ -110,7 +110,7 @@
             label="修改时间"
             min-width="80"
           />
-          <el-table-column label="操作" min-width="100">
+          <el-table-column label="操作" min-width="180">
             <template slot-scope="scope">
               <el-button size="mini" @click="detailCost(scope.row)">详情</el-button>
               <el-button size="mini" type="warning" @click="editCost(scope.row)">编辑</el-button>
