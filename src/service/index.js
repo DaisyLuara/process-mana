@@ -33,8 +33,8 @@ export * from './permission'
 // 采购
 export * from './store'
 
-// 公司
-export * from './company'
-
 // 成本
 export * from './cost'
+
+// 公司
+export * from './company'
