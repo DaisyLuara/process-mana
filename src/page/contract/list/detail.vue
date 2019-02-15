@@ -28,7 +28,7 @@
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="contractForm.type_name !== '付款合同'">
+          <el-col :span="12" v-if="contractForm.type_name === '收款合同'">
             <el-form-item label="合同总额:" prop="amount">{{ contractForm.amount }}</el-form-item>
           </el-col>
         </el-row>
@@ -36,19 +36,19 @@
           <el-col :span="12">
             <el-form-item label="合同编号:" prop="contract_number">{{ contractForm.contract_number }}</el-form-item>
           </el-col>
-          <el-col v-if="contractForm.type_name !== '付款合同'" :span="12">
+          <el-col v-if="contractForm.type_name === '收款合同'" :span="12">
             <el-form-item label="预估收款日期:" prop="receive_date">{{ contractForm.receive_date }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col v-if="contractForm.type_name === '收款合同'" :span="12">
             <el-form-item label="合同种类:" prop="kind">{{ contractForm.kind }}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="备注:" prop="remark">{{ contractForm.remark }}</el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="contractForm.kind === '服务'">
+        <el-row v-if="contractForm.kind === '服务' && contractForm.type_name === '收款合同'">
           <el-col :span="12">
             <el-form-item label="服务对象:" prop="serve_target">{{ contractForm.serve_target }}</el-form-item>
           </el-col>
@@ -81,7 +81,7 @@
         >{{ contractForm.bd_ma_message }}</el-form-item>
 
         <el-table
-          v-if="contractForm.kind !== '服务'"
+          v-if="contractForm.kind !== '服务' && contractForm.type_name === '收款合同'"
           :data="productTableData"
           border
           style="width: 100%;margin-bottom: 20px;"
