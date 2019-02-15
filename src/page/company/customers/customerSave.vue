@@ -116,7 +116,7 @@
             </div>
           </el-collapse-item>
         </el-collapse>
-        <el-form-item style="margin-top:10px;">
+        <el-form-item>
           <el-button
             :loading="loading"
             type="primary"
@@ -152,7 +152,7 @@ import {
   Radio,
   CollapseItem,
   Collapse,
-  Upload
+  Upload,
 } from "element-ui";
 const SERVER_URL = process.env.SERVER_URL;
 

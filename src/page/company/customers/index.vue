@@ -332,7 +332,7 @@ export default {
         width: 50%;
       }
       .el-form-item {
-        margin-bottom: 0;
+        margin-bottom: 10px;
       }
       .actions-wrap {
         margin-top: 5px;
