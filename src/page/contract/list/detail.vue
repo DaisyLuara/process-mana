@@ -56,7 +56,7 @@
             <el-form-item label="预充值:" prop="recharge">{{ contractForm.recharge }}</el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="projectNumFlag">
           <el-col :span="12">
             <el-form-item label="定制节目数量:" prop="special_num">{{ contractForm.special_num }}</el-form-item>
           </el-col>
@@ -278,6 +278,7 @@ export default {
   },
   data() {
     return {
+      projectNumFlag: true,
       rejectStatus: false,
       agreeStatus: false,
       dialogFormVisible: false,
@@ -410,6 +411,7 @@ export default {
           this.contractForm.applicant_name = res.applicant_name;
           this.contractForm.type =
             res.type === "收款合同" ? 0 : res.type === "付款合同" ? 1 : 2;
+          this.projectNumFlag = this.contractForm.type === 0 ? true : false;
           this.contractForm.type_name = res.type;
           this.contractForm.applicant = res.applicant;
           this.contractForm.name = res.name;
