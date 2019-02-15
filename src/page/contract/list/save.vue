@@ -229,7 +229,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="projectNumFlag">
           <el-col :span="12">
             <el-form-item label="定制节目数" prop="special_num">
               <el-input-number v-model="contractForm.special_num" :min="0"/>
@@ -311,6 +311,7 @@ export default {
   },
   data() {
     return {
+      projectNumFlag: true,
       serviceFlag: false,
       productTableData: [],
       SERVER_URL: SERVER_URL,
@@ -441,7 +442,11 @@ export default {
       if (val === 0) {
         this.contractForm.kind = 1;
         this.productFlag = true;
+        this.projectNumFlag = true;
       } else {
+        this.contractForm.kind = 1;
+        this.projectNumFlag = false;
+        this.serviceFlag = false;
         this.productFlag = false;
       }
     },

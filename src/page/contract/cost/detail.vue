@@ -66,7 +66,6 @@
             header-align="center"
           />
         </el-table>
-
         <el-form-item>
           <el-button size="small" @click="historyBack">返回</el-button>
         </el-form-item>
@@ -76,7 +75,6 @@
 </template>
 <script>
 import { historyBack, costDetail } from "service";
-
 import {
   Form,
   FormItem,
@@ -88,7 +86,6 @@ import {
   Table,
   TableColumn
 } from "element-ui";
-
 export default {
   components: {
     ElRow: Row,
@@ -152,7 +149,6 @@ export default {
   }
 };
 </script>
-
 <style lang="less" scoped>
 .item-wrap-template {
   .pane {
