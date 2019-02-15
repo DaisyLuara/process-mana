@@ -84,7 +84,7 @@ const getContactDetail = (context, pid, uid, params) => {
   })
 }
 // 客户详情
-const getCustomerDetial = (context, pid, params) => {
+const getCustomerDetail = (context, pid, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + CUSTOMER_API + '/' + pid, {
@@ -116,6 +116,6 @@ export {
   getContactList,
   saveContact,
   getContactDetail,
-  getCustomerDetial,
+  getCustomerDetail,
   getCustomerList
 }
