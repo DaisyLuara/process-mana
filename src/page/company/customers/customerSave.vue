@@ -70,8 +70,19 @@
                 />
               </el-select>
             </el-form-item>
+            <el-form-item label="角色" prop="role_id">
+              <el-radio-group v-model="customerForm.role_id">
+                <el-radio
+                  v-for="role in allRoles"
+                  :data="role"
+                  :key="role.id"
+                  :label="role.id"
+                  class="role-radio"
+                >{{ role.display_name }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
           </el-collapse-item>
-          <el-collapse-item v-if="!customerID&&contactFlag" title="联系人信息 Contacts" name="2"  >
+          <el-collapse-item v-if="!customerID&&contactFlag" title="联系人信息 Contacts" name="2">
             <div>
               <el-form-item label="联系人名称" prop="customer_name">
                 <el-input
@@ -105,17 +116,6 @@
                   type="password"
                   class="customer-form-input"
                 />
-              </el-form-item>
-              <el-form-item label="角色" prop="role_id">
-                <el-radio-group v-model="customerForm.role_id">
-                  <el-radio
-                    v-for="role in allRoles"
-                    :data="role"
-                    :key="role.id"
-                    :label="role.id"
-                    class="role-radio"
-                  >{{ role.display_name }}</el-radio>
-                </el-radio-group>
               </el-form-item>
             </div>
           </el-collapse-item>
@@ -427,7 +427,7 @@ export default {
         this.rules.position[0].required = false;
         this.rules.password[0].required = false;
         let args = {
-          include: "customers,bdUser,media"
+          include: "customers,bdUser,media,roles"
         };
         getCustomerDetial(this, this.customerID, args)
           .then(result => {
@@ -437,9 +437,14 @@ export default {
             this.customerForm.category = result.category;
             this.customerForm.description = result.description;
             this.customerForm.selectedStatus = result.status;
-            // this.customerForm.logo = result.logo;
             if (res.media) {
               this.customerForm.logo_media_id = result.media.id;
+              this.logoUrl = result.media.url;
+            }
+            if (result.roles) {
+              if (result.roles.data.length > 0) {
+                this.customerForm.role_id = result.roles.data[0].id;
+              }
             }
             this.customerForm.internal_name = result.internal_name;
             this.customerForm.bd_user_id = result.bdUser
