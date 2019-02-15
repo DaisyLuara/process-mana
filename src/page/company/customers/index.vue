@@ -202,7 +202,7 @@ export default {
     padding: 30px;
     .customer-content-wrap {
       .el-form-item {
-        margin-bottom: 0;
+        margin-bottom: 10px;
       }
       .actions-wrap {
         margin-top: 5px;
