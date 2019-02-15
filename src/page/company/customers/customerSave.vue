@@ -25,9 +25,6 @@
                 class="customer-form-input"
               />
             </el-form-item>
-            <!-- <el-form-item label="公司logo" prop="logo">
-              <el-input v-model="customerForm.logo" :maxlength="150" class="customer-form-input"/>
-            </el-form-item>-->
             <el-form-item label="公司logo" prop="logo_media_id">
               <el-upload
                 class="avatar-uploader"
@@ -42,7 +39,6 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
               </el-upload>
             </el-form-item>
-
             <el-form-item label="公司简称" prop="internal_name">
               <el-input
                 v-model="customerForm.internal_name"
@@ -69,17 +65,6 @@
                   :value="item.value"
                 />
               </el-select>
-            </el-form-item>
-            <el-form-item label="角色" prop="role_id">
-              <el-radio-group v-model="customerForm.role_id">
-                <el-radio
-                  v-for="role in allRoles"
-                  :data="role"
-                  :key="role.id"
-                  :label="role.id"
-                  class="role-radio"
-                >{{ role.display_name }}</el-radio>
-              </el-radio-group>
             </el-form-item>
           </el-collapse-item>
           <el-collapse-item v-if="!customerID&&contactFlag" title="联系人信息 Contacts" name="2">
@@ -117,6 +102,17 @@
                   class="customer-form-input"
                 />
               </el-form-item>
+              <el-form-item label="角色" prop="role_id">
+                <el-radio-group v-model="customerForm.role_id">
+                  <el-radio
+                    v-for="role in allRoles"
+                    :data="role"
+                    :key="role.id"
+                    :label="role.id"
+                    class="role-radio"
+                  >{{ role.display_name }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
             </div>
           </el-collapse-item>
         </el-collapse>
@@ -140,7 +136,7 @@ import auth from "service/auth";
 import {
   historyBack,
   getSearchBDList,
-  getCustomerDetial,
+  getCustomerDetail,
   saveCustomer,
   getSearchRole
 } from "service";
@@ -363,7 +359,6 @@ export default {
           this.setting.loading = true;
           let args = {
             name: this.customerForm.name,
-            role_id: this.customerForm.role_id,
             address: this.customerForm.address,
             description: this.customerForm.description,
             logo_media_id: this.customerForm.logo_media_id,
@@ -374,7 +369,8 @@ export default {
           if (this.customerID || !this.contactFlag) {
             args.status = this[formName].selectedStatus;
           } else {
-            args.customer_name = this.customerForm.customer_name;
+            role_id: this.customerForm.role_id,
+              (args.customer_name = this.customerForm.customer_name);
             args.phone = this.customerForm.phone;
             args.telephone = this.customerForm.telephone;
             args.position = this.customerForm.position;
@@ -429,7 +425,7 @@ export default {
         let args = {
           include: "customers,bdUser,media,roles"
         };
-        getCustomerDetial(this, this.customerID, args)
+        getCustomerDetail(this, this.customerID, args)
           .then(result => {
             this.statusFlag = true;
             this.customerForm.name = result.name;
@@ -437,7 +433,7 @@ export default {
             this.customerForm.category = result.category;
             this.customerForm.description = result.description;
             this.customerForm.selectedStatus = result.status;
-            if (res.media) {
+            if (result.media) {
               this.customerForm.logo_media_id = result.media.id;
               this.logoUrl = result.media.url;
             }
