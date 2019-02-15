@@ -247,15 +247,23 @@ export default {
       let uid = this.$route.query.uid;
       if (uid) {
         this.setting.loading = true;
-        getContactDetail(this, this.pid, uid)
+        let args = {
+          include: "roles"
+        };
+        getContactDetail(this, this.pid, uid, args)
           .then(result => {
             this.contactForm.contact = result;
+            if (result.roles) {
+              if (result.roles.data.length > 0) {
+                this.contactForm.contact.role_id = result.roles.data[0].id;
+              }
+            }
             this.setting.loading = false;
           })
           .catch(err => {
             this.setting.loading = false;
             this.$message({
-              message: error.response.message.data,
+              message: err.response.message.data,
               type: "error"
             });
           });

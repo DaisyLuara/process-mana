@@ -69,10 +69,12 @@ const saveContact = (context, pid, args, uid) => {
   }
 }
 // 联系人详情
-const getContactDetail = (context, pid, uid) => {
+const getContactDetail = (context, pid, uid, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + CUSTOMER_API + '/' + pid + '/customers/' + uid)
+      .get(HOST + CUSTOMER_API + '/' + pid + '/customers/' + uid, {
+        params: params
+      })
       .then(response => {
         resolve(response.data)
       })
