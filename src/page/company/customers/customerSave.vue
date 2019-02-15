@@ -72,11 +72,11 @@
           <el-form-item label="角色" prop="role_id">
             <el-radio-group v-model="customerForm.role_id">
               <el-radio
-                      v-for="role in allRoles"
-                      :data="role"
-                      :key="role.id"
-                      :label="role.id"
-                      class="role-radio"
+                v-for="role in allRoles"
+                :data="role"
+                :key="role.id"
+                :label="role.id"
+                class="role-radio"
               >{{ role.display_name }}</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -106,7 +106,7 @@ import {
   Form,
   FormItem,
   RadioGroup,
-  Radio,
+  Radio
 } from "element-ui";
 
 export default {
@@ -169,7 +169,7 @@ export default {
         ],
         role_id: [
           { message: "角色不能为空", trigger: "submit", required: true }
-          ],
+        ],
         category: [
           { message: "请选择公司属性", trigger: "submit", required: true }
         ],
