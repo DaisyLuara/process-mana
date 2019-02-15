@@ -71,8 +71,8 @@
               </el-select>
             </el-form-item>
           </el-collapse-item>
-          <el-collapse-item title="联系人信息 Contacts" name="2">
-            <div v-if="!customerID&&contactFlag">
+          <el-collapse-item v-if="!customerID&&contactFlag" title="联系人信息 Contacts" name="2"  >
+            <div>
               <el-form-item label="联系人名称" prop="customer_name">
                 <el-input
                   v-model="customerForm.customer_name"
