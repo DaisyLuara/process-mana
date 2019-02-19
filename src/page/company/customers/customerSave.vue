@@ -180,7 +180,7 @@ export default {
         Authorization: "Bearer " + auth.getToken()
       },
       logoUrl: "",
-      activeNames: ["1"],
+      activeNames: ["1","2"],
       setting: {
         isOpenSelectAll: true,
         loading: true,
