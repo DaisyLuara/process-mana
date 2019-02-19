@@ -62,9 +62,6 @@
                 <el-form-item label="公司地址:">
                   <span>{{ scope.row.address }}</span>
                 </el-form-item>
-                <el-form-item label="公司地址:">
-                  <span>{{ scope.row.address }}</span>
-                </el-form-item>
                 <el-form-item label="公司简称:">
                   <span>{{ scope.row.internal_name }}</span>
                 </el-form-item>
