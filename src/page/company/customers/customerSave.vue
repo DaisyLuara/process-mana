@@ -46,7 +46,7 @@
                 class="customer-form-input"
               />
             </el-form-item>
-            <el-form-item label="所属BD" prop="bd_user_id">
+            <el-form-item v-if="contactFlag" label="所属BD" prop="bd_user_id" >
               <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属BD">
                 <el-option
                   v-for="item in bdList"
