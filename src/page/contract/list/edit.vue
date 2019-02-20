@@ -375,9 +375,18 @@ export default {
           this.contractForm.receive_date = res.receive_date;
           this.contractForm.remark = res.remark;
           this.contractForm.contract_number = res.contract_number;
-          this.contractForm.kind = res.kind;
-          // this.productFlag = this.contractForm.kind === 1 ? true : false;
-          this.contractKindHandle(res.kind)
+          if (res.kind === "铺屏") {
+            this.contractForm.kind = 1;
+          } else if (res.kind === "销售") {
+            this.contractForm.kind = 2;
+          } else if (res.kind === "租赁") {
+            this.contractForm.kind = 3;
+          } else if (res.kind === "服务") {
+            this.contractForm.kind = 4;
+          } else {
+            this.contractForm.kind = null;
+          }
+          this.contractKindHandle(res.kind);
           this.projectNumFlag = this.contractForm.type === 0 ? true : false;
           let product_content = res.product_content;
           this.contractForm.bd_ma_message = res.bd_ma_message;
@@ -418,7 +427,7 @@ export default {
       };
       xhr.send();
     },
-    
+
     historyBack() {
       historyBack();
     },
@@ -454,7 +463,7 @@ export default {
             this.productTableData = [];
           }
           args.product_content = this.productTableData;
-          mofifyContract(this,this.contractID, args)
+          mofifyContract(this, this.contractID, args)
             .then(res => {
               this.$message({
                 message: "修改成功",
