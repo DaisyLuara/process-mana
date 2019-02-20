@@ -193,7 +193,7 @@
                 v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
                 size="mini"
                 type="primary"
-                @click="editContract(scope.row)"
+                @click="againContract(scope.row)"
               >再次提交</el-button>
               <el-button
                 v-if="scope.row.handler === applicant && scope.row.status !== '驳回'"
@@ -223,6 +223,12 @@
                 size="mini"
                 @click="hardwareHandle(scope.row)"
               >硬件详情</el-button>
+              <el-button
+                v-if="operation"
+                size="mini"
+                type="warning"
+                @click="editHandle(scope.row)"
+              >编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -561,6 +567,12 @@ export default {
       return this.role.find(r => {
         return r.name === "purchasing";
       });
+    },
+    // 运营
+    operation: function() {
+      return this.role.find(r => {
+        return r.name === "operation";
+      });
     }
   },
   created() {
@@ -572,6 +584,11 @@ export default {
     this.role = user_info.roles.data;
   },
   methods: {
+    editHandle(data) {
+      this.$router.push({
+        path: "/contract/list/edit/" + data.id
+      });
+    },
     submit() {
       let product_content = [];
       this.productTableData.map(r => {
@@ -842,9 +859,9 @@ export default {
         path: "/contract/list/add"
       });
     },
-    editContract(data) {
+    againContract(data) {
       this.$router.push({
-        path: "/contract/list/edit/" + data.id
+        path: "/contract/list/again/" + data.id
       });
     },
     auditingContract(data) {
