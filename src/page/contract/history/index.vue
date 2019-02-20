@@ -184,12 +184,6 @@
                 size="mini"
                 @click="productHandle(scope.row)"
               >硬件详情</el-button>
-              <el-button
-                v-if="scope.row.status === '已审批' && operation"
-                size="mini"
-                type="warning"
-                @click="editHandle(scope.row)"
-              >编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
