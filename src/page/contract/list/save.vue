@@ -489,10 +489,21 @@ export default {
             : [];
           this.contractForm.remark = res.remark;
           this.contractForm.contract_number = res.contract_number;
-          this.contractForm.kind = res.kind === "无硬件" ? 0 : 1;
-          this.productFlag = this.contractForm.kind === 1 ? true : false;
+          if (res.kind === "铺屏") {
+            this.contractForm.kind = 1;
+          } else if (res.kind === "销售") {
+            this.contractForm.kind = 2;
+          } else if (res.kind === "租赁") {
+            this.contractForm.kind = 3;
+          } else if (res.kind === "服务") {
+            this.contractForm.kind = 4;
+          } else {
+            this.contractForm.kind = null;
+          }
+          this.contractKindHandle(this.contractForm.kind);
           let product_content = res.product_content;
-
+          this.contractForm.serve_target = res.serve_target === '商户' ? 1 : 2
+          this.contractForm.recharge = res.recharge=== '否' ? 0 : 1
           product_content.map(r => {
             let data = {
               product_name: r.product_name,

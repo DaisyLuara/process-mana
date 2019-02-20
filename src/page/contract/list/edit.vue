@@ -375,6 +375,8 @@ export default {
           this.contractForm.receive_date = res.receive_date;
           this.contractForm.remark = res.remark;
           this.contractForm.contract_number = res.contract_number;
+          this.contractForm.serve_target = res.serve_target === '商户' ? 1 : 2
+          this.contractForm.recharge = res.recharge=== '否' ? 0 : 1
           if (res.kind === "铺屏") {
             this.contractForm.kind = 1;
           } else if (res.kind === "销售") {
@@ -386,7 +388,7 @@ export default {
           } else {
             this.contractForm.kind = null;
           }
-          this.contractKindHandle(res.kind);
+          this.contractKindHandle(this.contractForm.kind);
           this.projectNumFlag = this.contractForm.type === 0 ? true : false;
           let product_content = res.product_content;
           this.contractForm.bd_ma_message = res.bd_ma_message;
@@ -401,10 +403,6 @@ export default {
           });
           this.productTableData = product_content;
           this.contractForm.amount = res.amount;
-          mediaData.map(r => {
-            mediaIds.push(r.id);
-          });
-          this.contractForm.ids = mediaIds;
           this.fileList = mediaData;
           this.setting.loading = false;
         })
