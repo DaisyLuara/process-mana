@@ -271,6 +271,8 @@ export default {
           this.contractForm.bd_ma_message = res.bd_ma_message;
           this.contractForm.legal_message = res.legal_message;
           this.contractForm.legal_ma_message = res.legal_ma_message;
+          this.contractForm.special_num = res.special_num;
+          this.contractForm.common_num = res.common_num;
           product_content.map(r => {
             let data = {
               product_name: r.product_name,
