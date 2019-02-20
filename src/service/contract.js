@@ -133,6 +133,20 @@ const rejectContract = (context, contractId, params) => {
       })
   })
 }
+
+// 编辑合同
+const mofifyContract = (context, contractId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .patch(HOST + CONTRACT_API + '/' + contractId, params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   getContractList,
   saveContract,
@@ -143,5 +157,6 @@ export {
   specialAuditingContract,
   getRemindContractList,
   contractHistory,
-  rejectContract
+  rejectContract,
+  mofifyContract
 }

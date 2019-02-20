@@ -37,7 +37,7 @@ let router = {
           }
         },
         {
-          path: 'edit/:uid',
+          path: 'again/:uid',
           component: () =>
             import(/* webpackChunkName: "page/contract/list/save" */ 'page/contract/list/save'),
           name: '合同再次提交',
@@ -52,6 +52,15 @@ let router = {
           name: '合同详情',
           meta: {
             permission: ''
+          }
+        },
+        {
+          path: 'edit/:uid',
+          component: () =>
+            import(/* webpackChunkName: "page/contract/list/edit" */ 'page/contract/list/edit'),
+          name: '合同编辑',
+          meta: {
+            permission: 'contract.list.update'
           }
         }
       ]

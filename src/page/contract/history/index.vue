@@ -421,6 +421,11 @@ export default {
     this.contractHistory();
   },
   methods: {
+    editHandle(data) {
+      this.$router.push({
+        path: "/contract/list/edit/" + data.id
+      });
+    },
     productHandle(data) {
       this.loading = true;
       this.dialogFormVisible = true;
