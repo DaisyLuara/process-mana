@@ -46,7 +46,7 @@
                 class="customer-form-input"
               />
             </el-form-item>
-            <el-form-item v-if="contactFlag" label="所属BD" prop="bd_user_id" >
+            <el-form-item v-if="contactFlag" label="所属BD" prop="bd_user_id">
               <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属BD">
                 <el-option
                   v-for="item in bdList"
@@ -152,7 +152,7 @@ import {
   Radio,
   CollapseItem,
   Collapse,
-  Upload,
+  Upload
 } from "element-ui";
 const SERVER_URL = process.env.SERVER_URL;
 
@@ -180,7 +180,7 @@ export default {
         Authorization: "Bearer " + auth.getToken()
       },
       logoUrl: "",
-      activeNames: ["1","2"],
+      activeNames: ["1", "2"],
       setting: {
         isOpenSelectAll: true,
         loading: true,
@@ -369,8 +369,8 @@ export default {
           if (this.customerID || !this.contactFlag) {
             args.status = this[formName].selectedStatus;
           } else {
-            role_id: this.customerForm.role_id,
-              (args.customer_name = this.customerForm.customer_name);
+            args.role_id = this.customerForm.role_id;
+            args.customer_name = this.customerForm.customer_name;
             args.phone = this.customerForm.phone;
             args.telephone = this.customerForm.telephone;
             args.position = this.customerForm.position;
