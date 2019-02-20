@@ -502,8 +502,9 @@ export default {
           }
           this.contractKindHandle(this.contractForm.kind);
           let product_content = res.product_content;
-          this.contractForm.serve_target = res.serve_target === '商户' ? 1 : 2
-          this.contractForm.recharge = res.recharge=== '否' ? 0 : 1
+          this.projectNumFlag = this.contractForm.type === 0 ? true : false;
+          this.contractForm.serve_target = res.serve_target === "商户" ? 1 : 2;
+          this.contractForm.recharge = res.recharge === "否" ? 0 : 1;
           product_content.map(r => {
             let data = {
               product_name: r.product_name,
