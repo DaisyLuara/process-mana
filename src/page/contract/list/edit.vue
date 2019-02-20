@@ -61,111 +61,47 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="contractForm.type === 0" label="合同种类" prop="kind">
-              <el-radio-group v-model="contractForm.kind" @change="contractKindHandle">
-                <el-radio :label="1">铺屏</el-radio>
-                <el-radio :label="2">销售</el-radio>
-                <el-radio :label="3">租赁</el-radio>
-                <el-radio :label="4">服务</el-radio>
-              </el-radio-group>
-            </el-form-item>
+            <el-form-item
+              v-if="contractForm.type === 0"
+              label="合同种类"
+              prop="kind"
+            >{{ contractForm.kind }}</el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="productFlag">
-          <el-button
-            size="small"
-            type="success"
-            style="margin-bottom: 20px;"
-            @click="productAdd"
-          >新增硬件信息</el-button>
-          <el-table :data="productTableData" border style="width: 100%;margin-bottom: 20px;">
-            <el-table-column
-              prop="model"
-              label="产品名称"
-              min-width="80"
-              align="center"
-              header-align="center"
-            >
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.product_name"
-                  :loading="searchLoading"
-                  placeholder="请选择产品名称"
-                  filterable
-                  clearable
-                >
-                  <el-option
-                    v-for="item in nameList"
-                    :key="item.id"
-                    :label="item.value"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="product_color"
-              label="产品颜色"
-              min-width="80"
-              align="center"
-              header-align="center"
-            >
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.product_color"
-                  :loading="searchLoading"
-                  placeholder="请选择产品颜色"
-                  filterable
-                  clearable
-                >
-                  <el-option
-                    v-for="item in colorList"
-                    :key="item.id"
-                    :label="item.value"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="product_stock"
-              label="产品数量"
-              min-width="100"
-              align="center"
-              header-align="center"
-            >
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.product_stock" placeholder="请输入产品数量"/>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" min-width="100">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  @click="deleteHardware(scope.$index)"
-                />
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-row>
-        <el-row v-if="serviceFlag">
+        <el-table
+          v-if="contractForm.kind !== '服务' && contractForm.type_name === '收款合同'"
+          :data="productTableData"
+          border
+          style="width: 100%;margin-bottom: 20px;"
+        >
+          <el-table-column
+            prop="product_name"
+            label="产品名称"
+            min-width="80"
+            align="center"
+            header-align="center"
+          />
+          <el-table-column
+            prop="product_color"
+            label="产品颜色"
+            min-width="80"
+            align="center"
+            header-align="center"
+          />
+          <el-table-column
+            prop="product_stock"
+            label="产品数量"
+            min-width="100"
+            align="center"
+            header-align="center"
+          />
+        </el-table>
+        <el-row v-if="contractForm.kind === '服务' && contractForm.type_name === '收款合同'">
           <el-col :span="12">
-            <el-form-item label="服务对象" prop="serve_target">
-              <el-radio-group v-model="contractForm.serve_target">
-                <el-radio :label="1">商户</el-radio>
-                <el-radio :label="2">商场</el-radio>
-              </el-radio-group>
-            </el-form-item>
+            <el-form-item label="服务对象:" prop="serve_target">{{ contractForm.serve_target }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预充值" prop="recharge">
-              <el-radio-group v-model="contractForm.recharge">
-                <el-radio :label="0">否</el-radio>
-                <el-radio :label="1">是</el-radio>
-              </el-radio-group>
-            </el-form-item>
+            <el-form-item label="预充值:" prop="recharge">{{ contractForm.recharge }}</el-form-item>
           </el-col>
         </el-row>
         <el-row v-if="projectNumFlag">
@@ -191,13 +127,7 @@
 </template>
 
 <script>
-import {
-  mofifyContract,
-  historyBack,
-  contractDetail,
-  Cookies,
-  getAttributeList
-} from "service";
+import { mofifyContract, historyBack, contractDetail, Cookies } from "service";
 import {
   Form,
   Select,
@@ -308,7 +238,6 @@ export default {
   created() {
     this.setting.loading = true;
     this.contractID = this.$route.params.uid;
-    this.getAttributeList();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.roles = user_info.roles.data;
     if (this.contractID) {
@@ -316,47 +245,6 @@ export default {
     }
   },
   methods: {
-    getAttributeList() {
-      getAttributeList(this)
-        .then(res => {
-          if (res.data.length > 0) {
-            res.data.map(r => {
-              if (r.name === "name") {
-                this.nameList = r.value;
-              }
-              if (r.name === "color") {
-                this.colorList = r.value;
-              }
-            });
-          }
-        })
-        .catch(err => {
-          this.$message({
-            message: err.response.data.message,
-            type: "warning"
-          });
-        });
-    },
-    deleteHardware(index) {
-      this.productTableData.splice(index, 1);
-    },
-    productAdd() {
-      let td = {
-        product_name: "",
-        product_color: "",
-        product_stock: ""
-      };
-      this.productTableData.unshift(td);
-    },
-    contractKindHandle(val) {
-      if (val === 1 || val === 2 || val === 3) {
-        this.serviceFlag = false;
-        this.productFlag = true;
-      } else {
-        this.productFlag = false;
-        this.serviceFlag = true;
-      }
-    },
     contractDetail() {
       let args = {
         include: "media"
@@ -375,20 +263,9 @@ export default {
           this.contractForm.receive_date = res.receive_date;
           this.contractForm.remark = res.remark;
           this.contractForm.contract_number = res.contract_number;
-          this.contractForm.serve_target = res.serve_target === '商户' ? 1 : 2
-          this.contractForm.recharge = res.recharge=== '否' ? 0 : 1
-          if (res.kind === "铺屏") {
-            this.contractForm.kind = 1;
-          } else if (res.kind === "销售") {
-            this.contractForm.kind = 2;
-          } else if (res.kind === "租赁") {
-            this.contractForm.kind = 3;
-          } else if (res.kind === "服务") {
-            this.contractForm.kind = 4;
-          } else {
-            this.contractForm.kind = null;
-          }
-          this.contractKindHandle(this.contractForm.kind);
+          this.contractForm.serve_target = res.serve_target === "商户";
+          this.contractForm.recharge = res.recharge === "否";
+          this.contractForm.kind = res.kind;
           this.projectNumFlag = this.contractForm.type === 0 ? true : false;
           let product_content = res.product_content;
           this.contractForm.bd_ma_message = res.bd_ma_message;
@@ -430,37 +307,13 @@ export default {
       historyBack();
     },
     submit(formName) {
-      let mediaIds = [];
-      if (this.fileList.length > 0) {
-        this.fileList.map(r => {
-          mediaIds.push(r.id);
-        });
-      }
-      this.contractForm.ids = mediaIds.join(",");
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.setting.loading = true;
           let args = {
-            kind: this.contractForm.kind,
             special_num: this.contractForm.special_num,
             common_num: this.contractForm.common_num
           };
-          if (this.contractForm.kind !== 4 && this.contractForm.type === 0) {
-            let length = this.productTableData.length;
-            if (length <= 0) {
-              this.$message({
-                message: "必须填写硬件信息,请点击新增硬件",
-                type: "warning"
-              });
-              this.setting.loading = false;
-              return;
-            }
-          } else {
-            args.recharge = this.contractForm.recharge;
-            args.serve_target = this.contractForm.serve_target;
-            this.productTableData = [];
-          }
-          args.product_content = this.productTableData;
           mofifyContract(this, this.contractID, args)
             .then(res => {
               this.$message({

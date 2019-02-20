@@ -224,7 +224,7 @@
                 @click="hardwareHandle(scope.row)"
               >硬件详情</el-button>
               <el-button
-                v-if="operation"
+                v-if="scope.row.status === '已审批' && operation"
                 size="mini"
                 type="warning"
                 @click="editHandle(scope.row)"
