@@ -60,7 +60,7 @@ let router = {
             import(/* webpackChunkName: "page/contract/list/edit" */ 'page/contract/list/edit'),
           name: '合同编辑',
           meta: {
-            permission: ''
+            permission: 'contract.list.update'
           }
         }
       ]
