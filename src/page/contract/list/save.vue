@@ -268,7 +268,7 @@ import {
   historyBack,
   contractDetail,
   Cookies,
-  getAttributeList
+  getSearchAttribute
 } from "service";
 import auth from "service/auth";
 import {
@@ -402,7 +402,7 @@ export default {
     this.setting.loading = true;
     this.contractID = this.$route.params.uid;
     this.getCompany();
-    this.getAttributeList();
+    this.getSearchAttribute();
     if (this.legalAffairsManager) {
       this.max = Infinity;
     }
@@ -417,8 +417,8 @@ export default {
     }
   },
   methods: {
-    getAttributeList() {
-      getAttributeList(this)
+    getSearchAttribute() {
+      getSearchAttribute(this)
         .then(res => {
           if (res.data.length > 0) {
             res.data.map(r => {

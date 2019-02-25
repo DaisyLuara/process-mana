@@ -78,7 +78,7 @@ import {
   saveProduct,
   modifyProduct,
   getProductDetails,
-  getAttributeList,
+  getSearchAttribute,
   getSearchSupplier,
   Cookies
 } from "service";
@@ -154,15 +154,15 @@ export default {
   methods: {
     async init() {
       try {
-        await this.getAttributeList();
+        await this.getSearchAttribute();
         await this.getSearchSupplier();
       } catch (e) {
         console.log(e);
       }
     },
-    getAttributeList() {
+    getSearchAttribute() {
       this.searchLoading = true;
-      getAttributeList(this)
+      getSearchAttribute(this)
         .then(res => {
           res.data.map(r => {
             if (r.name === "name") {
