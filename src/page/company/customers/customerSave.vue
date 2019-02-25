@@ -442,6 +442,7 @@ export default {
                 this.customerForm.role_id = result.roles.data[0].id;
               }
             }
+            this.categoryHandle(this.category);
             this.customerForm.internal_name = result.internal_name;
             this.customerForm.bd_user_id = result.bdUser
               ? result.bdUser.id
