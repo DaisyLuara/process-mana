@@ -1,9 +1,9 @@
-const STORAGE_API = '/api/warehouse'
-const LOCATION_API = '/api/location'
-const PRODUCT_API = '/api/product'
+const STORAGE_API = '/api/erp_warehouse'
+const LOCATION_API = '/api/erp_location'
+const PRODUCT_API = '/api/erp_product'
 const ATTRIBUTE_API = '/api/attribute/list'
 const STORAGE_DETAIL_API = '/api/location_product'
-const RECORDS_API = '/api/warehousechange'
+const RECORDS_API = '/api/erp_warehouse_change'
 const CONTRACT_PRODUCT_API = '/api/contract_product'
 const PRODUCT_ATTRIBUTE_API = '/api/product_attribute'
 
@@ -27,7 +27,7 @@ const getStorageDetailList = (context, params) => {
 const leaveFactory = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + RECORDS_API + '/chuchang', params)
+      .post(HOST + RECORDS_API + '/factory', params)
       .then(response => {
         resolve(response.data)
       })
@@ -55,7 +55,7 @@ const leaveFactoryDetail = (context, params) => {
 const getRecordsList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + RECORDS_API + '/list', { params: params })
+      .get(HOST + RECORDS_API , { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -83,7 +83,7 @@ const getRecordsDetails = (context, recordId, params) => {
 const saveRecords = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + RECORDS_API + '/create', params)
+      .post(HOST + RECORDS_API, params)
       .then(response => {
         resolve(response.data)
       })
@@ -97,7 +97,7 @@ const saveRecords = (context, params) => {
 const getStoreList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + STORAGE_API + '/list', { params: params })
+      .get(HOST + STORAGE_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -125,7 +125,7 @@ const getStoreDetails = (context, storageId) => {
 const saveStore = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + STORAGE_API + '/create', params)
+      .post(HOST + STORAGE_API, params)
       .then(response => {
         resolve(response.data)
       })
@@ -153,7 +153,7 @@ const modifyStore = (context, storageId, params) => {
 const getLocationList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + LOCATION_API + '/list', { params: params })
+      .get(HOST + LOCATION_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -181,7 +181,7 @@ const getLocationDetails = (context, locationId) => {
 const saveLocation = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + LOCATION_API + '/create', params)
+      .post(HOST + LOCATION_API, params)
       .then(response => {
         resolve(response.data)
       })
@@ -209,7 +209,7 @@ const modifyLocation = (context, locationId, params) => {
 const getProductList = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .get(HOST + PRODUCT_API + '/list', { params: params })
+      .get(HOST + PRODUCT_API, { params: params })
       .then(response => {
         resolve(response.data)
       })
@@ -237,7 +237,7 @@ const getProductDetails = (context, productId, params) => {
 const saveProduct = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .post(HOST + PRODUCT_API + '/create', params)
+      .post(HOST + PRODUCT_API, params)
       .then(response => {
         resolve(response.data)
       })
