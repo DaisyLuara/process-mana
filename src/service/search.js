@@ -14,6 +14,7 @@ const SKU_API = '/api/erp_sku/query'
 const LOCATION_API = '/api/erp_location/query'
 const USER_API = '/api/user/query'
 const COST_KIND_API = '/api/cost_kind/query'
+const ATTRIBUTE_API = '/api/erp_attribute/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
 const getCompanyList = (context, params) => {
@@ -231,6 +232,19 @@ const getSearchCostKind = (context, params) => {
       })
   })
 }
+// 产品属性列表
+const getSearchAttribute = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + ATTRIBUTE_API, { params: params })
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 
 export {
   getCompanyList,
@@ -248,5 +262,6 @@ export {
   getSearchSku,
   getSearchLocation,
   getSearchUserList,
-  getSearchCostKind
+  getSearchCostKind,
+  getSearchAttribute
 }

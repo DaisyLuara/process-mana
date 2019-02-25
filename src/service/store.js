@@ -1,7 +1,6 @@
 const STORAGE_API = '/api/erp_warehouse'
 const LOCATION_API = '/api/erp_location'
 const PRODUCT_API = '/api/erp_product'
-const ATTRIBUTE_API = '/api/attribute/list'
 const STORAGE_DETAIL_API = '/api/location_product'
 const RECORDS_API = '/api/erp_warehouse_change'
 const CONTRACT_PRODUCT_API = '/api/contract_product'
@@ -261,20 +260,6 @@ const modifyProduct = (context, productId, params) => {
   })
 }
 
-// 产品属性列表
-const getAttributeList = (context, params) => {
-  return new Promise(function(resolve, reject) {
-    context.$http
-      .get(HOST + ATTRIBUTE_API, { params: params })
-      .then(response => {
-        resolve(response.data)
-      })
-      .catch(error => {
-        reject(error)
-      })
-  })
-}
-
 // 根据产品SKU，查出对应产品属性
 const getAttributeBySku = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -308,6 +293,5 @@ export {
   modifyProduct,
   saveProduct,
   getProductDetails,
-  getAttributeList,
   getAttributeBySku
 }
