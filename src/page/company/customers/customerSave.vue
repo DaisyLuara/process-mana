@@ -379,6 +379,9 @@ export default {
           if (!this.customerForm.telephone) {
             delete args.telephone;
           }
+          if (this.customerForm.category === 1) {
+            delete args.role_id;
+          }
           saveCustomer(this, args, this.customerID)
             .then(result => {
               this.setting.loading = false;

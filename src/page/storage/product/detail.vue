@@ -21,7 +21,6 @@ import {
   saveProduct,
   modifyProduct,
   getProductDetails,
-  getAttributeList,
   getSearchSupplier,
   Cookies
 } from "service";

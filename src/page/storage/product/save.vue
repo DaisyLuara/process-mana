@@ -26,9 +26,9 @@
             clearable
           >
             <el-option
-              v-for="item in nameList"
+              v-for="item in nameList.options"
               :key="item.id"
-              :value="item.attribute_id+ ',' +item.value"
+              :value="nameList.id+ ',' +item.value"
               :label="item.value"
             />
           </el-select>
@@ -41,9 +41,9 @@
             clearable
           >
             <el-option
-              v-for="item in colorList"
+              v-for="item in colorList.options"
               :key="item.id"
-              :value="item.attribute_id + ',' + item.value"
+              :value="colorList.id + ',' + item.value"
               :label="item.value"
             />
           </el-select>
@@ -78,7 +78,7 @@ import {
   saveProduct,
   modifyProduct,
   getProductDetails,
-  getAttributeList,
+  getSearchAttribute,
   getSearchSupplier,
   Cookies
 } from "service";
@@ -154,22 +154,22 @@ export default {
   methods: {
     async init() {
       try {
-        await this.getAttributeList();
+        await this.getSearchAttribute();
         await this.getSearchSupplier();
       } catch (e) {
         console.log(e);
       }
     },
-    getAttributeList() {
+    getSearchAttribute() {
       this.searchLoading = true;
-      getAttributeList(this)
+      getSearchAttribute(this)
         .then(res => {
           res.data.map(r => {
             if (r.name === "name") {
-              this.nameList = r.value;
+              this.nameList = r;
             }
             if (r.name === "color") {
-              this.colorList = r.value;
+              this.colorList = r;
             }
           });
           this.searchLoading = false;
