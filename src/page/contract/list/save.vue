@@ -423,10 +423,10 @@ export default {
           if (res.data.length > 0) {
             res.data.map(r => {
               if (r.name === "name") {
-                this.nameList = r.value;
+                this.nameList = r.options;
               }
               if (r.name === "color") {
-                this.colorList = r.value;
+                this.colorList = r.options;
               }
             });
           }
