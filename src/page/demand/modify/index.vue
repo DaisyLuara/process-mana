@@ -162,7 +162,7 @@
                 v-if="(scope.row.has_feedback === 1 || scope.row.status === 3) && ( bonusManager || legalAffairsManager || operation)"
                 size="mini"
                 type="success"
-                @click="reviewDemand(scope.row)"
+                @click="review(scope.row)"
               >审批</el-button>
               <el-button
                 v-if="scope.row.has_feedback === 0 && scope.row.demand_application.receiver_id === applicant"
@@ -185,6 +185,34 @@
         </div>
       </div>
     </div>
+    <el-dialog title="反馈信息" :visible.sync="dialogFormVisible" :show-close="false">
+      <el-form :model="reviewFrom">
+        <el-form-item label="审批状态" label-width="100px">
+          <el-radio-group v-model="reviewFrom.review" @change="reviewHandle">
+            <el-radio :label="0">驳回</el-radio>
+            <el-radio :label="1">通过</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          v-if="rejectShow"
+          :rules="[{ required: true, message: '请输入驳回理由', trigger: 'submit' }]"
+          label="驳回理由"
+          label-width="100px"
+        >
+          <el-input
+            v-model="reviewFrom.reject_remark"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            type="textarea"
+            placeholder="请填写驳回理由"
+            class="text-input"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -200,7 +228,10 @@ import {
   MessageBox,
   Select,
   Option,
-  DatePicker
+  Radio,
+  RadioGroup,
+  DatePicker,
+  Dialog
 } from "element-ui";
 import {
   getDemandModifyList,
@@ -221,10 +252,19 @@ export default {
     "el-form-item": FormItem,
     "el-select": Select,
     "el-option": Option,
-    "el-date-picker": DatePicker
+    "el-date-picker": DatePicker,
+    "el-dialog": Dialog,
+    "el-radio": Radio,
+    "el-radio-group": RadioGroup
   },
   data() {
     return {
+      dialogFormVisible: false,
+      reviewFrom: {
+        review: 0,
+        reject_remark: ""
+      },
+      rejectShow: true,
       searchForm: {
         dataValue: [],
         demand_application_id: null,
@@ -292,6 +332,7 @@ export default {
           }
         ]
       },
+      modifyDemandId: null,
       statusList: [
         {
           id: 0,
@@ -363,10 +404,27 @@ export default {
     this.getSearchDemandApplication();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.applicant = user_info.id;
-    
+
     this.roles = user_info.roles.data;
   },
   methods: {
+    reviewHandle(val) {
+      if (val === 0) {
+        this.rejectShow = true;
+      } else {
+        this.reviewFrom.reject_remark = "";
+        this.rejectShow = false;
+      }
+    },
+    cancel() {
+      this.dialogFormVisible = false;
+      this.reviewFrom.review = 0;
+      this.reviewFrom.reject_remark = "";
+    },
+    review(data) {
+      this.dialogFormVisible = true;
+      this.modifyDemandId = data.id;
+    },
     getSearchDemandApplication() {
       this.searchLoading = true;
       let args = {
@@ -386,37 +444,30 @@ export default {
           });
         });
     },
-    // reviewDemand(data) {
-    //   let id = data.id;
-    //   this.$confirm("是否确认完成?", "提示", {
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消",
-    //     type: "warning"
-    //   })
-    //     .then(() => {
-    //       this.setting.loading = true;
-    //       reviewDemand(this, id)
-    //         .then(response => {
-    //           this.setting.loading = false;
-    //           this.$message({
-    //             type: "success",
-    //             message: "确认完成成功！"
-    //           });
-    //           this.pagination.currentPage = 1;
-    //           this.getDemandModifyList();
-    //         })
-    //         .catch(error => {
-    //           this.setting.loading = false;
-    //           this.$message({
-    //             message: error.response.data.message,
-    //             type: "warning"
-    //           });
-    //         });
-    //     })
-    //     .catch(e => {
-    //       this.setting.loading = false;
-    //     });
-    // },
+    submit() {
+      let args = {
+        review: this.reviewFrom.review,
+        reject_remark: this.reviewFrom.reject_remark
+      };
+      reviewDemand(this, this.modifyDemandId, args)
+        .then(response => {
+          this.dialogFormVisible = false;
+          this.$message({
+            type: "success",
+            message: "审批成功！"
+          });
+          this.pagination.currentPage = 1;
+          this.getDemandModifyList();
+        })
+        .catch(error => {
+          this.dialogFormVisible = false;
+          this.$message({
+            message: error.response.data.message,
+            type: "warning"
+          });
+        });
+    },
+
     getDemandModifyList() {
       this.setting.loading = true;
       let args = {
