@@ -427,8 +427,8 @@ export default {
         status: this.searchForm.status,
         applicant_id: this.searchForm.applicant_id,
         receiver_id: this.searchForm.receiver_id,
-        create_start_time: handleDateTransform(this.searchForm.dataValue[0]),
-        create_end_time: handleDateTransform(this.searchForm.dataValue[1])
+        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
       };
       if (!this.searchForm.title) {
         delete args.title;
@@ -443,10 +443,10 @@ export default {
         delete args.receiver_id;
       }
       if (!this.searchForm.dataValue[0]) {
-        delete args.create_start_time;
+        delete args.create_start_date;
       }
       if (!this.searchForm.dataValue[1]) {
-        delete args.create_end_time;
+        delete args.create_end_date;
       }
       getDemandList(this, args)
         .then(res => {

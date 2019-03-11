@@ -149,7 +149,7 @@ export default {
     getSearchDemandApplication() {
       this.searchLoading = true;
       let args = {
-        status: "2,3"
+        no_status: 0
       };
       getSearchDemandApplication(this, args)
         .then(res => {
@@ -190,7 +190,6 @@ export default {
     },
     submit(formName) {
       this.$refs[formName].validate(valid => {
-        console.log(this.demandModfiyForm);
         if (valid) {
           this.setting.loading = true;
           delete this.demandModfiyForm.applicant_name;

@@ -141,9 +141,7 @@ const editDemandModifyDetail = (context, demandModifyId, params) => {
 const reviewDemand = (context, demandModifyId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .put(HOST + DEMAND_MODIFY_API + '/' + demandModifyId + '/review', {
-        params: params
-      })
+      .put(HOST + DEMAND_MODIFY_API + '/' + demandModifyId + '/review', params)
       .then(response => {
         resolve(response.data)
       })

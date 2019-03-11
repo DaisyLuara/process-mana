@@ -97,6 +97,9 @@
                 <el-form-item label="反馈状态:">
                   <span>{{ scope.row.has_feedback===0 ? '未反馈' : '已反馈' }}</span>
                 </el-form-item>
+                <el-form-item label="反馈人:">
+                  <span>{{ scope.row.feedback_person_name }}</span>
+                </el-form-item>
                 <el-form-item label="平台意见:">
                   <span>{{ scope.row.status===0 ? '待处理' : scope.row.status===1 ? '已审核' : '已驳回' }}</span>
                 </el-form-item>
@@ -104,7 +107,7 @@
                   <span>{{ scope.row.created_at }}</span>
                 </el-form-item>
                 <el-form-item label="反馈时间:">
-                  <span>{{ scope.row.feedbak_time }}</span>
+                  <span>{{ scope.row.feedback_time }}</span>
                 </el-form-item>
               </el-form>
             </template>
@@ -132,6 +135,12 @@
           >
             <template slot-scope="scope">{{ scope.row.has_feedback===0 ? '未反馈' : '已反馈' }}</template>
           </el-table-column>
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="feedback_person_name"
+            label="反馈人"
+            min-width="100"
+          />
           <el-table-column :show-overflow-tooltip="true" prop="status" label="平台意见" min-width="80">
             <template
               slot-scope="scope"
@@ -145,7 +154,7 @@
           />
           <el-table-column
             :show-overflow-tooltip="true"
-            prop="feedbak_time"
+            prop="feedback_time"
             label="反馈时间"
             min-width="80"
           />
@@ -159,7 +168,7 @@
                 @click="editModify(scope.row)"
               >编辑</el-button>
               <el-button
-                v-if="(scope.row.has_feedback === 1 || scope.row.status === 3) && ( bonusManager || legalAffairsManager || operation)"
+                v-if="((scope.row.has_feedback === 1 && scope.row.status === 0)|| timeRange(scope.row)) && ( bonusManager || legalAffairsManager || operation)"
                 size="mini"
                 type="success"
                 @click="review(scope.row)"
@@ -404,10 +413,20 @@ export default {
     this.getSearchDemandApplication();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.applicant = user_info.id;
-
     this.roles = user_info.roles.data;
   },
   methods: {
+    // 反馈时间是否超过12小时
+    timeRange: data => {
+      let nowDate = new Date().getTime();
+      let created_at = new Date(data.created_at).getTime;
+      let time_range = nowDate - created_at;
+      if (time_range > 12 * 3600 * 1000) {
+        return true;
+      } else {
+        return false;
+      }
+    },
     reviewHandle(val) {
       if (val === 0) {
         this.rejectShow = true;
@@ -475,8 +494,8 @@ export default {
         demand_application_id: this.searchForm.demand_application_id,
         status: this.searchForm.status,
         has_feedback: this.searchForm.has_feedback,
-        create_start_time: handleDateTransform(this.searchForm.dataValue[0]),
-        create_end_time: handleDateTransform(this.searchForm.dataValue[1])
+        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
       };
       if (this.searchForm.status === "") {
         delete args.status;
@@ -488,10 +507,10 @@ export default {
         delete args.demand_application_id;
       }
       if (!this.searchForm.dataValue[0]) {
-        delete args.create_start_time;
+        delete args.create_start_date;
       }
       if (!this.searchForm.dataValue[1]) {
-        delete args.create_end_time;
+        delete args.create_end_date;
       }
       getDemandModifyList(this, args)
         .then(res => {

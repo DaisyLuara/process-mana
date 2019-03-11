@@ -155,6 +155,9 @@ export default {
               case "inform":
                 m.src = this.CDN_URL + "notification-icon.png";
                 break;
+              case "demand":
+                m.src = this.CDN_URL + "demand_icon.png";
+                break;
               default:
                 m.src = "";
                 break;
