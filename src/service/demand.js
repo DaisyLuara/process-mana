@@ -59,7 +59,7 @@ const editDemandDetail = (context, demandId, params) => {
 const confirmDemand = (context, demandId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .put(HOST + DEMAND_API + '/' + demandId + '/confirm', { params: params })
+      .put(HOST + DEMAND_API + '/' + demandId + '/confirm', params)
       .then(response => {
         resolve(response.data)
       })
@@ -73,7 +73,7 @@ const confirmDemand = (context, demandId, params) => {
 const receiveDemand = (context, demandId, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
-      .put(HOST + DEMAND_API + '/' + demandId + '/receive', { params: params })
+      .put(HOST + DEMAND_API + '/' + demandId + '/receive', params)
       .then(response => {
         resolve(response.data)
       })
