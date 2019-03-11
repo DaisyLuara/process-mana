@@ -135,7 +135,7 @@ import auth from "service/auth";
 
 import {
   historyBack,
-  getSearchBDList,
+  getSearchBD,
   getCustomerDetail,
   saveCustomer,
   getSearchRole
@@ -304,7 +304,7 @@ export default {
     this.setting.loadingText = "拼命加载中";
     this.init();
     this.customerID = this.$route.params.uid;
-    this.getSearchBDList();
+    this.getSearchBD();
     if (this.customerID) {
       this.getCustomerDetail();
     } else {
@@ -406,8 +406,8 @@ export default {
         }
       });
     },
-    getSearchBDList() {
-      getSearchBDList(this)
+    getSearchBD() {
+      getSearchBD(this)
         .then(res => {
           this.bdList = res;
         })
