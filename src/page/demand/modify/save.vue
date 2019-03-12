@@ -48,7 +48,7 @@
             <el-form-item label="修改详情" prop="content">
               <el-input
                 v-model="demandModfiyForm.content"
-                placeholder="请填写节修改详情"
+                placeholder="请填写修改详情"
                 :maxlength="200"
                 :autosize="{ minRows: 2, maxRows: 4}"
                 type="textarea"
