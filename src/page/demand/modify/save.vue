@@ -149,7 +149,8 @@ export default {
     getSearchDemandApplication() {
       this.searchLoading = true;
       let args = {
-        no_status: 0
+        no_status: 0,
+        create_select: 1
       };
       getSearchDemandApplication(this, args)
         .then(res => {
