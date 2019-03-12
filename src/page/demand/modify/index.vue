@@ -168,7 +168,7 @@
                 @click="editModify(scope.row)"
               >编辑</el-button>
               <el-button
-                v-if="((scope.row.has_feedback === 1 && scope.row.status === 0)|| timeRange(scope.row)) && ( bonusManager || legalAffairsManager || operation)"
+                v-if="((scope.row.has_feedback === 1 && scope.row.status === 0) || timeRange(scope.row)) && ( bonusManager || legalAffairsManager || operation)"
                 size="mini"
                 type="success"
                 @click="review(scope.row)"
@@ -421,11 +421,11 @@ export default {
       let nowDate = new Date().getTime();
       let created_at = new Date(data.created_at).getTime();
       let time_range = nowDate - created_at;
-      if (time_range > 12 * 3600 * 1000) {
-        console.log(1)
+      let has_feedback = data.has_feedback;
+      let status = data.status;
+      if (time_range > 12 * 3600 * 1000 && has_feedback === 0 && status === 0) {
         return true;
       } else {
-        console.log(0)
         return false;
       }
     },
