@@ -419,11 +419,13 @@ export default {
     // 反馈时间是否超过12小时
     timeRange: data => {
       let nowDate = new Date().getTime();
-      let created_at = new Date(data.created_at).getTime;
+      let created_at = new Date(data.created_at).getTime();
       let time_range = nowDate - created_at;
       if (time_range > 12 * 3600 * 1000) {
+        console.log(1)
         return true;
       } else {
+        console.log(0)
         return false;
       }
     },
