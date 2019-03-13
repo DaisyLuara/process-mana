@@ -6,7 +6,7 @@ import invoice from 'router/process/invoice'
 import payment from 'router/process/payment'
 import account from 'router/process/account'
 import storage from 'router/process/storage'
-
+import demand from 'router/process/demand'
 export default {
   path: '/',
   name: '流程站',
@@ -14,5 +14,14 @@ export default {
   meta: {
     // permission: 'main',
   },
-  children: [contract, invoice, payment, storage, company, inform, account]
+  children: [
+    contract,
+    invoice,
+    payment,
+    storage,
+    demand,
+    company,
+    inform,
+    account
+  ]
 }
