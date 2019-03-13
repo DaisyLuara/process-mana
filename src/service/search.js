@@ -15,6 +15,8 @@ const LOCATION_API = '/api/erp_location/query'
 const USER_API = '/api/user/query'
 const COST_KIND_API = '/api/cost_kind/query'
 const ATTRIBUTE_API = '/api/erp_attribute/query'
+const USER_PERMISSION_API = '/api/user/permission/query'
+const DEMAND_APPLICATION_API = '/api/demand_application/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
 const getCompanyList = (context, params) => {
@@ -246,6 +248,33 @@ const getSearchAttribute = (context, params) => {
   })
 }
 
+// 需求用户
+const getSearchDemandPeople = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + USER_PERMISSION_API, { params: params })
+      .then(response => {
+        resolve(response.data.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+// 申请列表
+const getSearchDemandApplication = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + DEMAND_APPLICATION_API, { params: params })
+      .then(response => {
+        resolve(response.data.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getCompanyList,
   getContract,
@@ -263,5 +292,7 @@ export {
   getSearchLocation,
   getSearchUserList,
   getSearchCostKind,
-  getSearchAttribute
+  getSearchAttribute,
+  getSearchDemandPeople,
+  getSearchDemandApplication
 }
