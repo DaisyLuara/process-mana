@@ -82,7 +82,7 @@
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
             <el-button
-              v-if="bd || bdManager || businessOperation"
+              v-if="bd || bdManager || businessOperation || operation"
               size="small"
               type="success"
               @click="addDemand"
@@ -335,6 +335,12 @@ export default {
     businessOperation: function() {
       return this.roles.find(r => {
         return r.name === "business-operation";
+      });
+    },
+    // 平台运营
+    operation: function() {
+      return this.roles.find(r => {
+        return r.name === "operation";
       });
     },
     // 产品经理
