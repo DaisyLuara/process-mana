@@ -16,6 +16,8 @@ const USER_API = '/api/user/query'
 const COST_KIND_API = '/api/cost_kind/query'
 const BD_API = '/api/bd_users/query'
 const ATTRIBUTE_API = '/api/erp_attribute/query'
+const USER_PERMISSION_API = '/api/user/permission/query'
+const DEMAND_APPLICATION_API = '/api/demand_application/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
 const getCompany = (context, params) => {
@@ -220,7 +222,6 @@ const getSearchUserList = (context, params) => {
   })
 }
 
-
 // 成本种类
 const getSearchCostKind = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -249,10 +250,38 @@ const getSearchAttribute = (context, params) => {
 }
 
 // bd
-const getSearchBDList = (context, params) => {
+const getSearchBD = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + BD_API, { params: params })
+      .then(response => {
+        resolve(response.data.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+// 需求用户
+const getSearchDemandPeople = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + USER_PERMISSION_API, { params: params })
+      .then(response => {
+        resolve(response.data.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+// 申请列表
+const getSearchDemandApplication = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + DEMAND_APPLICATION_API, { params: params })
       .then(response => {
         resolve(response.data.data)
       })
@@ -279,6 +308,8 @@ export {
   getSearchLocation,
   getSearchUserList,
   getSearchCostKind,
-  getSearchBDList,
-  getSearchAttribute
+  getSearchBD,
+  getSearchAttribute,
+  getSearchDemandPeople,
+  getSearchDemandApplication
 }
