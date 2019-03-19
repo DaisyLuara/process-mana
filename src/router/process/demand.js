@@ -14,7 +14,7 @@ let router = {
       component: () =>
         import(/* webpackChunkName: "page/demand/list/routerView" */ 'page/demand/list/routerView'),
       meta: {
-        title: '需求管理',
+        title: '申请管理',
         permission: 'demand.application'
       },
       children: [

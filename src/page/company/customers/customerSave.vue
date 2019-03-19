@@ -452,7 +452,7 @@ export default {
         this.rules.position[0].required = false;
         this.rules.password[0].required = false;
         let args = {
-          include: "customers,bdUser,media,roles"
+          include: "customers,bdUser,media,roles,parent"
         };
         getCustomerDetail(this, this.customerID, args)
           .then(result => {
