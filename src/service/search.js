@@ -18,7 +18,7 @@ const BD_API = '/api/bd_users/query'
 const ATTRIBUTE_API = '/api/erp_attribute/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
-const getCompanyList = (context, params) => {
+const getCompany = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + COMPANY_QUERY_API, { params: params })
@@ -263,7 +263,7 @@ const getSearchBDList = (context, params) => {
 }
 
 export {
-  getCompanyList,
+  getCompany,
   getContract,
   goodsService,
   getInvoiceCompany,
