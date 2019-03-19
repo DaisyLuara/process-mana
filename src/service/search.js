@@ -20,7 +20,7 @@ const USER_PERMISSION_API = '/api/user/permission/query'
 const DEMAND_APPLICATION_API = '/api/demand_application/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
-const getCompanyList = (context, params) => {
+const getCompany = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + COMPANY_QUERY_API, { params: params })
@@ -292,7 +292,7 @@ const getSearchDemandApplication = (context, params) => {
 }
 
 export {
-  getCompanyList,
+  getCompany,
   getContract,
   goodsService,
   getInvoiceCompany,

@@ -261,7 +261,7 @@
 
 <script>
 import {
-  getCompanyList,
+  getCompany,
   saveContract,
   handleDateTransform,
   modifyContract,
@@ -528,7 +528,7 @@ export default {
     },
     getCompany() {
       this.searchLoading = true;
-      getCompanyList(this)
+      getCompany(this)
         .then(res => {
           this.searchLoading = false;
           this.companyList = res.data;

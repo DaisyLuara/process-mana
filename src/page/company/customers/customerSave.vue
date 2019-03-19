@@ -17,6 +17,16 @@
                 <el-radio :label="1">供应商</el-radio>
               </el-radio-group>
             </el-form-item>
+            <el-form-item label="母公司" prop="parent_id">
+              <el-select v-model="customerForm.parent_id" placeholder="请选择母公司">
+                <el-option
+                  v-for="item in parentCompanyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item label="公司详情" prop="description">
               <el-input
                 type="textarea"
@@ -138,7 +148,8 @@ import {
   getSearchBD,
   getCustomerDetail,
   saveCustomer,
-  getSearchRole
+  getSearchRole,
+  getCompany
 } from "service";
 
 import {
@@ -186,9 +197,11 @@ export default {
         loading: true,
         loadingText: "拼命加载中"
       },
+      parentCompanyList: [],
       allRoles: [],
       contactFlag: true,
       customerForm: {
+        parent_id: null,
         bd_user_id: null,
         role_id: null,
         name: "",
@@ -304,6 +317,7 @@ export default {
     this.setting.loadingText = "拼命加载中";
     this.init();
     this.customerID = this.$route.params.uid;
+    this.getCompany();
     this.getSearchBD();
     if (this.customerID) {
       this.getCustomerDetail();
@@ -313,6 +327,17 @@ export default {
     }
   },
   methods: {
+    getCompany() {
+      this.searchLoading = true;
+      getCompany(this)
+        .then(res => {
+          this.searchLoading = false;
+          this.parentCompanyList = res.data;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+        });
+    },
     async init() {
       try {
         await this.getSearchRole();
@@ -358,6 +383,7 @@ export default {
         if (valid) {
           this.setting.loading = true;
           let args = {
+            parent_id: this.customerForm.parent_id,
             name: this.customerForm.name,
             address: this.customerForm.address,
             description: this.customerForm.description,
@@ -439,6 +465,9 @@ export default {
             if (result.media) {
               this.customerForm.logo_media_id = result.media.id;
               this.logoUrl = result.media.url;
+            }
+            if (result.parent) {
+              this.customerForm.parent_id = result.parent.id;
             }
             if (result.roles) {
               if (result.roles.data.length > 0) {
