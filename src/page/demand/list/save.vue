@@ -270,9 +270,6 @@ export default {
         expect_online_time: [
           { required: true, message: "期望上线日期不能为空", trigger: "submit" }
         ],
-        expect_receiver_ids: [
-          { required: true, message: "期望接单人不能为空", trigger: "submit" }
-        ],
         launch_point_remark: [
           { required: true, message: "投放地点备注不能为空", trigger: "submit" }
         ],
