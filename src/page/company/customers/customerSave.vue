@@ -17,7 +17,7 @@
                 <el-radio :label="1">供应商</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="母公司" prop="parent_id">
+            <el-form-item v-if="contactFlag" label="母公司" prop="parent_id">
               <el-select v-model="customerForm.parent_id" placeholder="请选择母公司">
                 <el-option
                   v-for="item in parentCompanyList"
@@ -203,7 +203,7 @@ export default {
       customerForm: {
         parent_id: null,
         bd_user_id: null,
-        role_id: null,
+        role_id: 8,
         name: "",
         address: "",
         category: 0,
