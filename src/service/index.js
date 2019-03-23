@@ -36,5 +36,8 @@ export * from './store'
 // 成本
 export * from './cost'
 
+// 公司
+export * from './company'
+
 // 需求
 export * from './demand'

@@ -1,86 +1,131 @@
 <template>
   <div class="add-customer-wrap">
     <div v-loading="setting.loading" :element-loading-text="setting.loadingText">
-      <div class="customer-title">{{ $route.name }}</div>
+      <div class="customer-title">{{ customerID ? '编辑公司' : '新增公司' }}</div>
       <el-form ref="customerForm" :model="customerForm" :rules="rules" label-width="100px">
-        <el-form-item label="公司名称" prop="name">
-          <el-input v-model="customerForm.name" :maxlength="50" class="customer-form-input"/>
-        </el-form-item>
-        <el-form-item label="公司地址" prop="address">
-          <el-input v-model="customerForm.address" :maxlength="60" class="customer-form-input"/>
-        </el-form-item>
-        <el-form-item label="公司属性" prop="category">
-          <el-radio-group v-model="customerForm.category" @change="categoryHandle">
-            <el-radio :label="0">客户</el-radio>
-            <el-radio :label="1">供应商</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="公司详情" prop="description">
-          <el-input
-            type="textarea"
-            v-model="customerForm.description"
-            :maxlength="1000"
-            class="customer-form-input"
-          />
-        </el-form-item>
-        <el-form-item label="公司logo" prop="logo">
-          <el-input v-model="customerForm.logo" :maxlength="150" class="customer-form-input"/>
-        </el-form-item>
-        <el-form-item label="内部名称" prop="internal_name">
-          <el-input
-            v-model="customerForm.internal_name"
-            :maxlength="150"
-            class="customer-form-input"
-          />
-        </el-form-item>
-        <el-form-item v-if="statusFlag" label="状态" prop="selectedStatus">
-          <el-select v-model="customerForm.selectedStatus" placeholder="请选择状态">
-            <el-option
-              v-for="item in statusOption"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <div v-if="!customerID&&contactFlag">
-          <el-form-item label="联系人名称" prop="customer_name">
-            <el-input
-              v-model="customerForm.customer_name"
-              :maxlength="50"
-              class="customer-form-input"
-            />
-          </el-form-item>
-          <el-form-item label="联系人职务" prop="position">
-            <el-input v-model="customerForm.position" :maxlength="50" class="customer-form-input"/>
-          </el-form-item>
-          <el-form-item label="手机号码" prop="phone">
-            <el-input v-model="customerForm.phone" :maxlength="11" class="customer-form-input"/>
-          </el-form-item>
-          <el-form-item label="座机电话" prop="telephone">
-            <el-input v-model="customerForm.telephone" :maxlength="20" class="customer-form-input"/>
-            <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
-          </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input
-              v-model="customerForm.password"
-              :maxlength="30"
-              type="password"
-              class="customer-form-input"
-            />
-          </el-form-item>
-          <el-form-item label="角色" prop="role_id">
-            <el-radio-group v-model="customerForm.role_id">
-              <el-radio
-                v-for="role in allRoles"
-                :data="role"
-                :key="role.id"
-                :label="role.id"
-                class="role-radio"
-              >{{ role.display_name }}</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </div>
+        <el-collapse v-model="activeNames">
+          <el-collapse-item title="基础信息 Basic Information" name="1">
+            <el-form-item label="公司名称" prop="name">
+              <el-input v-model="customerForm.name" :maxlength="50" class="customer-form-input"/>
+            </el-form-item>
+            <el-form-item label="公司地址" prop="address">
+              <el-input v-model="customerForm.address" :maxlength="60" class="customer-form-input"/>
+            </el-form-item>
+            <el-form-item label="公司属性" prop="category">
+              <el-radio-group v-model="customerForm.category" @change="categoryHandle">
+                <el-radio :label="0">客户</el-radio>
+                <el-radio :label="1">供应商</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item v-if="contactFlag" label="母公司" prop="parent_id">
+              <el-select v-model="customerForm.parent_id" placeholder="请选择母公司">
+                <el-option
+                  v-for="item in parentCompanyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="公司详情" prop="description">
+              <el-input
+                type="textarea"
+                v-model="customerForm.description"
+                :maxlength="1000"
+                class="customer-form-input"
+              />
+            </el-form-item>
+            <el-form-item label="公司logo" prop="logo_media_id">
+              <el-upload
+                class="avatar-uploader"
+                :action="SERVER_URL + '/api/media'"
+                :data="{type: 'image'}"
+                :headers="formHeader"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <img v-if="logoUrl" :src="logoUrl" class="avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+            <el-form-item label="公司简称" prop="internal_name">
+              <el-input
+                v-model="customerForm.internal_name"
+                :maxlength="150"
+                class="customer-form-input"
+              />
+            </el-form-item>
+            <el-form-item v-if="contactFlag" label="所属BD" prop="bd_user_id">
+              <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属BD">
+                <el-option
+                  v-for="item in bdList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-if="statusFlag" label="状态" prop="selectedStatus">
+              <el-select v-model="customerForm.selectedStatus" placeholder="请选择状态">
+                <el-option
+                  v-for="item in statusOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-collapse-item>
+          <el-collapse-item v-if="!customerID&&contactFlag" title="联系人信息 Contacts" name="2">
+            <div>
+              <el-form-item label="联系人名称" prop="customer_name">
+                <el-input
+                  v-model="customerForm.customer_name"
+                  :maxlength="50"
+                  class="customer-form-input"
+                />
+              </el-form-item>
+              <el-form-item label="联系人职务" prop="position">
+                <el-input
+                  v-model="customerForm.position"
+                  :maxlength="50"
+                  class="customer-form-input"
+                />
+              </el-form-item>
+              <el-form-item label="手机号码" prop="phone">
+                <el-input v-model="customerForm.phone" :maxlength="11" class="customer-form-input"/>
+              </el-form-item>
+              <el-form-item label="座机电话" prop="telephone">
+                <el-input
+                  v-model="customerForm.telephone"
+                  :maxlength="20"
+                  class="customer-form-input"
+                />
+                <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
+              </el-form-item>
+              <el-form-item label="密码" prop="password">
+                <el-input
+                  v-model="customerForm.password"
+                  :maxlength="30"
+                  type="password"
+                  class="customer-form-input"
+                />
+              </el-form-item>
+              <el-form-item label="角色" prop="role_id">
+                <el-radio-group v-model="customerForm.role_id">
+                  <el-radio
+                    v-for="role in allRoles"
+                    :data="role"
+                    :key="role.id"
+                    :label="role.id"
+                    class="role-radio"
+                  >{{ role.display_name }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
         <el-form-item>
           <el-button
             :loading="loading"
@@ -96,8 +141,17 @@
 </template>
 
 <script>
-import company from "service/company";
-import { historyBack, getSearchRole } from "service";
+import auth from "service/auth";
+
+import {
+  historyBack,
+  getSearchBD,
+  getCustomerDetail,
+  saveCustomer,
+  getSearchRole,
+  getCompany
+} from "service";
+
 import {
   Select,
   Option,
@@ -106,8 +160,12 @@ import {
   Form,
   FormItem,
   RadioGroup,
-  Radio
+  Radio,
+  CollapseItem,
+  Collapse,
+  Upload
 } from "element-ui";
+const SERVER_URL = process.env.SERVER_URL;
 
 export default {
   name: "AddCustomer",
@@ -121,33 +179,46 @@ export default {
     "el-form": Form,
     "el-form-item": FormItem,
     "el-radio-group": RadioGroup,
-    "el-radio": Radio
+    "el-radio": Radio,
+    "el-collapse-item": CollapseItem,
+    "el-collapse": Collapse,
+    "el-upload": Upload
   },
   data() {
     return {
+      SERVER_URL: SERVER_URL,
+      formHeader: {
+        Authorization: "Bearer " + auth.getToken()
+      },
+      logoUrl: "",
+      activeNames: ["1", "2"],
       setting: {
         isOpenSelectAll: true,
         loading: true,
         loadingText: "拼命加载中"
       },
+      parentCompanyList: [],
       allRoles: [],
       contactFlag: true,
       customerForm: {
-        role_id: null,
+        parent_id: null,
+        bd_user_id: null,
+        role_id: 8,
         name: "",
         address: "",
         category: 0,
         description: "",
         internal_name: "",
-        logo: "",
         customer_name: "",
         phone: "",
         position: "",
         password: "",
         telephone: "",
-        selectedStatus: ""
+        selectedStatus: "",
+        logo_media_id: null
       },
       statusFlag: false,
+      bdList: [],
       statusOption: [
         {
           value: 1,
@@ -164,6 +235,9 @@ export default {
       ],
       customerID: "",
       rules: {
+        internal_name: [
+          { message: "请输入公司简称", trigger: "submit", required: true }
+        ],
         name: [
           { message: "请输入公司名称", trigger: "submit", required: true }
         ],
@@ -178,6 +252,9 @@ export default {
         ],
         description: [
           { message: "请输入公司详情", trigger: "submit", required: true }
+        ],
+        bd_user_id: [
+          { message: "请选择所属BD", trigger: "submit", required: true }
         ],
         phone: [
           {
@@ -240,6 +317,8 @@ export default {
     this.setting.loadingText = "拼命加载中";
     this.init();
     this.customerID = this.$route.params.uid;
+    this.getCompany();
+    this.getSearchBD();
     if (this.customerID) {
       this.getCustomerDetail();
     } else {
@@ -248,12 +327,34 @@ export default {
     }
   },
   methods: {
+    getCompany() {
+      this.searchLoading = true;
+      getCompany(this)
+        .then(res => {
+          this.searchLoading = false;
+          this.parentCompanyList = res.data;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+        });
+    },
     async init() {
       try {
         await this.getSearchRole();
       } catch (e) {
         console.log(e);
       }
+    },
+    handleAvatarSuccess(res, file) {
+      this.customerForm.logo_media_id = res.id;
+      this.logoUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isLt2M;
     },
     getSearchRole() {
       let args = {
@@ -282,17 +383,19 @@ export default {
         if (valid) {
           this.setting.loading = true;
           let args = {
+            parent_id: this.customerForm.parent_id,
             name: this.customerForm.name,
-            role_id: this.customerForm.role_id,
             address: this.customerForm.address,
             description: this.customerForm.description,
-            logo: this.customerForm.logo,
+            logo_media_id: this.customerForm.logo_media_id,
             category: this.customerForm.category,
-            internal_name: this.customerForm.internal_name
+            internal_name: this.customerForm.internal_name,
+            bd_user_id: this.customerForm.bd_user_id
           };
           if (this.customerID || !this.contactFlag) {
             args.status = this[formName].selectedStatus;
           } else {
+            args.role_id = this.customerForm.role_id;
             args.customer_name = this.customerForm.customer_name;
             args.phone = this.customerForm.phone;
             args.telephone = this.customerForm.telephone;
@@ -305,8 +408,7 @@ export default {
           if (this.customerForm.category === 1) {
             delete args.role_id;
           }
-          company
-            .saveCustomer(this, args, this.customerID)
+          saveCustomer(this, args, this.customerID)
             .then(result => {
               this.setting.loading = false;
               this.$message({
@@ -330,6 +432,18 @@ export default {
         }
       });
     },
+    getSearchBD() {
+      getSearchBD(this)
+        .then(res => {
+          this.bdList = res;
+        })
+        .catch(err => {
+          this.$message({
+            type: "warning",
+            message: err.response.data.message
+          });
+        });
+    },
     getCustomerDetail() {
       this.setting.loading = true;
       if (this.customerID) {
@@ -337,8 +451,10 @@ export default {
         this.rules.phone[0].required = false;
         this.rules.position[0].required = false;
         this.rules.password[0].required = false;
-        company
-          .getCustomerDetail(this, this.customerID)
+        let args = {
+          include: "customers,bdUser,media,roles,parent"
+        };
+        getCustomerDetail(this, this.customerID, args)
           .then(result => {
             this.statusFlag = true;
             this.customerForm.name = result.name;
@@ -346,8 +462,23 @@ export default {
             this.customerForm.category = result.category;
             this.customerForm.description = result.description;
             this.customerForm.selectedStatus = result.status;
-            this.customerForm.logo = result.logo;
+            if (result.media) {
+              this.customerForm.logo_media_id = result.media.id;
+              this.logoUrl = result.media.url;
+            }
+            if (result.parent) {
+              this.customerForm.parent_id = result.parent.id;
+            }
+            if (result.roles) {
+              if (result.roles.data.length > 0) {
+                this.customerForm.role_id = result.roles.data[0].id;
+              }
+            }
+            this.categoryHandle(this.customerForm.category);
             this.customerForm.internal_name = result.internal_name;
+            this.customerForm.bd_user_id = result.bdUser
+              ? result.bdUser.id
+              : null;
             this.setting.loading = false;
           })
           .catch(err => {
@@ -401,7 +532,37 @@ export default {
     }
   }
   .customer-title {
+    margin-top: 10px;
     margin-bottom: 20px;
+  }
+
+  .avatar-uploader {
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+  }
+  .avatar-uploader .el-upload {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
   }
   .el-checkbox {
     margin-left: 0px;

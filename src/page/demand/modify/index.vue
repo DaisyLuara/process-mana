@@ -194,7 +194,7 @@
         </div>
       </div>
     </div>
-    <el-dialog title="反馈信息" :visible.sync="dialogFormVisible" :show-close="false">
+    <el-dialog title="平台意见" :visible.sync="dialogFormVisible" :show-close="false">
       <el-form :model="reviewFrom">
         <el-form-item label="审批状态" label-width="100px">
           <el-radio-group v-model="reviewFrom.review" @change="reviewHandle">

@@ -14,12 +14,13 @@ const SKU_API = '/api/erp_sku/query'
 const LOCATION_API = '/api/erp_location/query'
 const USER_API = '/api/user/query'
 const COST_KIND_API = '/api/cost_kind/query'
+const BD_API = '/api/bd_users/query'
 const ATTRIBUTE_API = '/api/erp_attribute/query'
 const USER_PERMISSION_API = '/api/user/permission/query'
 const DEMAND_APPLICATION_API = '/api/demand_application/query'
 const HOST = process.env.SERVER_URL
 // 公司列表
-const getCompanyList = (context, params) => {
+const getCompany = (context, params) => {
   return new Promise(function(resolve, reject) {
     context.$http
       .get(HOST + COMPANY_QUERY_API, { params: params })
@@ -248,6 +249,23 @@ const getSearchAttribute = (context, params) => {
   })
 }
 
+<<<<<<< HEAD
+// bd
+const getSearchBD = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .get(HOST + BD_API, { params: params })
+      .then(response => {
+        resolve(response.data.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
+=======
+>>>>>>> master
 // 需求用户
 const getSearchDemandPeople = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -261,6 +279,10 @@ const getSearchDemandPeople = (context, params) => {
       })
   })
 }
+<<<<<<< HEAD
+
+=======
+>>>>>>> master
 // 申请列表
 const getSearchDemandApplication = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -276,7 +298,7 @@ const getSearchDemandApplication = (context, params) => {
 }
 
 export {
-  getCompanyList,
+  getCompany,
   getContract,
   goodsService,
   getInvoiceCompany,
@@ -292,6 +314,10 @@ export {
   getSearchLocation,
   getSearchUserList,
   getSearchCostKind,
+<<<<<<< HEAD
+  getSearchBD,
+=======
+>>>>>>> master
   getSearchAttribute,
   getSearchDemandPeople,
   getSearchDemandApplication

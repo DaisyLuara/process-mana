@@ -3,12 +3,46 @@
     <div class="customer-list-wrap">
       <div class="customer-content-wrap">
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="filters" :inline="true">
+          <el-form ref="searchForm" :model="searchForm" :inline="true">
             <el-form-item label prop="name">
-              <el-input v-model="filters.name" placeholder="请输入公司名称" style="width: 200px;"/>
+              <el-input v-model="searchForm.name" placeholder="请输入公司名称" style="width: 200px;"/>
+            </el-form-item>
+            <el-form-item label prop="internal_name">
+              <el-input
+                v-model="searchForm.internal_name"
+                placeholder="请输入公司简称"
+                style="width: 200px;"
+              />
+            </el-form-item>
+            <el-form-item label prop="category">
+              <el-select v-model="searchForm.category" placeholder="请选择公司属性" filterable clearable>
+                <el-option
+                  v-for="item in categoryList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label prop="status">
+              <el-select v-model="searchForm.status" placeholder="请选择状态" filterable clearable>
+                <el-option
+                  v-for="item in statusList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label prop="bd_user_id">
+              <el-input
+                v-model="searchForm.bd_user_id"
+                placeholder="请输入所属BD"
+                style="width: 200px;"
+              />
             </el-form-item>
             <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-            <el-button type="default" size="small" @click="resetSearch">重置</el-button>
+            <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
           </el-form>
         </div>
         <div class="actions-wrap">
@@ -16,6 +50,39 @@
           <el-button size="small" type="success" @click="linkToAddClient">新增公司</el-button>
         </div>
         <el-table :data="customerList" style="width: 100%">
+          <el-table-column type="expand">
+            <template slot-scope="scope">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="ID:">
+                  <span>{{ scope.row.id }}</span>
+                </el-form-item>
+                <el-form-item label="公司全称:">
+                  <span>{{ scope.row.name }}</span>
+                </el-form-item>
+                <el-form-item label="公司地址:">
+                  <span>{{ scope.row.address }}</span>
+                </el-form-item>
+                <el-form-item label="公司简称:">
+                  <span>{{ scope.row.internal_name }}</span>
+                </el-form-item>
+                <el-form-item label="公司属性:">
+                  <span>{{ scope.row.category === 0 ? '客户' : scope.row.category === 1? '供应商': ''}}</span>
+                </el-form-item>
+                <el-form-item label="状态:">
+                  <span>{{ statusHanlde(scope.row) }}</span>
+                </el-form-item>
+                <el-form-item label="所属BD:">
+                  <span>{{ scope.row.bdUser ? scope.row.bdUser.name :'' }}</span>
+                </el-form-item>
+                <el-form-item label="创建时间:">
+                  <span>{{ scope.row.created_at }}</span>
+                </el-form-item>
+                <el-form-item label="修改时间:">
+                  <span>{{ scope.row.updated_at }}</span>
+                </el-form-item>
+              </el-form>
+            </template>
+          </el-table-column>
           <el-table-column :show-overflow-tooltip="true" prop="name" label="公司全称" min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -26,32 +93,35 @@
           <el-table-column
             :show-overflow-tooltip="true"
             prop="internal_name"
-            label="内部名称"
+            label="公司简称"
             min-width="80"
           />
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="category"
+            label="公司属性"
+            min-width="80"
+          >
+            <template
+              slot-scope="scope"
+            >{{ scope.row.category === 0 ? '客户' : scope.row.category === 1? '供应商': ''}}</template>
+          </el-table-column>
           <el-table-column prop="status" label="状态">
             <template slot-scope="scope">{{ statusHanlde(scope.row) }}</template>
           </el-table-column>
-          <el-table-column prop="user_name" label="销售">
-            <template slot-scope="scope">{{ scope.row.user.name }}</template>
+          <el-table-column prop="bd_user_id" label="所属BD">
+            <template slot-scope="scope">{{ scope.row.bdUser ? scope.row.bdUser.name :''}}</template>
           </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="created_at"
-            label="创建时间"
-            min-width="100"
-          />
           <el-table-column
             :show-overflow-tooltip="true"
             prop="updated_at"
             label="修改时间"
             min-width="100"
           />
-          <el-table-column label="操作" min-width="280">
+          <el-table-column label="操作" width="280">
             <template slot-scope="scope">
               <el-button size="small" type="primary" @click="linkToEdit(scope.row.id)">修改</el-button>
               <el-button size="small" @click="showContactDetail(scope.row.id,scope.row.name)">联系人详情</el-button>
-              <!-- <el-button type="danger" size="small" @click="perms(scope.row.id)">权限</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -70,7 +140,7 @@
 </template>
 
 <script>
-import company from "service/company";
+import { getCustomerList } from "service";
 
 import {
   Button,
@@ -80,7 +150,9 @@ import {
   Pagination,
   Form,
   FormItem,
-  MessageBox
+  MessageBox,
+  Select,
+  Option
 } from "element-ui";
 
 export default {
@@ -91,13 +163,43 @@ export default {
     "el-input": Input,
     "el-pagination": Pagination,
     "el-form": Form,
-    "el-form-item": FormItem
+    "el-form-item": FormItem,
+    "el-select": Select,
+    "el-option": Option
   },
   data() {
     return {
-      filters: {
-        name: ""
+      searchForm: {
+        name: "",
+        internal_name: "",
+        category: "",
+        status: "",
+        bd_user_id: ""
       },
+      statusList: [
+        {
+          value: 1,
+          label: "待合作"
+        },
+        {
+          value: 2,
+          label: "合作中"
+        },
+        {
+          value: 3,
+          label: "已结束"
+        }
+      ],
+      categoryList: [
+        {
+          id: 0,
+          name: "客户"
+        },
+        {
+          id: 1,
+          name: "供应商"
+        }
+      ],
       setting: {
         loading: false,
         loadingText: "拼命加载中"
@@ -137,14 +239,32 @@ export default {
       }
       let pageNum = this.pagination.currentPage;
       let args = {
-        include: "user",
+        include: "user,bdUser",
         page: pageNum,
-        name: this.filters.name
+        name: this.searchForm.name,
+        internal_name: this.searchForm.internal_name,
+        category: this.searchForm.category,
+        status: this.searchForm.status,
+        bd_user_id: this.searchForm.bd_user_id
       };
       this.setting.loadingText = "拼命加载中";
       this.setting.loading = true;
-      return company
-        .getCustomerList(this, args)
+      if (this.searchForm.name === "") {
+        delete args.name;
+      }
+      if (this.searchForm.internal_name === "") {
+        delete args.internal_name;
+      }
+      if (this.searchForm.category === "") {
+        delete args.category;
+      }
+      if (this.searchForm.status === "") {
+        delete args.status;
+      }
+      if (this.searchForm.bd_user_id === "") {
+        delete args.bd_user_id;
+      }
+      return getCustomerList(this, args)
         .then(response => {
           this.setting.loading = false;
           this.customerList = response.data;
@@ -169,8 +289,8 @@ export default {
         path: "/company/customers/edit/" + id
       });
     },
-    resetSearch() {
-      this.filters.name = "";
+    resetSearch(formName) {
+      this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
       this.getCustomerList();
     },
@@ -181,11 +301,6 @@ export default {
           id: id,
           name: name
         }
-      });
-    },
-    perms(id) {
-      this.$router.push({
-        path: "/company/perms/edit/" + id
       });
     }
   }
@@ -201,6 +316,18 @@ export default {
     background: #fff;
     padding: 30px;
     .customer-content-wrap {
+      .demo-table-expand {
+        font-size: 0;
+      }
+      .demo-table-expand label {
+        width: 90px;
+        color: #99a9bf;
+      }
+      .demo-table-expand .el-form-item {
+        margin-right: 0;
+        margin-bottom: 0;
+        width: 50%;
+      }
       .el-form-item {
         margin-bottom: 10px;
       }
