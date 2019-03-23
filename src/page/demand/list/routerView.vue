@@ -5,10 +5,9 @@
 </template>
 <script>
 export default {
-  name: 'DemandListView'
-}
+  name: "DemandListView"
+};
 </script>
-
 <style lang="less" scoped>
 .demand-root {
   height: 100%;

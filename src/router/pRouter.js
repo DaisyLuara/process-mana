@@ -7,7 +7,10 @@ import payment from 'router/process/payment'
 import account from 'router/process/account'
 import storage from 'router/process/storage'
 import demand from 'router/process/demand'
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 export default {
   path: '/',
   name: '流程站',

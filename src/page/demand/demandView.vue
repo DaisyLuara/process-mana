@@ -1,15 +1,14 @@
 <template>
   <div class="demand-root">
     <second-sidebar module="demand"/>
-    <router-view />
+    <router-view/>
   </div>
 </template>
 <script>
 export default {
-  name: 'DemandView'
-}
+  name: "DemandView"
+};
 </script>
-
 <style lang="less" scoped>
 .demand-root {
   height: 100%;

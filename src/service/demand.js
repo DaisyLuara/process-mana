@@ -40,7 +40,6 @@ const demandDetail = (context, demandId, params) => {
       })
   })
 }
-
 // 编辑需求申请
 const editDemandDetail = (context, demandId, params) => {
   return new Promise(function(resolve, reject) {
@@ -54,7 +53,6 @@ const editDemandDetail = (context, demandId, params) => {
       })
   })
 }
-
 // 确认完成需求申请
 const confirmDemand = (context, demandId, params) => {
   return new Promise(function(resolve, reject) {
@@ -68,7 +66,6 @@ const confirmDemand = (context, demandId, params) => {
       })
   })
 }
-
 // 接单需求申请
 const receiveDemand = (context, demandId, params) => {
   return new Promise(function(resolve, reject) {
@@ -82,7 +79,6 @@ const receiveDemand = (context, demandId, params) => {
       })
   })
 }
-
 // 需求修改列表
 const getDemandModifyList = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -122,7 +118,6 @@ const demandModifyDetail = (context, demandModifyId, params) => {
       })
   })
 }
-
 // 编辑需求修改
 const editDemandModifyDetail = (context, demandModifyId, params) => {
   return new Promise(function(resolve, reject) {
@@ -136,7 +131,6 @@ const editDemandModifyDetail = (context, demandModifyId, params) => {
       })
   })
 }
-
 // 审批需求修改
 const reviewDemand = (context, demandModifyId, params) => {
   return new Promise(function(resolve, reject) {
@@ -150,7 +144,6 @@ const reviewDemand = (context, demandModifyId, params) => {
       })
   })
 }
-
 // 反馈需求修改
 const feedbackDemand = (context, demandModifyId, params) => {
   return new Promise(function(resolve, reject) {
@@ -167,7 +160,6 @@ const feedbackDemand = (context, demandModifyId, params) => {
       })
   })
 }
-
 export {
   getDemandList,
   saveDemand,
