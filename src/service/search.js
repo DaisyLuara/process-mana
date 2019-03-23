@@ -249,7 +249,6 @@ const getSearchAttribute = (context, params) => {
   })
 }
 
-<<<<<<< HEAD
 // bd
 const getSearchBD = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -264,8 +263,6 @@ const getSearchBD = (context, params) => {
   })
 }
 
-=======
->>>>>>> master
 // 需求用户
 const getSearchDemandPeople = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -279,10 +276,6 @@ const getSearchDemandPeople = (context, params) => {
       })
   })
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 // 申请列表
 const getSearchDemandApplication = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -314,10 +307,7 @@ export {
   getSearchLocation,
   getSearchUserList,
   getSearchCostKind,
-<<<<<<< HEAD
   getSearchBD,
-=======
->>>>>>> master
   getSearchAttribute,
   getSearchDemandPeople,
   getSearchDemandApplication
