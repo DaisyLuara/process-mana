@@ -22,7 +22,7 @@ let router = {
           path: '/',
           component: () =>
             import(/* webpackChunkName: "page/demand/list/index" */ 'page/demand/list/index'),
-          name: '需求列表',
+          name: '申请列表',
           meta: {
             permission: 'demand.application.read'
           }
@@ -101,7 +101,6 @@ let router = {
     }
   ]
 }
-
 router.redirect = () => {
   let routes = router.children
   for (let route of routes) {

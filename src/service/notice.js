@@ -3,7 +3,7 @@ const READ_NOTICE_API = '/api/user/read/notifications'
 const NOTICE_SRATS_API = '/api/user/notifications/stats'
 const ACTIVITIES_API = '/api/user/activities'
 const HOST = process.env.SERVER_URL
-// 消息列表
+
 const getNoticeList = (context, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -16,7 +16,6 @@ const getNoticeList = (context, args) => {
       })
   })
 }
-// 已读
 const readNotifications = context => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -29,7 +28,6 @@ const readNotifications = context => {
       })
   })
 }
-// 消息通知数
 const notificationStats = context => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -42,8 +40,6 @@ const notificationStats = context => {
       })
   })
 }
-
-// 操作记录列表
 const getActivitiesList = (context, args) => {
   return new Promise(function(resolve, reject) {
     context.$http
@@ -56,9 +52,23 @@ const getActivitiesList = (context, args) => {
       })
   })
 }
+
+const deleteNotifications = (context, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .delete(HOST + NOTICE_API, {params:params})
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
 export {
   getNoticeList,
-  getActivitiesList,
+  readNotifications,
   notificationStats,
-  readNotifications
+  getActivitiesList,
+  deleteNotifications
 }
