@@ -276,7 +276,6 @@ const getSearchDemandPeople = (context, params) => {
       })
   })
 }
-
 // 申请列表
 const getSearchDemandApplication = (context, params) => {
   return new Promise(function(resolve, reject) {
