@@ -1,11 +1,20 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
-      <div class="pane-title">{{demandID ? '编辑申请' : '新增申请'}}</div>
-      <el-form ref="demandApplyForm" :model="demandApplyForm" :rules="rules" label-width="130px">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
+      <div class="pane-title">{{ demandID ? '编辑申请' : '新增申请' }}</div>
+      <el-form 
+        ref="demandApplyForm" 
+        :model="demandApplyForm" 
+        :rules="rules" 
+        label-width="130px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="项目标的" prop="title">
+            <el-form-item 
+              label="项目标的" 
+              prop="title">
               <el-input
                 v-model="demandApplyForm.title"
                 :maxlength="100"
@@ -15,7 +24,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人" prop="applicant_name">
+            <el-form-item 
+              label="申请人" 
+              prop="applicant_name">
               <el-input
                 v-model="demandApplyForm.applicant_name"
                 :disabled="true"
@@ -27,15 +38,21 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="有无合同" prop="has_contract">
-              <el-radio-group v-model="demandApplyForm.has_contract" @change="contractHandle">
+            <el-form-item 
+              label="有无合同" 
+              prop="has_contract">
+              <el-radio-group 
+                v-model="demandApplyForm.has_contract" 
+                @change="contractHandle">
                 <el-radio :label="0">无合同</el-radio>
                 <el-radio :label="1">有合同</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同编号" prop="contract_ids">
+            <el-form-item 
+              label="合同编号" 
+              prop="contract_ids">
               <el-select
                 v-model="demandApplyForm.contract_ids"
                 :loading="searchLoading"
@@ -58,7 +75,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="节目数量" prop="project_num">
+            <el-form-item 
+              label="节目数量" 
+              prop="project_num">
               <el-input
                 v-model="demandApplyForm.project_num"
                 placeholder="请填写节目数量"
@@ -67,12 +86,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="节目列表" prop="similar_project_name">
+            <el-form-item 
+              label="节目列表" 
+              prop="similar_project_name">
               <el-input
                 v-model="demandApplyForm.similar_project_name"
-                placeholder="请填写节目列表"
                 :maxlength="200"
                 :autosize="{ minRows: 2, maxRows: 4}"
+                placeholder="请填写节目列表"
                 type="textarea"
                 class="item-input"
               />
@@ -81,7 +102,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="期望上线日期" prop="expect_online_time">
+            <el-form-item 
+              label="期望上线日期" 
+              prop="expect_online_time">
               <el-date-picker
                 v-model="demandApplyForm.expect_online_time"
                 type="date"
@@ -90,7 +113,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="期望接单人" prop="expect_receiver_ids">
+            <el-form-item 
+              label="期望接单人" 
+              prop="expect_receiver_ids">
               <el-select
                 v-model="demandApplyForm.expect_receiver_ids"
                 :loading="searchLoading"
@@ -112,7 +137,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="投放地点备注" prop="launch_point_remark">
+            <el-form-item 
+              label="投放地点备注" 
+              prop="launch_point_remark">
               <el-input
                 v-model="demandApplyForm.launch_point_remark"
                 :autosize="{ minRows: 2, maxRows: 4}"
@@ -123,7 +150,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="大屏节目需求" prop="big_screen_demand">
+            <el-form-item 
+              label="大屏节目需求" 
+              prop="big_screen_demand">
               <el-input
                 v-model="demandApplyForm.big_screen_demand"
                 :autosize="{ minRows: 2, maxRows: 4}"
@@ -136,7 +165,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="H5节目需求" prop="h5_demand">
+            <el-form-item 
+              label="H5节目需求" 
+              prop="h5_demand">
               <el-input
                 v-model="demandApplyForm.h5_demand"
                 :autosize="{ minRows: 2, maxRows: 4}"
@@ -147,7 +178,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="其他定制内容" prop="other_demand">
+            <el-form-item 
+              label="其他定制内容" 
+              prop="other_demand">
               <el-input
                 v-model="demandApplyForm.other_demand"
                 :autosize="{ minRows: 2, maxRows: 4}"
@@ -160,7 +193,9 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="备注" prop="applicant_remark">
+            <el-form-item 
+              label="备注" 
+              prop="applicant_remark">
               <el-input
                 v-model="demandApplyForm.applicant_remark"
                 :autosize="{ minRows: 2, maxRows: 4}"
@@ -172,7 +207,9 @@
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button type="primary" @click="submit('demandApplyForm')">保存</el-button>
+          <el-button 
+            type="primary" 
+            @click="submit('demandApplyForm')">保存</el-button>
           <el-button @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>

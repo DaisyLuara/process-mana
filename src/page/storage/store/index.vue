@@ -8,8 +8,14 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="name">
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
+            class="search-content">
+            <el-form-item 
+              label 
+              prop="name">
               <el-input
                 v-model="searchForm.name"
                 clearable
@@ -18,8 +24,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -27,12 +39,26 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button v-if="purchasing" type="success" size="small" @click="addStore">新增仓库</el-button>
+            <el-button 
+              v-if="purchasing" 
+              type="success" 
+              size="small" 
+              @click="addStore">新增仓库</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
-          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="仓库名称" min-width="100"/>
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="id" 
+            label="ID" 
+            min-width="80"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="name" 
+            label="仓库名称" 
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="address"
@@ -45,9 +71,15 @@
             label="时间"
             min-width="80"
           />
-          <el-table-column v-if="purchasing" label="操作" min-width="100">
+          <el-table-column 
+            v-if="purchasing" 
+            label="操作" 
+            min-width="100">
             <template slot-scope="scope">
-              <el-button size="mini" type="primary" @click="editStore(scope.row)">编辑</el-button>
+              <el-button 
+                size="mini" 
+                type="primary" 
+                @click="editStore(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>

@@ -1,12 +1,27 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">查看产品</div>
-      <el-form ref="productForm" :model="productForm" label-position="left" label-width="130px">
-        <el-form-item label="SKU" prop="sku">{{productForm.sku }}</el-form-item>
-        <el-form-item label="产品名称" prop="name">{{productForm.name }}</el-form-item>
-        <el-form-item label="产品颜色" prop="color">{{ productForm.color }}</el-form-item>
-        <el-form-item label="供应商" prop="supplier">{{productForm.supplier_name}}</el-form-item>
+      <el-form 
+        ref="productForm" 
+        :model="productForm" 
+        label-position="left" 
+        label-width="130px">
+        <el-form-item 
+          label="SKU" 
+          prop="sku">{{ productForm.sku }}</el-form-item>
+        <el-form-item 
+          label="产品名称" 
+          prop="name">{{ productForm.name }}</el-form-item>
+        <el-form-item 
+          label="产品颜色" 
+          prop="color">{{ productForm.color }}</el-form-item>
+        <el-form-item 
+          label="供应商" 
+          prop="supplier">{{ productForm.supplier_name }}</el-form-item>
         <el-form-item>
           <el-button @click="back">返回</el-button>
         </el-form-item>

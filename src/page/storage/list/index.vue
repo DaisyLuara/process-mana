@@ -8,8 +8,14 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="sku">
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
+            class="search-content">
+            <el-form-item 
+              label 
+              prop="sku">
               <el-select
                 v-model="searchForm.sku"
                 :loading="searchLoading"
@@ -25,7 +31,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="warehouse">
+            <el-form-item 
+              label 
+              prop="warehouse">
               <el-select
                 v-model="searchForm.warehouse"
                 :loading="searchLoading"
@@ -41,7 +49,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="location">
+            <el-form-item 
+              label 
+              prop="location">
               <el-select
                 v-model="searchForm.location"
                 :loading="searchLoading"
@@ -58,8 +68,14 @@
               </el-select>
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -67,10 +83,15 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
                 </el-form-item>
@@ -89,8 +110,16 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="id" 
+            label="ID" 
+            min-width="80"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="sku" 
+            label="SKU" 
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="warehouse"
@@ -103,7 +132,11 @@
             label="库存位置"
             min-width="100"
           />
-          <el-table-column :show-overflow-tooltip="true" prop="stock" label="库存数量" min-width="100"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="stock" 
+            label="库存数量" 
+            min-width="100"/>
         </el-table>
         <div class="pagination-wrap">
           <el-pagination

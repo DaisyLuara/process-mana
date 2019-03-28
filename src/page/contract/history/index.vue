@@ -8,9 +8,18 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true">
-            <el-form-item label prop="status">
-              <el-select v-model="searchForm.status" placeholder="请选择审批状态" filterable clearable>
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true">
+            <el-form-item 
+              label 
+              prop="status">
+              <el-select 
+                v-model="searchForm.status" 
+                placeholder="请选择审批状态" 
+                filterable 
+                clearable>
                 <el-option
                   v-for="item in statusList"
                   :key="item.id"
@@ -19,7 +28,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="name">
+            <el-form-item 
+              label 
+              prop="name">
               <el-input
                 v-model="searchForm.name"
                 clearable
@@ -27,7 +38,9 @@
                 class="item-input"
               />
             </el-form-item>
-            <el-form-item label prop="contract_number">
+            <el-form-item 
+              label 
+              prop="contract_number">
               <el-input
                 v-model="searchForm.contract_number"
                 clearable
@@ -35,7 +48,9 @@
                 class="item-input"
               />
             </el-form-item>
-            <el-form-item label prop="product_status">
+            <el-form-item 
+              label 
+              prop="product_status">
               <el-select
                 v-model="searchForm.product_status"
                 :loading="searchLoading"
@@ -51,7 +66,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="dataValue">
+            <el-form-item 
+              label 
+              prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
                 :clearable="false"
@@ -64,8 +81,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -73,10 +96,15 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="合同编号:">
                   <span>{{ scope.row.contract_number }}</span>
                 </el-form-item>
@@ -130,7 +158,11 @@
               <span>{{ scope.row.company_name }}</span>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="合同名称" min-width="80">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="name" 
+            label="合同名称" 
+            min-width="80">
             <template slot-scope="scope">
               <span>{{ scope.row.name }}</span>
             </template>
@@ -145,7 +177,11 @@
               <span>{{ scope.row.applicant_name }}</span>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="status" label="审批状态" min-width="80">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="status" 
+            label="审批状态" 
+            min-width="80">
             <template slot-scope="scope">
               <span>{{ scope.row.status }}</span>
             </template>
@@ -176,9 +212,14 @@
               <span>{{ scope.row.created_at }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="200">
+          <el-table-column 
+            label="操作" 
+            min-width="200">
             <template slot-scope="scope">
-              <el-button size="mini" type="info" @click="detailContract(scope.row)">详情</el-button>
+              <el-button 
+                size="mini" 
+                type="info" 
+                @click="detailContract(scope.row)">详情</el-button>
               <el-button
                 v-if="scope.row.status === '已审批' && scope.row.product_status === '已出厂' "
                 size="mini"
@@ -199,9 +240,9 @@
       </div>
     </div>
     <el-dialog
-      title="硬件详情"
       :show-close="false"
       :visible.sync="dialogFormVisible"
+      title="硬件详情"
       label-width="80px"
     >
       <el-table
@@ -259,7 +300,9 @@
           header-align="center"
         />
       </el-table>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="dialogFormVisible=false">取 消</el-button>
       </div>
     </el-dialog>

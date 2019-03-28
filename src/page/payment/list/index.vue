@@ -8,11 +8,21 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
+            class="search-content">
             <el-row :gutter="20">
               <el-col :span="6">
-                <el-form-item label prop="status">
-                  <el-select v-model="searchForm.status" placeholder="请选择审批状态" filterable clearable>
+                <el-form-item 
+                  label 
+                  prop="status">
+                  <el-select 
+                    v-model="searchForm.status" 
+                    placeholder="请选择审批状态" 
+                    filterable 
+                    clearable>
                     <el-option
                       v-for="item in statusList"
                       :key="item.id"
@@ -23,7 +33,9 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item label prop="receive_status">
+                <el-form-item 
+                  label 
+                  prop="receive_status">
                   <el-select
                     v-model="searchForm.receive_status"
                     placeholder="请选择收票状态"
@@ -40,7 +52,9 @@
                 </el-form-item>
               </el-col>
               <el-col :span="6">
-                <el-form-item label prop="payment_payee_name">
+                <el-form-item 
+                  label 
+                  prop="payment_payee_name">
                   <el-input
                     v-model="searchForm.payment_payee_name"
                     clearable
@@ -52,7 +66,9 @@
             </el-row>
             <el-row :gutter="20">
               <el-col :span="6">
-                <el-form-item label prop="contract_number">
+                <el-form-item 
+                  label 
+                  prop="contract_number">
                   <el-input
                     v-model="searchForm.contract_number"
                     clearable
@@ -62,7 +78,9 @@
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label prop="dataValue">
+                <el-form-item 
+                  label 
+                  prop="dataValue">
                   <el-date-picker
                     v-model="searchForm.dataValue"
                     :clearable="false"
@@ -77,8 +95,14 @@
               </el-col>
               <el-col :span="6">
                 <el-form-item label>
-                  <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-                  <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+                  <el-button 
+                    type="primary" 
+                    size="small" 
+                    @click="search('searchForm')">搜索</el-button>
+                  <el-button 
+                    type="default" 
+                    size="small" 
+                    @click="resetSearch('searchForm')">重置</el-button>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -96,10 +120,15 @@
             >新增付款</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="合同编号:">
                   <span>{{ scope.row.contract_number }}</span>
                 </el-form-item>
@@ -118,7 +147,9 @@
                 <el-form-item label="待处理人:">
                   <span>{{ scope.row.handler_name }}</span>
                 </el-form-item>
-                <el-form-item v-if="scope.row.status === '已付款'" label="付款人:">
+                <el-form-item 
+                  v-if="scope.row.status === '已付款'" 
+                  label="付款人:">
                   <span>{{ scope.row.payer }}</span>
                 </el-form-item>
                 <el-form-item label="申请时间:">
@@ -162,7 +193,11 @@
           >
             <template slot-scope="scope">{{ scope.row.applicant_name }}</template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="status" label="审批状态" min-width="80">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="status" 
+            label="审批状态" 
+            min-width="80">
             <template slot-scope="scope">{{ scope.row.status }}</template>
           </el-table-column>
           <el-table-column
@@ -183,7 +218,9 @@
           >
             <template slot-scope="scope">{{ scope.row.created_at }}</template>
           </el-table-column>
-          <el-table-column label="操作" min-width="280">
+          <el-table-column 
+            label="操作" 
+            min-width="280">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
@@ -209,7 +246,10 @@
                 type="warning"
                 @click="receivePayment(scope.row)"
               >收到票据</el-button>
-              <el-button size="mini" type="info" @click="detailPayment(scope.row)">详情</el-button>
+              <el-button 
+                size="mini" 
+                type="info" 
+                @click="detailPayment(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>

@@ -1,8 +1,15 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">新增成本</div>
-      <el-form ref="costForm" :model="costForm" label-position="left" label-width="130px">
+      <el-form 
+        ref="costForm" 
+        :model="costForm" 
+        label-position="left" 
+        label-width="130px">
         <el-form-item
           :rules="{
             required: true, message: '请选择合同编号', trigger: 'submit'
@@ -11,9 +18,9 @@
           prop="contract_id"
         >
           <el-select
-            filterable
             v-model="costForm.contract_id"
             :loading="searchLoading"
+            filterable
             @change="contractNumberHandle"
           >
             <el-option
@@ -24,11 +31,21 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="合同名称" prop="name">
-          <el-input v-model="costForm.name" :disabled="true" class="item-input"/>
+        <el-form-item 
+          label="合同名称" 
+          prop="name">
+          <el-input 
+            v-model="costForm.name" 
+            :disabled="true" 
+            class="item-input"/>
         </el-form-item>
-        <el-form-item label="所属人" prop="applicant_name">
-          <el-input v-model="costForm.applicant_name" :disabled="true" class="item-input"/>
+        <el-form-item 
+          label="所属人" 
+          prop="applicant_name">
+          <el-input 
+            v-model="costForm.applicant_name" 
+            :disabled="true" 
+            class="item-input"/>
         </el-form-item>
         <!-- v-if="operation || auditor || legalAffairsManager" -->
         <el-button
@@ -89,7 +106,9 @@
             header-align="center"
           >
             <template slot-scope="scope">
-              <el-input v-model="scope.row.money" placeholder="请输入费用金额"/>
+              <el-input 
+                v-model="scope.row.money" 
+                placeholder="请输入费用金额"/>
             </template>
           </el-table-column>
           <el-table-column
@@ -100,10 +119,14 @@
             header-align="center"
           >
             <template slot-scope="scope">
-              <el-input v-model="scope.row.remark" placeholder="请输入备注"/>
+              <el-input 
+                v-model="scope.row.remark" 
+                placeholder="请输入备注"/>
             </template>
           </el-table-column>
-          <el-table-column label="操作" min-width="100">
+          <el-table-column 
+            label="操作" 
+            min-width="100">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -116,7 +139,9 @@
         </el-table>
         <el-form-item>
           <!-- v-if="operation || auditor || legalAffairsManager" -->
-          <el-button type="primary" @click="submit('costForm')">保存</el-button>
+          <el-button 
+            type="primary" 
+            @click="submit('costForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>
@@ -183,24 +208,6 @@ export default {
       name: null
     };
   },
-  watch: {
-    tableData: {
-      handler: function(val, oldVal) {
-        let sum = 0;
-        val.map(r => {
-          if (String(r.creator).indexOf("总成本：") === -1) {
-            sum += parseFloat(r.money);
-          }
-        });
-        let length = this.tableData.length;
-        let data = this.tableData[length - 1];
-        data.creator = "总成本：";
-        data.kind_id = sum;
-        this.total_cost = sum;
-      },
-      deep: true
-    }
-  },
   computed: {
     // 运营
     operation: function() {
@@ -219,6 +226,24 @@ export default {
       return this.roles.find(r => {
         return r.name === "legal-affairs-manager";
       });
+    }
+  },
+  watch: {
+    tableData: {
+      handler: function(val, oldVal) {
+        let sum = 0;
+        val.map(r => {
+          if (String(r.creator).indexOf("总成本：") === -1) {
+            sum += parseFloat(r.money);
+          }
+        });
+        let length = this.tableData.length;
+        let data = this.tableData[length - 1];
+        data.creator = "总成本：";
+        data.kind_id = sum;
+        this.total_cost = sum;
+      },
+      deep: true
     }
   },
   created() {

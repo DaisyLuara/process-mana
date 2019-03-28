@@ -1,57 +1,94 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">开票{{ hide ? '详情' : '审批' }}</div>
-      <el-form ref="invoiceForm" :model="invoiceForm" label-position="left" label-width="130px">
+      <el-form 
+        ref="invoiceForm" 
+        :model="invoiceForm" 
+        label-position="left" 
+        label-width="130px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同编号:" prop="contract_number">{{ invoiceForm.contract_number }}</el-form-item>
+            <el-form-item 
+              label="合同编号:" 
+              prop="contract_number">{{ invoiceForm.contract_number }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人:" prop="applicant_name">{{ invoiceForm.applicant_name }}</el-form-item>
+            <el-form-item 
+              label="申请人:" 
+              prop="applicant_name">{{ invoiceForm.applicant_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="开票类型:" prop="type_name">{{ invoiceForm.type_name }}</el-form-item>
+            <el-form-item 
+              label="开票类型:" 
+              prop="type_name">{{ invoiceForm.type_name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="座机电话:" prop="telephone">{{ invoiceCompany.telephone }}</el-form-item>
+            <el-form-item 
+              label="座机电话:" 
+              prop="telephone">{{ invoiceCompany.telephone }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="开票公司:" prop="name">{{ invoiceCompany.name }}</el-form-item>
+            <el-form-item 
+              label="开票公司:" 
+              prop="name">{{ invoiceCompany.name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="纳税人识别号:" prop="taxpayer_num">{{ invoiceCompany.taxpayer_num }}</el-form-item>
+            <el-form-item 
+              label="纳税人识别号:" 
+              prop="taxpayer_num">{{ invoiceCompany.taxpayer_num }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="电话:" prop="phone">{{ invoiceCompany.phone }}</el-form-item>
+            <el-form-item 
+              label="电话:" 
+              prop="phone">{{ invoiceCompany.phone }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="地址:" prop="address">{{ invoiceCompany.address }}</el-form-item>
+            <el-form-item 
+              label="地址:" 
+              prop="address">{{ invoiceCompany.address }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="开户银行:" prop="account_bank">{{ invoiceCompany.account_bank }}</el-form-item>
+            <el-form-item 
+              label="开户银行:" 
+              prop="account_bank">{{ invoiceCompany.account_bank }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="开户行账号:" prop="account_number">{{ invoiceCompany.account_number }}</el-form-item>
+            <el-form-item 
+              label="开户行账号:" 
+              prop="account_number">{{ invoiceCompany.account_number }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col v-if="invoiceForm.kind" :span="12">
-            <el-form-item label="开票种类:" prop="kind">{{ invoiceForm.kind }}</el-form-item>
+          <el-col 
+            v-if="invoiceForm.kind" 
+            :span="12">
+            <el-form-item 
+              label="开票种类:" 
+              prop="kind">{{ invoiceForm.kind }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="附件内容:" prop="content">
-              <div v-for="item in fileList" :key="item.id">
+            <el-form-item 
+              label="附件内容:" 
+              prop="content">
+              <div 
+                v-for="item in fileList" 
+                :key="item.id">
                 {{ item.name }}
-                <span class="download" @click="handlePreview(item)">下载</span>
+                <span 
+                  class="download" 
+                  @click="handlePreview(item)">下载</span>
               </div>
             </el-form-item>
           </el-col>
@@ -76,11 +113,31 @@
             label="货物或应税劳务·服务名称"
             min-width="200"
           />
-          <el-table-column align="center" header-align="center" prop="spec_type" label="规格型号"/>
-          <el-table-column align="center" header-align="center" prop="unit" label="单位"/>
-          <el-table-column align="center" prop="num" header-align="center" label="数量"/>
-          <el-table-column prop="price" align="center" header-align="center" label="单价(含税)"/>
-          <el-table-column prop="money" align="center" header-align="center" label="金额(含税)"/>
+          <el-table-column 
+            align="center" 
+            header-align="center" 
+            prop="spec_type" 
+            label="规格型号"/>
+          <el-table-column 
+            align="center" 
+            header-align="center" 
+            prop="unit" 
+            label="单位"/>
+          <el-table-column 
+            align="center" 
+            prop="num" 
+            header-align="center" 
+            label="数量"/>
+          <el-table-column 
+            prop="price" 
+            align="center" 
+            header-align="center" 
+            label="单价(含税)"/>
+          <el-table-column 
+            prop="money" 
+            align="center" 
+            header-align="center" 
+            label="金额(含税)"/>
         </el-table>
         <el-form-item
           v-if="invoiceForm.bd_ma_message"
@@ -92,7 +149,9 @@
           label="法务主管意见:"
           prop="legal_ma_message"
         >{{ invoiceForm.legal_ma_message }}</el-form-item>
-        <el-form-item label="备注:" prop="remark">{{ invoiceForm.remark }}</el-form-item>
+        <el-form-item 
+          label="备注:" 
+          prop="remark">{{ invoiceForm.remark }}</el-form-item>
         <el-form-item>
           <el-button
             v-if="!hide && !finance"
@@ -106,7 +165,9 @@
             size="small"
             @click="auditing"
           >{{ (invoiceForm.status === '已审批' && invoiceForm.handler === id) ?'确认开票' : '审核通过' }}</el-button>
-          <el-button size="small" @click="back">返回</el-button>
+          <el-button 
+            size="small" 
+            @click="back">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -146,9 +207,13 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="rejectedAuditingHandle">确 定</el-button>
+        <el-button 
+          type="primary" 
+          @click="rejectedAuditingHandle">确 定</el-button>
       </div>
     </el-dialog>
   </div>
