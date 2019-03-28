@@ -1,26 +1,45 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">成本详情</div>
-      <el-form ref="costForm" :model="costForm" label-width="100px">
+      <el-form 
+        ref="costForm" 
+        :model="costForm" 
+        label-width="100px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同编号:" prop="contract_number">{{ costForm.contract_number }}</el-form-item>
+            <el-form-item 
+              label="合同编号:" 
+              prop="contract_number">{{ costForm.contract_number }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同名称:" prop="contract_name">{{ costForm.contract_name }}</el-form-item>
+            <el-form-item 
+              label="合同名称:" 
+              prop="contract_name">{{ costForm.contract_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="总成本:" prop="total_cost">{{ costForm.total_cost }}</el-form-item>
+            <el-form-item 
+              label="总成本:" 
+              prop="total_cost">{{ costForm.total_cost }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="已确认成本:" prop="confirm_cost">{{ costForm.confirm_cost }}</el-form-item>
+            <el-form-item 
+              label="已确认成本:" 
+              prop="confirm_cost">{{ costForm.confirm_cost }}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属人:" prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
-        <el-table :data="tableData" border style="width: 100%;margin-bottom: 20px;">
+        <el-form-item 
+          label="所属人:" 
+          prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
+        <el-table 
+          :data="tableData" 
+          border 
+          style="width: 100%;margin-bottom: 20px;">
           <el-table-column
             prop="creator"
             label="创建人"
@@ -67,7 +86,9 @@
           />
         </el-table>
         <el-form-item>
-          <el-button size="small" @click="historyBack">返回</el-button>
+          <el-button 
+            size="small" 
+            @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>
     </div>

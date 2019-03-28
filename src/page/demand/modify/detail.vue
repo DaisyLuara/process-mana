@@ -1,8 +1,14 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">需求修改详情</div>
-      <el-form ref="demandModfiyForm" :model="demandModfiyForm" label-width="130px">
+      <el-form 
+        ref="demandModfiyForm" 
+        :model="demandModfiyForm" 
+        label-width="130px">
         <el-row>
           <el-col :span="12">
             <el-form-item
@@ -11,15 +17,21 @@
             >{{ demandModfiyForm.demand_application_name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人" prop="applicant_name">{{ demandModfiyForm.applicant_name }}</el-form-item>
+            <el-form-item 
+              label="申请人" 
+              prop="applicant_name">{{ demandModfiyForm.applicant_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="修改标题" prop="title">{{ demandModfiyForm.title }}</el-form-item>
+            <el-form-item 
+              label="修改标题" 
+              prop="title">{{ demandModfiyForm.title }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="修改详情" prop="content">{{ demandModfiyForm.content }}</el-form-item>
+            <el-form-item 
+              label="修改详情" 
+              prop="content">{{ demandModfiyForm.content }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -30,15 +42,21 @@
             >{{ demandModfiyForm.feedback_person_name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="反馈内容" prop="feedback">{{ demandModfiyForm.feedback }}</el-form-item>
+            <el-form-item 
+              label="反馈内容" 
+              prop="feedback">{{ demandModfiyForm.feedback }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="审核人" prop="reviewer_name">{{ demandModfiyForm.reviewer_name }}</el-form-item>
+            <el-form-item 
+              label="审核人" 
+              prop="reviewer_name">{{ demandModfiyForm.reviewer_name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="审核备注" prop="reject_remark">{{ demandModfiyForm.reject_remark }}</el-form-item>
+            <el-form-item 
+              label="审核备注" 
+              prop="reject_remark">{{ demandModfiyForm.reject_remark }}</el-form-item>
           </el-col>
         </el-row>
         <el-form-item>
@@ -51,7 +69,10 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog title="反馈信息" :visible.sync="dialogFormVisible" :show-close="false">
+    <el-dialog 
+      :visible.sync="dialogFormVisible" 
+      :show-close="false" 
+      title="反馈信息">
       <el-form :model="demandModfiyForm">
         <el-form-item
           :rules="[{ required: true, message: '请输入接单人备注', trigger: 'submit' }]"
@@ -67,9 +88,13 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="submit">确 定</el-button>
+        <el-button 
+          type="primary" 
+          @click="submit">确 定</el-button>
       </div>
     </el-dialog>
   </div>

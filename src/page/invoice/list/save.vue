@@ -254,8 +254,7 @@
             label="规格型号"
             width="100"
             align="center"
-            header-align="center">
-          </el-table-column>
+            header-align="center"/>
           <el-table-column
             prop="unit"
             label="单位"

@@ -1,7 +1,10 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
-      <div class="pane-title">{{storeID ? '修改仓库' : '新增仓库' }}</div>
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
+      <div class="pane-title">{{ storeID ? '修改仓库' : '新增仓库' }}</div>
       <el-form
         ref="storeForm"
         :model="storeForm"
@@ -9,26 +12,32 @@
         label-position="left"
         label-width="130px"
       >
-        <el-form-item label="仓库名称" prop="name">
+        <el-form-item 
+          label="仓库名称" 
+          prop="name">
           <el-input
             v-model="storeForm.name"
+            :maxlength="100"
             placeholder="请输入仓库名称"
             clearable
-            :maxlength="100"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="仓库地址" prop="address">
+        <el-form-item 
+          label="仓库地址" 
+          prop="address">
           <el-input
             v-model="storeForm.address"
+            :maxlength="100"
             placeholder="请输入仓库地址"
             clearable
-            :maxlength="100"
             class="item-input"
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submit('storeForm')">保存</el-button>
+          <el-button 
+            type="primary" 
+            @click="submit('storeForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>

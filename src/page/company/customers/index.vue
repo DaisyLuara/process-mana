@@ -1,21 +1,40 @@
 <template>
-  <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="root">
+  <div 
+    v-loading="setting.loading" 
+    :element-loading-text="setting.loadingText" 
+    class="root">
     <div class="customer-list-wrap">
       <div class="customer-content-wrap">
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true">
-            <el-form-item label prop="name">
-              <el-input v-model="searchForm.name" placeholder="请输入公司名称" style="width: 200px;"/>
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true">
+            <el-form-item 
+              label 
+              prop="name">
+              <el-input 
+                v-model="searchForm.name" 
+                placeholder="请输入公司名称" 
+                style="width: 200px;"/>
             </el-form-item>
-            <el-form-item label prop="internal_name">
+            <el-form-item 
+              label 
+              prop="internal_name">
               <el-input
                 v-model="searchForm.internal_name"
                 placeholder="请输入公司简称"
                 style="width: 200px;"
               />
             </el-form-item>
-            <el-form-item label prop="category">
-              <el-select v-model="searchForm.category" placeholder="请选择公司属性" filterable clearable>
+            <el-form-item 
+              label 
+              prop="category">
+              <el-select 
+                v-model="searchForm.category" 
+                placeholder="请选择公司属性" 
+                filterable 
+                clearable>
                 <el-option
                   v-for="item in categoryList"
                   :key="item.id"
@@ -24,8 +43,14 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="status">
-              <el-select v-model="searchForm.status" placeholder="请选择状态" filterable clearable>
+            <el-form-item 
+              label 
+              prop="status">
+              <el-select 
+                v-model="searchForm.status" 
+                placeholder="请选择状态" 
+                filterable 
+                clearable>
                 <el-option
                   v-for="item in statusList"
                   :key="item.value"
@@ -34,25 +59,41 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="bd_user_id">
+            <el-form-item 
+              label 
+              prop="bd_user_id">
               <el-input
                 v-model="searchForm.bd_user_id"
                 placeholder="请输入所属BD"
                 style="width: 200px;"
               />
             </el-form-item>
-            <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-            <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+            <el-button 
+              type="primary" 
+              size="small" 
+              @click="search('searchForm')">搜索</el-button>
+            <el-button 
+              type="default" 
+              size="small" 
+              @click="resetSearch('searchForm')">重置</el-button>
           </el-form>
         </div>
         <div class="actions-wrap">
           <span class="label">公司数量: {{ pagination.total }}</span>
-          <el-button size="small" type="success" @click="linkToAddClient">新增公司</el-button>
+          <el-button 
+            size="small" 
+            type="success" 
+            @click="linkToAddClient">新增公司</el-button>
         </div>
-        <el-table :data="customerList" style="width: 100%">
+        <el-table 
+          :data="customerList" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
                 </el-form-item>
@@ -66,7 +107,7 @@
                   <span>{{ scope.row.internal_name }}</span>
                 </el-form-item>
                 <el-form-item label="公司属性:">
-                  <span>{{ scope.row.category === 0 ? '客户' : scope.row.category === 1? '供应商': ''}}</span>
+                  <span>{{ scope.row.category === 0 ? '客户' : scope.row.category === 1? '供应商': '' }}</span>
                 </el-form-item>
                 <el-form-item label="状态:">
                   <span>{{ statusHanlde(scope.row) }}</span>
@@ -83,7 +124,11 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="公司全称" min-width="100"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="name" 
+            label="公司全称" 
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="address"
@@ -104,13 +149,17 @@
           >
             <template
               slot-scope="scope"
-            >{{ scope.row.category === 0 ? '客户' : scope.row.category === 1? '供应商': ''}}</template>
+            >{{ scope.row.category === 0 ? '客户' : scope.row.category === 1? '供应商': '' }}</template>
           </el-table-column>
-          <el-table-column prop="status" label="状态">
+          <el-table-column 
+            prop="status" 
+            label="状态">
             <template slot-scope="scope">{{ statusHanlde(scope.row) }}</template>
           </el-table-column>
-          <el-table-column prop="bd_user_id" label="所属BD">
-            <template slot-scope="scope">{{ scope.row.bdUser ? scope.row.bdUser.name :''}}</template>
+          <el-table-column 
+            prop="bd_user_id" 
+            label="所属BD">
+            <template slot-scope="scope">{{ scope.row.bdUser ? scope.row.bdUser.name :'' }}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -118,10 +167,17 @@
             label="修改时间"
             min-width="100"
           />
-          <el-table-column label="操作" width="280">
+          <el-table-column 
+            label="操作" 
+            width="280">
             <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="linkToEdit(scope.row.id)">修改</el-button>
-              <el-button size="small" @click="showContactDetail(scope.row.id,scope.row.name)">联系人详情</el-button>
+              <el-button 
+                size="small" 
+                type="primary" 
+                @click="linkToEdit(scope.row.id)">修改</el-button>
+              <el-button 
+                size="small" 
+                @click="showContactDetail(scope.row.id,scope.row.name)">联系人详情</el-button>
             </template>
           </el-table-column>
         </el-table>

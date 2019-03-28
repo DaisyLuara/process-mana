@@ -1,14 +1,24 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">申请详情</div>
-      <el-form ref="demandApplyForm" :model="demandApplyForm" label-width="130px">
+      <el-form 
+        ref="demandApplyForm" 
+        :model="demandApplyForm" 
+        label-width="130px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="项目标的:" prop="title">{{demandApplyForm.title }}</el-form-item>
+            <el-form-item 
+              label="项目标的:" 
+              prop="title">{{ demandApplyForm.title }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人:" prop="applicant_name">{{ demandApplyForm.applicant_name }}</el-form-item>
+            <el-form-item 
+              label="申请人:" 
+              prop="applicant_name">{{ demandApplyForm.applicant_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -16,7 +26,7 @@
             <el-form-item
               label="有无合同:"
               prop="has_contract"
-            >{{ demandApplyForm.has_contract === 0 ? '无合同':'有合同'}}</el-form-item>
+            >{{ demandApplyForm.has_contract === 0 ? '无合同':'有合同' }}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item
@@ -27,7 +37,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="节目数量:" prop="project_num">{{ demandApplyForm.project_num }}</el-form-item>
+            <el-form-item 
+              label="节目数量:" 
+              prop="project_num">{{ demandApplyForm.project_num }}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item
@@ -47,7 +59,7 @@
             <el-form-item
               label="期望接单人:"
               prop="expect_receiver_names"
-            >{{demandApplyForm.expect_receiver_names}}</el-form-item>
+            >{{ demandApplyForm.expect_receiver_names }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -66,15 +78,21 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="H5节目需求:" prop="h5_demand">{{ demandApplyForm.h5_demand }}</el-form-item>
+            <el-form-item 
+              label="H5节目需求:" 
+              prop="h5_demand">{{ demandApplyForm.h5_demand }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="其他定制内容:" prop="other_demand">{{ demandApplyForm.other_demand }}</el-form-item>
+            <el-form-item 
+              label="其他定制内容:" 
+              prop="other_demand">{{ demandApplyForm.other_demand }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="接单人:" prop="receiver_name">{{ demandApplyForm.receiver_name }}</el-form-item>
+            <el-form-item 
+              label="接单人:" 
+              prop="receiver_name">{{ demandApplyForm.receiver_name }}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item
@@ -85,7 +103,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="备注:" prop="applicant_remark">{{ demandApplyForm.applicant_remark }}</el-form-item>
+            <el-form-item 
+              label="备注:" 
+              prop="applicant_remark">{{ demandApplyForm.applicant_remark }}</el-form-item>
           </el-col>
         </el-row>
         <el-form-item>
@@ -98,14 +118,19 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog title="接单信息" :visible.sync="dialogFormVisible" :show-close="false">
+    <el-dialog 
+      :visible.sync="dialogFormVisible" 
+      :show-close="false" 
+      title="接单信息">
       <el-form :model="receiveForm">
-        <el-form-item label="接单人" label-width="100px">
+        <el-form-item 
+          label="接单人" 
+          label-width="100px">
           <el-select
             v-model="receiveForm.receiver_id"
             :loading="searchLoading"
-            placeholder="请选择接单人"
             :disabled="disabledUse"
+            placeholder="请选择接单人"
             filterable
             clearable
           >
@@ -117,7 +142,9 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="接单人备注" label-width="100px">
+        <el-form-item 
+          label="接单人备注" 
+          label-width="100px">
           <el-input
             v-model="receiveForm.receiver_remark"
             :autosize="{ minRows: 2, maxRows: 4}"
@@ -127,9 +154,13 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="receiveConfirm">确 定</el-button>
+        <el-button 
+          type="primary" 
+          @click="receiveConfirm">确 定</el-button>
       </div>
     </el-dialog>
   </div>

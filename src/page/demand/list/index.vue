@@ -8,9 +8,17 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="status">
-              <el-form-item label prop="title">
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
+            class="search-content">
+            <el-form-item 
+              label 
+              prop="status">
+              <el-form-item 
+                label 
+                prop="title">
                 <el-input
                   v-model="searchForm.title"
                   clearable
@@ -33,8 +41,14 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="status">
-              <el-select v-model="searchForm.status" placeholder="请选择状态" filterable clearable>
+            <el-form-item 
+              label 
+              prop="status">
+              <el-select 
+                v-model="searchForm.status" 
+                placeholder="请选择状态" 
+                filterable 
+                clearable>
                 <el-option
                   v-for="item in statusList"
                   :key="item.id"
@@ -43,7 +57,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="receiver_id">
+            <el-form-item 
+              label 
+              prop="receiver_id">
               <el-select
                 v-model="searchForm.receiver_id"
                 :loading="searchLoading"
@@ -59,7 +75,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="dataValue">
+            <el-form-item 
+              label 
+              prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
                 :clearable="false"
@@ -72,8 +90,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -89,10 +113,15 @@
             >新增申请</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
                 </el-form-item>
@@ -117,8 +146,16 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="title" label="项目标的" min-width="100"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="id" 
+            label="ID" 
+            min-width="80"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="title" 
+            label="项目标的" 
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="applicant_name"
@@ -131,7 +168,11 @@
             label="接单人"
             min-width="80"
           />
-          <el-table-column :show-overflow-tooltip="true" prop="status" label="状态" min-width="80">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="status" 
+            label="状态" 
+            min-width="80">
             <template
               slot-scope="scope"
             >{{ scope.row.status===0 ? '未接单' : scope.row.status===1 ? '已完成' : scope.row.status===2 ? '已接单' : '修改中' }}</template>
@@ -152,7 +193,9 @@
           >
             <template slot-scope="scope">{{ scope.row.receiver_time }}</template>
           </el-table-column>
-          <el-table-column label="操作" min-width="200">
+          <el-table-column 
+            label="操作" 
+            min-width="200">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.applicant_id === applicant && scope.row.status === 0"
@@ -172,7 +215,10 @@
                 type="warning"
                 @click="detailDemand(scope.row)"
               >接单</el-button>
-              <el-button size="mini" type="info" @click="detailDemand(scope.row)">详情</el-button>
+              <el-button 
+                size="mini" 
+                type="info" 
+                @click="detailDemand(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>

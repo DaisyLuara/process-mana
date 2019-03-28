@@ -1,38 +1,60 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">付款{{ hide ? '详情' : '审批' }}</div>
-      <el-form ref="paymentForm" :model="paymentForm" label-width="130px">
+      <el-form 
+        ref="paymentForm" 
+        :model="paymentForm" 
+        label-width="130px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同编号:" prop="contract_number">{{ paymentForm.contract_number }}</el-form-item>
+            <el-form-item 
+              label="合同编号:" 
+              prop="contract_number">{{ paymentForm.contract_number }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人:" prop="applicant_name">{{ paymentForm.applicant_name }}</el-form-item>
+            <el-form-item 
+              label="申请人:" 
+              prop="applicant_name">{{ paymentForm.applicant_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="申请金额（大写):" prop="amount">{{ paymentForm.amount }}</el-form-item>
+            <el-form-item 
+              label="申请金额（大写):" 
+              prop="amount">{{ paymentForm.amount }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="票据种类:" prop="type_name">{{ paymentForm.type_name }}</el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="申请事由:" prop="reason">{{ paymentForm.reason }}</el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="收款人:" prop="name">{{ paymentPayee.name }}</el-form-item>
+            <el-form-item 
+              label="票据种类:" 
+              prop="type_name">{{ paymentForm.type_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="收款人开户行:" prop="account_bank">{{ paymentPayee.account_bank }}</el-form-item>
+            <el-form-item 
+              label="申请事由:" 
+              prop="reason">{{ paymentForm.reason }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="收款人账号:" prop="account_number">{{ paymentPayee.account_number }}</el-form-item>
+            <el-form-item 
+              label="收款人:" 
+              prop="name">{{ paymentPayee.name }}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item 
+              label="收款人开户行:" 
+              prop="account_bank">{{ paymentPayee.account_bank }}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item 
+              label="收款人账号:" 
+              prop="account_number">{{ paymentPayee.account_number }}</el-form-item>
           </el-col>
         </el-row>
         <el-form-item
@@ -55,13 +77,21 @@
           label="审计意见:"
           prop="auditor_message"
         >{{ paymentForm.auditor_message }}</el-form-item>
-        <el-form-item label="附件内容:" prop="content">
-          <div v-for="item in fileList" :key="item.id">
+        <el-form-item 
+          label="附件内容:" 
+          prop="content">
+          <div 
+            v-for="item in fileList" 
+            :key="item.id">
             {{ item.name }}
-            <span class="download" @click="handlePreview(item)">下载</span>
+            <span 
+              class="download" 
+              @click="handlePreview(item)">下载</span>
           </div>
         </el-form-item>
-        <el-form-item label="备注:" prop="remark">{{ paymentForm.remark }}</el-form-item>
+        <el-form-item 
+          label="备注:" 
+          prop="remark">{{ paymentForm.remark }}</el-form-item>
         <el-form-item>
           <el-button
             v-if="!hide && !finance"
@@ -75,7 +105,9 @@
             size="small"
             @click="auditing"
           >{{ (paymentForm.status === '已审批' && paymentForm.handler === id) ?'确认付款' : '审核通过' }}</el-button>
-          <el-button size="small" @click="historyBack">返回</el-button>
+          <el-button 
+            size="small" 
+            @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -143,9 +175,13 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="rejectedAuditingHandle">确 定</el-button>
+        <el-button 
+          type="primary" 
+          @click="rejectedAuditingHandle">确 定</el-button>
       </div>
     </el-dialog>
   </div>

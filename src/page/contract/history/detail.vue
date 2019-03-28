@@ -1,64 +1,102 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">合同详情</div>
-      <el-form ref="contractForm" :model="contractForm" label-width="100px">
+      <el-form 
+        ref="contractForm" 
+        :model="contractForm" 
+        label-width="100px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="公司名称:" prop="company_name">{{ contractForm.company_name }}</el-form-item>
+            <el-form-item 
+              label="公司名称:" 
+              prop="company_name">{{ contractForm.company_name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人:" prop="applicant_name">{{ contractForm.applicant_name }}</el-form-item>
+            <el-form-item 
+              label="申请人:" 
+              prop="applicant_name">{{ contractForm.applicant_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同名称:" prop="name">{{ contractForm.name }}</el-form-item>
+            <el-form-item 
+              label="合同名称:" 
+              prop="name">{{ contractForm.name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同编号:" prop="contract_number">{{ contractForm.contract_number }}</el-form-item>
+            <el-form-item 
+              label="合同编号:" 
+              prop="contract_number">{{ contractForm.contract_number }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同类型:" prop="type_name">{{ contractForm.type_name }}</el-form-item>
+            <el-form-item 
+              label="合同类型:" 
+              prop="type_name">{{ contractForm.type_name }}</el-form-item>
           </el-col>
-          <el-col v-if="contractForm.receive_date" :span="12">
-            <el-form-item label="收款日期:" prop="receive_date">{{ contractForm.receive_date }}</el-form-item>
+          <el-col 
+            v-if="contractForm.receive_date" 
+            :span="12">
+            <el-form-item 
+              label="收款日期:" 
+              prop="receive_date">{{ contractForm.receive_date }}</el-form-item>
           </el-col>
         </el-row>
         <el-row v-if="contractForm.type_name === '收款合同'">
           <el-col :span="12">
-            <el-form-item label="合同种类:" prop="kind">{{ contractForm.kind }}</el-form-item>
+            <el-form-item 
+              label="合同种类:" 
+              prop="kind">{{ contractForm.kind }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同内容:" prop="content">
-              <div v-for="item in fileList" :key="item.id">
+            <el-form-item 
+              label="合同内容:" 
+              prop="content">
+              <div 
+                v-for="item in fileList" 
+                :key="item.id">
                 {{ item.name }}
-                <span class="download" @click="handlePreview(item)">下载</span>
+                <span 
+                  class="download" 
+                  @click="handlePreview(item)">下载</span>
               </div>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="备注:" prop="remark">{{ contractForm.remark }}</el-form-item>
+            <el-form-item 
+              label="备注:" 
+              prop="remark">{{ contractForm.remark }}</el-form-item>
           </el-col>
         </el-row>
         <el-row v-if="contractForm.kind === '服务' && contractForm.type_name === '收款合同'">
           <el-col :span="12">
-            <el-form-item label="服务对象:" prop="serve_target">{{ contractForm.serve_target }}</el-form-item>
+            <el-form-item 
+              label="服务对象:" 
+              prop="serve_target">{{ contractForm.serve_target }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预充值:" prop="recharge">{{ contractForm.recharge }}</el-form-item>
+            <el-form-item 
+              label="预充值:" 
+              prop="recharge">{{ contractForm.recharge }}</el-form-item>
           </el-col>
         </el-row>
         <el-row v-if="projectNumFlag">
           <el-col :span="12">
-            <el-form-item label="定制节目数量:" prop="special_num">{{ contractForm.special_num }}</el-form-item>
+            <el-form-item 
+              label="定制节目数量:" 
+              prop="special_num">{{ contractForm.special_num }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="通用节目数量:" prop="common_num">{{ contractForm.common_num }}</el-form-item>
+            <el-form-item 
+              label="通用节目数量:" 
+              prop="common_num">{{ contractForm.common_num }}</el-form-item>
           </el-col>
         </el-row>
         <el-form-item
@@ -105,7 +143,9 @@
           />
         </el-table>
         <el-form-item>
-          <el-button size="small" @click="historyBack">返回</el-button>
+          <el-button 
+            size="small" 
+            @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
