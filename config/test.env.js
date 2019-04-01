@@ -8,5 +8,5 @@ module.exports = merge(devEnv, {
   LOGIN_URL: '"http://ad.xingstation.net/login"',
   SERVER_URL: '"http://papi.xingstation.net"',
   HTTPS_SERVER_URL: '"https://papi.xingstation.net"',
-  CDN_URL: "'http://cdn.exe666.com/'"
+  CDN_URL: "'http://cdn.xingstation.cn/'"
 })
