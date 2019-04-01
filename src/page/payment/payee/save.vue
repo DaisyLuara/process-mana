@@ -28,8 +28,8 @@
           prop="account_bank" >
           <el-input 
             v-model="payeeForm.account_bank"
-            placeholder="请填写收款人开户行"
             :maxlength="50"
+            placeholder="请填写收款人开户行"
             class="item-input"/>
         </el-form-item>
         <el-form-item 
@@ -37,8 +37,8 @@
           prop="account_number" >
           <el-input 
             v-model="payeeForm.account_number"
-            placeholder="请填写收款人账号"
             :maxlength="30"
+            placeholder="请填写收款人账号"
             class="item-input"/>
         </el-form-item>
         <el-form-item>

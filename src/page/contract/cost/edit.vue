@@ -1,17 +1,29 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">成本编辑</div>
-      <el-form ref="costForm" :model="costForm" label-width="100px">
+      <el-form 
+        ref="costForm" 
+        :model="costForm" 
+        label-width="100px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同编号:" prop="contract_number">{{ costForm.contract_number }}</el-form-item>
+            <el-form-item 
+              label="合同编号:" 
+              prop="contract_number">{{ costForm.contract_number }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同名称:" prop="contract_name">{{ costForm.contract_name }}</el-form-item>
+            <el-form-item 
+              label="合同名称:" 
+              prop="contract_name">{{ costForm.contract_name }}</el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="所属人:" prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
+        <el-form-item 
+          label="所属人:" 
+          prop="applicant_name">{{ costForm.applicant_name }}</el-form-item>
         <el-button
           size="small"
           type="success"
@@ -72,7 +84,7 @@
             <template slot-scope="scope">
               <span v-if="scope.$index === tableData.length-1">{{ scope.row.money }}</span>
               <el-input
-                v-if="scope.$index  !== tableData.length-1"
+                v-if="scope.$index !== tableData.length-1"
                 v-model="scope.row.money"
                 placeholder="请输入费用金额"
               />
@@ -88,7 +100,7 @@
             <template slot-scope="scope">
               <span v-if="scope.$index === tableData.length-1">¥： {{ confirm_cost }}</span>
               <el-input
-                v-if="scope.$index  !== tableData.length-1"
+                v-if="scope.$index !== tableData.length-1"
                 v-model="scope.row.remark"
                 placeholder="请输入备注"
               />
@@ -148,7 +160,9 @@
           />
         </el-table>
         <el-form-item>
-          <el-button size="small" @click="historyBack">返回</el-button>
+          <el-button 
+            size="small" 
+            @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -224,25 +238,6 @@ export default {
       roles: {}
     };
   },
-  watch: {
-    tableData: {
-      handler: function(val, oldVal) {
-        let sum = 0;
-        val.map(r => {
-          if (String(r.creator).indexOf("总成本:") === -1) {
-            sum += parseFloat(r.money);
-          }
-        });
-        let length = this.tableData.length;
-        let data = this.tableData[length - 1];
-        data.creator = "总成本:";
-        data.money = "已确认成本:";
-        data.kind_id = sum;
-        this.total_cost = sum;
-      },
-      deep: true
-    }
-  },
   computed: {
     // 运营
     operation: function() {
@@ -261,6 +256,25 @@ export default {
       return this.roles.find(r => {
         return r.name === "legal-affairs-manager";
       });
+    }
+  },
+  watch: {
+    tableData: {
+      handler: function(val, oldVal) {
+        let sum = 0;
+        val.map(r => {
+          if (String(r.creator).indexOf("总成本:") === -1) {
+            sum += parseFloat(r.money);
+          }
+        });
+        let length = this.tableData.length;
+        let data = this.tableData[length - 1];
+        data.creator = "总成本:";
+        data.money = "已确认成本:";
+        data.kind_id = sum;
+        this.total_cost = sum;
+      },
+      deep: true
     }
   },
   created() {

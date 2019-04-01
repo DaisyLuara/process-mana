@@ -109,12 +109,12 @@
             <el-form-item
               label="附件内容:" 
               prop="content" >
-            <div 
-              v-for="item in fileList" 
-              :key="item.id">{{ item.name }}
-              <span 
-                class="download" 
-                @click="handlePreview(item)">下载</span></div>
+              <div 
+                v-for="item in fileList" 
+                :key="item.id">{{ item.name }}
+                <span 
+                  class="download" 
+                  @click="handlePreview(item)">下载</span></div>
             </el-form-item>
           </el-col>
         </el-row>

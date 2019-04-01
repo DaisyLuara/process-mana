@@ -1,8 +1,13 @@
 <template>
   <div class="main">
     <headModule/>
-    <div class="first-sidebar" v-show="!iconMenuShow" @mouseleave="leaveIcon">
-      <el-menu :default-active="'/' + currModule" router>
+    <div 
+      v-show="!iconMenuShow" 
+      class="first-sidebar" 
+      @mouseleave="leaveIcon">
+      <el-menu 
+        :default-active="'/' + currModule" 
+        router>
         <el-menu-item
           v-for="m in modules"
           :key="m.path"
@@ -14,19 +19,33 @@
             v-if="m.path === 'contract'"
             :is-dot="m.path === 'contract' && contractCount > 0"
           >
-            <img :src="m.src" class="first-sidebar-icon">
+            <img 
+              :src="m.src" 
+              class="first-sidebar-icon">
             {{ m.meta.title }}
           </el-badge>
-          <el-badge v-if="m.path === 'invoice'" :is-dot="m.path === 'invoice' && invoiceCount > 0">
-            <img :src="m.src" class="first-sidebar-icon">
+          <el-badge 
+            v-if="m.path === 'invoice'" 
+            :is-dot="m.path === 'invoice' && invoiceCount > 0">
+            <img 
+              :src="m.src" 
+              class="first-sidebar-icon">
             {{ m.meta.title }}
           </el-badge>
-          <el-badge v-if="m.path === 'payment'" :is-dot="m.path === 'payment' && paymentCount > 0">
-            <img :src="m.src" class="first-sidebar-icon">
+          <el-badge 
+            v-if="m.path === 'payment'" 
+            :is-dot="m.path === 'payment' && paymentCount > 0">
+            <img 
+              :src="m.src" 
+              class="first-sidebar-icon">
             {{ m.meta.title }}
           </el-badge>
-          <el-badge v-if="m.path === 'inform'" :is-dot="m.path === 'inform' && noticeCount > 0">
-            <img :src="m.src" class="first-sidebar-icon">
+          <el-badge 
+            v-if="m.path === 'inform'" 
+            :is-dot="m.path === 'inform' && noticeCount > 0">
+            <img 
+              :src="m.src" 
+              class="first-sidebar-icon">
             {{ m.meta.title }}
           </el-badge>
           <img
@@ -40,11 +59,18 @@
         </el-menu-item>
       </el-menu>
       <div class="menu-show">
-        <i class="el-icon-d-arrow-left left-icon-menu" @click="handleMenuHide"/>
+        <i 
+          class="el-icon-d-arrow-left left-icon-menu" 
+          @click="handleMenuHide"/>
       </div>
     </div>
-    <div v-show="iconMenuShow" class="first-icon-sidebar" @mouseenter="iconEnter">
-      <el-menu :default-active="'/' + currModule" router>
+    <div 
+      v-show="iconMenuShow" 
+      class="first-icon-sidebar" 
+      @mouseenter="iconEnter">
+      <el-menu 
+        :default-active="'/' + currModule" 
+        router>
         <el-menu-item
           v-for="m in modules"
           :key="m.path"
@@ -55,16 +81,30 @@
             v-if="m.path === 'contract'"
             :is-dot="m.path === 'contract' && contractCount > 0"
           >
-            <img :src="m.src" class="first-sidebar-icon">
+            <img 
+              :src="m.src" 
+              class="first-sidebar-icon">
           </el-badge>
-          <el-badge v-if="m.path === 'invoice'" :is-dot="m.path === 'invoice' && invoiceCount > 0">
-            <img :src="m.src" class="first-sidebar-icon">
+          <el-badge 
+            v-if="m.path === 'invoice'" 
+            :is-dot="m.path === 'invoice' && invoiceCount > 0">
+            <img 
+              :src="m.src" 
+              class="first-sidebar-icon">
           </el-badge>
-          <el-badge v-if="m.path === 'payment'" :is-dot="m.path === 'payment' && paymentCount > 0">
-            <img :src="m.src" class="first-sidebar-icon">
+          <el-badge 
+            v-if="m.path === 'payment'" 
+            :is-dot="m.path === 'payment' && paymentCount > 0">
+            <img 
+              :src="m.src" 
+              class="first-sidebar-icon">
           </el-badge>
-          <el-badge v-if="m.path === 'inform'" :is-dot="m.path === 'inform' && noticeCount > 0">
-            <img :src="m.src" class="first-sidebar-icon">
+          <el-badge 
+            v-if="m.path === 'inform'" 
+            :is-dot="m.path === 'inform' && noticeCount > 0">
+            <img 
+              :src="m.src" 
+              class="first-sidebar-icon">
           </el-badge>
           <img
             v-if="m.path !== 'contract' && m.path !== 'invoice' && m.path !== 'payment' && m.path !== 'inform'"
@@ -74,7 +114,9 @@
         </el-menu-item>
       </el-menu>
       <div class="menu-icon-show">
-        <i class="el-icon-d-arrow-right right-icon-menu" @click="handleMenuShow"/>
+        <i 
+          class="el-icon-d-arrow-right right-icon-menu" 
+          @click="handleMenuShow"/>
       </div>
     </div>
     <div class="system-menu">

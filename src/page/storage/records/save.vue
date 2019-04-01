@@ -1,7 +1,10 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
-      <div class="pane-title">{{recordsID ? '调拨记录详情' : '新增调拨记录' }}</div>
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
+      <div class="pane-title">{{ recordsID ? '调拨记录详情' : '新增调拨记录' }}</div>
       <el-form
         ref="recordsForm"
         :model="recordsForm"
@@ -9,49 +12,66 @@
         label-position="left"
         label-width="100px"
       >
-        <el-form-item label="SKU" prop="product_id">
+        <el-form-item 
+          label="SKU" 
+          prop="product_id">
           <el-select
             v-model="recordsForm.product_id"
+            :loading="searchLoading"
             placeholder="请选择SKU"
             clearable
-            :loading="searchLoading"
             @change="skuHandle"
           >
-            <el-option v-for="item in skuList" :key="item.id" :value="item.id" :label="item.sku"/>
+            <el-option 
+              v-for="item in skuList" 
+              :key="item.id" 
+              :value="item.id" 
+              :label="item.sku"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="产品名称" prop="name">
+        <el-form-item 
+          label="产品名称" 
+          prop="name">
           <el-input
             :disabled="true"
             v-model="recordsForm.name"
+            :maxlength="30"
             placeholder="请输入产品名称"
             clearable
-            :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="产品颜色" prop="color">
+        <el-form-item 
+          label="产品颜色" 
+          prop="color">
           <el-input
             :disabled="true"
             v-model="recordsForm.color"
+            :maxlength="30"
             placeholder="请输入产品颜色"
             clearable
-            :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="供应商" prop="supplier">
+        <el-form-item 
+          label="供应商" 
+          prop="supplier">
           <el-input
             :disabled="true"
             v-model="recordsForm.supplier"
+            :maxlength="30"
             placeholder="请输入供应商"
             clearable
-            :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="调出库位" prop="out_location">
-          <el-select v-model="recordsForm.out_location" placeholder="请选择调出库位" clearable>
+        <el-form-item 
+          label="调出库位" 
+          prop="out_location">
+          <el-select 
+            v-model="recordsForm.out_location" 
+            placeholder="请选择调出库位" 
+            clearable>
             <el-option
               v-for="item in locationList"
               :value="item.id"
@@ -60,8 +80,13 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="调入库位" prop="in_location">
-          <el-select v-model="recordsForm.in_location" placeholder="请选择调入库位" clearable>
+        <el-form-item 
+          label="调入库位" 
+          prop="in_location">
+          <el-select 
+            v-model="recordsForm.in_location" 
+            placeholder="请选择调入库位" 
+            clearable>
             <el-option
               v-for="item in locationList"
               :value="item.id"
@@ -70,26 +95,33 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="调整数量" prop="num">
+        <el-form-item 
+          label="调整数量" 
+          prop="num">
           <el-input
             v-model="recordsForm.num"
+            :maxlength="30"
             placeholder="请输入调整数量"
             clearable
-            :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="备注" prop="remark">
+        <el-form-item 
+          label="备注" 
+          prop="remark">
           <el-input
             v-model="recordsForm.remark"
+            :maxlength="1000"
             placeholder="请填写备注"
             type="textarea"
-            :maxlength="1000"
             class="item-input"
           />
         </el-form-item>
         <el-form-item>
-          <el-button v-if="!recordsID" type="primary" @click="submit('recordsForm')">保存</el-button>
+          <el-button 
+            v-if="!recordsID" 
+            type="primary" 
+            @click="submit('recordsForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>

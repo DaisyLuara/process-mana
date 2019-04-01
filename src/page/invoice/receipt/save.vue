@@ -29,8 +29,8 @@
           prop="receipt_money" >
           <el-input 
             v-model="receiptForm.receipt_money" 
-            placeholder="请填写收款金额"
             :maxlength="50"
+            placeholder="请填写收款金额"
             class="item-input"/>
         </el-form-item>
         <el-form-item 
@@ -39,8 +39,7 @@
           <el-date-picker
             v-model="receiptForm.receipt_date"
             placeholder="请选择到账时间"
-            type="date">
-          </el-date-picker>
+            type="date"/>
         </el-form-item>
         <el-form-item>
           <el-button 

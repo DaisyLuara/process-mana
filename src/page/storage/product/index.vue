@@ -8,8 +8,14 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="sku">
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
+            class="search-content">
+            <el-form-item 
+              label 
+              prop="sku">
               <el-select
                 v-model="searchForm.sku"
                 :loading="searchLoading"
@@ -25,7 +31,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="supplier">
+            <el-form-item 
+              label 
+              prop="supplier">
               <el-select
                 v-model="searchForm.supplier"
                 :loading="searchLoading"
@@ -42,8 +50,14 @@
               </el-select>
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -51,19 +65,35 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button v-if="purchasing" type="success" size="small" @click="addProduct">新增产品</el-button>
+            <el-button 
+              v-if="purchasing" 
+              type="success" 
+              size="small" 
+              @click="addProduct">新增产品</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
-          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="sku" label="SKU" min-width="100"/>
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="id" 
+            label="ID" 
+            min-width="80"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="sku" 
+            label="SKU" 
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="supplier_name"
             label="供应商"
             min-width="100"
           />
-          <el-table-column label="操作" min-width="100">
+          <el-table-column 
+            label="操作" 
+            min-width="100">
             <template slot-scope="scope">
               <el-button
                 v-if="purchasing"
@@ -71,7 +101,10 @@
                 type="primary"
                 @click="editProduct(scope.row)"
               >编辑</el-button>
-              <el-button size="mini" type="warning" @click="detailProduct(scope.row)">详情</el-button>
+              <el-button 
+                size="mini" 
+                type="warning" 
+                @click="detailProduct(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>

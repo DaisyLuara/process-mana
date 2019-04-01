@@ -1,11 +1,20 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
-      <div class="pane-title">{{demandModifyID ? '编辑需求修改' : '新增需求修改'}}</div>
-      <el-form ref="demandModfiyForm" :model="demandModfiyForm" :rules="rules" label-width="130px">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
+      <div class="pane-title">{{ demandModifyID ? '编辑需求修改' : '新增需求修改' }}</div>
+      <el-form 
+        ref="demandModfiyForm" 
+        :model="demandModfiyForm" 
+        :rules="rules" 
+        label-width="130px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="项目标的" prop="demand_application_id">
+            <el-form-item 
+              label="项目标的" 
+              prop="demand_application_id">
               <el-select
                 v-model="demandModfiyForm.demand_application_id"
                 :loading="searchLoading"
@@ -23,7 +32,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人" prop="applicant_name">
+            <el-form-item 
+              label="申请人" 
+              prop="applicant_name">
               <el-input
                 v-model="demandModfiyForm.applicant_name"
                 :disabled="true"
@@ -35,22 +46,26 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="修改标题" prop="title">
+            <el-form-item 
+              label="修改标题" 
+              prop="title">
               <el-input
                 v-model="demandModfiyForm.title"
-                placeholder="请填写修改标题"
                 :maxlength="15"
+                placeholder="请填写修改标题"
                 class="item-input"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="修改详情" prop="content">
+            <el-form-item 
+              label="修改详情" 
+              prop="content">
               <el-input
                 v-model="demandModfiyForm.content"
-                placeholder="请填写修改详情"
                 :maxlength="200"
                 :autosize="{ minRows: 2, maxRows: 4}"
+                placeholder="请填写修改详情"
                 type="textarea"
                 class="item-input"
               />
@@ -58,7 +73,9 @@
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button type="primary" @click="submit('demandModfiyForm')">保存</el-button>
+          <el-button 
+            type="primary" 
+            @click="submit('demandModfiyForm')">保存</el-button>
           <el-button @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>
