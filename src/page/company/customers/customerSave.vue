@@ -56,10 +56,10 @@
                 class="customer-form-input"
               />
             </el-form-item>
-            <el-form-item v-if="contactFlag" label="所属BD" prop="bd_user_id">
-              <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属BD">
+            <el-form-item v-if="contactFlag" label="所属人" prop="bd_user_id">
+              <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属人">
                 <el-option
-                  v-for="item in bdList"
+                  v-for="item in userList"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -145,7 +145,7 @@ import auth from "service/auth";
 
 import {
   historyBack,
-  getSearchBD,
+  getSearchUserList,
   getCustomerDetail,
   saveCustomer,
   getSearchRole,
@@ -218,7 +218,7 @@ export default {
         logo_media_id: null
       },
       statusFlag: false,
-      bdList: [],
+      userList: [],
       statusOption: [
         {
           value: 1,
@@ -254,7 +254,7 @@ export default {
           { message: "请输入公司详情", trigger: "submit", required: true }
         ],
         bd_user_id: [
-          { message: "请选择所属BD", trigger: "submit", required: true }
+          { message: "请选择所属人", trigger: "submit", required: true }
         ],
         phone: [
           {
@@ -318,7 +318,7 @@ export default {
     this.init();
     this.customerID = this.$route.params.uid;
     this.getCompany();
-    this.getSearchBD();
+    this.getSearchUserList();
     if (this.customerID) {
       this.getCustomerDetail();
     } else {
@@ -432,10 +432,10 @@ export default {
         }
       });
     },
-    getSearchBD() {
-      getSearchBD(this)
+    getSearchUserList() {
+      getSearchUserList(this)
         .then(res => {
-          this.bdList = res;
+          this.userList = res.data;
         })
         .catch(err => {
           this.$message({
