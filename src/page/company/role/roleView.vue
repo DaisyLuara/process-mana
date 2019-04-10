@@ -1,6 +1,6 @@
 <template>
   <div class="role-wrap">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 <script>
@@ -12,7 +12,6 @@ export default {
 <style lang="less">
 .role-wrap {
   background: #fff;
-  margin: 10px;
   padding: 15px;
 }
 </style>

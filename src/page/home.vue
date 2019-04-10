@@ -65,7 +65,10 @@
           <span v-if="m.path !== 'contract' && m.path !== 'invoice' && m.path !== 'payment' && m.path !== 'inform'">{{ m.meta.title }}</span>
         </el-menu-item>
       </el-menu>
-      <div  v-show="false" class="menu-show">
+      <div
+        v-show="false"
+        class="menu-show"
+      >
         <i
           class="el-icon-d-arrow-left left-icon-menu"
           @click="handleMenuHide"
