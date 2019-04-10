@@ -37,7 +37,7 @@
             <el-form-item label prop="bd_user_id">
               <el-input
                 v-model="searchForm.bd_user_id"
-                placeholder="请输入所属BD"
+                placeholder="请输入所属人"
                 style="width: 200px;"
               />
             </el-form-item>
@@ -71,7 +71,7 @@
                 <el-form-item label="状态:">
                   <span>{{ statusHanlde(scope.row) }}</span>
                 </el-form-item>
-                <el-form-item label="所属BD:">
+                <el-form-item label="所属人:">
                   <span>{{ scope.row.bdUser ? scope.row.bdUser.name :'' }}</span>
                 </el-form-item>
                 <el-form-item label="创建时间:">
@@ -109,7 +109,7 @@
           <el-table-column prop="status" label="状态">
             <template slot-scope="scope">{{ statusHanlde(scope.row) }}</template>
           </el-table-column>
-          <el-table-column prop="bd_user_id" label="所属BD">
+          <el-table-column prop="bd_user_id" label="所属人">
             <template slot-scope="scope">{{ scope.row.bdUser ? scope.row.bdUser.name :''}}</template>
           </el-table-column>
           <el-table-column
