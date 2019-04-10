@@ -57,7 +57,7 @@
               />
             </el-form-item>
             <el-form-item v-if="contactFlag" label="所属人" prop="bd_user_id">
-              <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属人">
+              <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属人" filterable>
                 <el-option
                   v-for="item in userList"
                   :key="item.id"
