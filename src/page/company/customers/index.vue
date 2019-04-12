@@ -80,10 +80,16 @@
         </div>
         <div class="actions-wrap">
           <span class="label">公司数量: {{ pagination.total }}</span>
-          <el-button 
-            size="small" 
-            type="success" 
-            @click="linkToAddClient">新增公司</el-button>
+          <div>
+            <el-button 
+              size="small" 
+              type="success" 
+              @click="linkToAddClient">新增公司</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
+          </div>
         </div>
         <el-table 
           :data="customerList" 
@@ -196,7 +202,9 @@
 </template>
 
 <script>
-import { getCustomerList } from "service";
+import { getCustomerList,
+  downloadUrl,
+  getExportDownload } from "service";
 
 import {
   Button,
@@ -272,6 +280,49 @@ export default {
     this.getCustomerList();
   },
   methods: {
+    setArgs(){
+      let args = {
+        include: "user,bdUser",
+        page: this.pagination.currentPage,
+        name: this.searchForm.name,
+        internal_name: this.searchForm.internal_name,
+        category: this.searchForm.category,
+        status: this.searchForm.status,
+        bd_user_id: this.searchForm.bd_user_id
+      };
+      if (this.searchForm.name === "") {
+        delete args.name;
+      }
+      if (this.searchForm.internal_name === "") {
+        delete args.internal_name;
+      }
+      if (this.searchForm.category === "") {
+        delete args.category;
+      }
+      if (this.searchForm.status === "") {
+        delete args.status;
+      }
+      if (this.searchForm.bd_user_id === "") {
+        delete args.bd_user_id;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.include;
+      delete args.page;
+      return getExportDownload(this,downloadUrl.COMAPNY_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     search(formName) {
       this.pagination.currentPage = 1;
       this.getCustomerList();
@@ -293,33 +344,9 @@ export default {
       if (this.setting.loading == true) {
         return false;
       }
-      let pageNum = this.pagination.currentPage;
-      let args = {
-        include: "user,bdUser",
-        page: pageNum,
-        name: this.searchForm.name,
-        internal_name: this.searchForm.internal_name,
-        category: this.searchForm.category,
-        status: this.searchForm.status,
-        bd_user_id: this.searchForm.bd_user_id
-      };
+      let args = this.setArgs()
       this.setting.loadingText = "拼命加载中";
       this.setting.loading = true;
-      if (this.searchForm.name === "") {
-        delete args.name;
-      }
-      if (this.searchForm.internal_name === "") {
-        delete args.internal_name;
-      }
-      if (this.searchForm.category === "") {
-        delete args.category;
-      }
-      if (this.searchForm.status === "") {
-        delete args.status;
-      }
-      if (this.searchForm.bd_user_id === "") {
-        delete args.bd_user_id;
-      }
       return getCustomerList(this, args)
         .then(response => {
           this.setting.loading = false;

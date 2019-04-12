@@ -118,6 +118,10 @@
               type="success"
               @click="addPayment"
             >新增付款</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
         <el-table 
@@ -289,7 +293,9 @@ import {
   receivePayment,
   deletePayment,
   Cookies,
-  getAuditingCount
+  getAuditingCount,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -451,6 +457,51 @@ export default {
     this.roles = user_info.roles.data;
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        payment_payee_name: this.searchForm.payment_payee_name,
+        status: this.searchForm.status,
+        receive_status: this.searchForm.receive_status,
+        contract_number: this.searchForm.contract_number,
+        start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        end_date: handleDateTransform(this.searchForm.dataValue[1])
+      };
+      if (!this.searchForm.payment_payee_name) {
+        delete args.payment_payee_name;
+      }
+      if (!this.searchForm.status) {
+        delete args.status;
+      }
+      if (this.searchForm.receive_status === "") {
+        delete args.receive_status;
+      }
+      if (this.searchForm.contract_number === "") {
+        delete args.contract_number;
+      }
+      if (!this.searchForm.dataValue[0]) {
+        delete args.start_date;
+      }
+      if (!this.searchForm.dataValue[1]) {
+        delete args.end_date;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.PAYMENT_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     getAuditingCount() {
       getAuditingCount(this)
         .then(res => {
@@ -524,33 +575,7 @@ export default {
     },
     getPaymentList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        payment_payee_name: this.searchForm.payment_payee_name,
-        status: this.searchForm.status,
-        receive_status: this.searchForm.receive_status,
-        contract_number: this.searchForm.contract_number,
-        start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        end_date: handleDateTransform(this.searchForm.dataValue[1])
-      };
-      if (!this.searchForm.payment_payee_name) {
-        delete args.payment_payee_name;
-      }
-      if (!this.searchForm.status) {
-        delete args.status;
-      }
-      if (this.searchForm.receive_status === "") {
-        delete args.receive_status;
-      }
-      if (this.searchForm.contract_number === "") {
-        delete args.contract_number;
-      }
-      if (!this.searchForm.dataValue[0]) {
-        delete args.start_date;
-      }
-      if (!this.searchForm.dataValue[1]) {
-        delete args.end_date;
-      }
+      let args = this.setArgs();
       getPaymentList(this, args)
         .then(res => {
           this.tableData = res.data;

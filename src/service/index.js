@@ -41,3 +41,9 @@ export * from './company'
 
 // 需求
 export * from './demand'
+
+// download
+export * from './download'
+
+// download-url
+export * from './constant'

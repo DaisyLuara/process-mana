@@ -101,6 +101,10 @@
               type="success"
               @click="addModify"
             >新增修改</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
         <el-table 
@@ -298,7 +302,9 @@ import {
   handleDateTransform,
   reviewDemand,
   Cookies,
-  getSearchDemandApplication
+  getSearchDemandApplication,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -467,6 +473,47 @@ export default {
     this.roles = user_info.roles.data;
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        demand_application_id: this.searchForm.demand_application_id,
+        status: this.searchForm.status,
+        has_feedback: this.searchForm.has_feedback,
+        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
+      };
+      if (this.searchForm.status === "") {
+        delete args.status;
+      }
+      if (this.searchForm.has_feedback === "") {
+        delete args.has_feedback;
+      }
+      if (!this.searchForm.demand_application_id) {
+        delete args.demand_application_id;
+      }
+      if (!this.searchForm.dataValue[0]) {
+        delete args.create_start_date;
+      }
+      if (!this.searchForm.dataValue[1]) {
+        delete args.create_end_date;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.DEMAND_MODIFY_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     // 反馈时间是否超过12小时
     timeRange: data => {
       let nowDate = new Date().getTime();
@@ -542,29 +589,7 @@ export default {
 
     getDemandModifyList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        demand_application_id: this.searchForm.demand_application_id,
-        status: this.searchForm.status,
-        has_feedback: this.searchForm.has_feedback,
-        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
-      };
-      if (this.searchForm.status === "") {
-        delete args.status;
-      }
-      if (this.searchForm.has_feedback === "") {
-        delete args.has_feedback;
-      }
-      if (!this.searchForm.demand_application_id) {
-        delete args.demand_application_id;
-      }
-      if (!this.searchForm.dataValue[0]) {
-        delete args.create_start_date;
-      }
-      if (!this.searchForm.dataValue[1]) {
-        delete args.create_end_date;
-      }
+      let args = this.setArgs();
       getDemandModifyList(this, args)
         .then(res => {
           this.tableData = res.data;

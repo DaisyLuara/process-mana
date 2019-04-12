@@ -44,6 +44,10 @@
               type="success"
               @click="addInvoiceCompany"
             >新增开票公司</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
         <el-table 
@@ -156,7 +160,8 @@ import {
   FormItem,
   MessageBox
 } from "element-ui";
-import { getInvoiceCompanyList, Cookies } from "service";
+import { getInvoiceCompanyList, Cookies,downloadUrl,
+  getExportDownload  } from "service";
 
 export default {
   components: {
@@ -220,8 +225,7 @@ export default {
     this.getInvoiceCompanyList();
   },
   methods: {
-    getInvoiceCompanyList() {
-      this.setting.loading = true;
+    setArgs(){
       let args = {
         page: this.pagination.currentPage,
         name: this.searchForm.name
@@ -229,6 +233,26 @@ export default {
       if (!this.searchForm.name) {
         delete args.name;
       }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.INVOICE_OCOMPANY_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getInvoiceCompanyList() {
+      this.setting.loading = true;
+      let args = this.setArgs();
       getInvoiceCompanyList(this, args)
         .then(res => {
           this.tableData = res.data;

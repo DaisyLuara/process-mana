@@ -61,6 +61,12 @@
             class="label">
             总数:{{ pagination.total }} 
           </span>
+          <div>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
+          </div>
         </div>
         <el-table 
           :data="tableData" 
@@ -161,7 +167,11 @@ import {
   Select,
   Option
 } from 'element-ui'
-import { getRemindContractList, Cookies } from 'service'
+import { 
+  getRemindContractList,
+  Cookies,
+  downloadUrl,
+  getExportDownload } from 'service'
 
 export default {
   components: {
@@ -213,8 +223,7 @@ export default {
     this.getRemindContractList()
   },
   methods: {
-    getRemindContractList() {
-      this.setting.loading = true
+    setArgs(){
       let args = {
         include: 'receiveDate.invoiceReceipt',
         page: this.pagination.currentPage,
@@ -231,6 +240,27 @@ export default {
       if (this.searchForm.contract_number === '') {
         delete args.contract_number
       }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.include;
+      delete args.page;
+      return getExportDownload(this,downloadUrl.REMIND_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getRemindContractList() {
+      this.setting.loading = true
+      let args = this.setArgs();
       getRemindContractList(this, args)
         .then(res => {
           this.tableData = res.data
