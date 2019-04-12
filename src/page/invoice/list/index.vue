@@ -8,9 +8,18 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true">
-            <el-form-item label prop="status">
-              <el-select v-model="searchForm.status" placeholder="请选择审批状态" filterable clearable>
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true">
+            <el-form-item 
+              label 
+              prop="status">
+              <el-select 
+                v-model="searchForm.status" 
+                placeholder="请选择审批状态" 
+                filterable 
+                clearable>
                 <el-option
                   v-for="item in statusList"
                   :key="item.id"
@@ -19,7 +28,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="name">
+            <el-form-item 
+              label 
+              prop="name">
               <el-input
                 v-model="searchForm.name"
                 clearable
@@ -27,7 +38,9 @@
                 class="item-input"
               />
             </el-form-item>
-            <el-form-item label prop="contract_number">
+            <el-form-item 
+              label 
+              prop="contract_number">
               <el-input
                 v-model="searchForm.contract_number"
                 clearable
@@ -35,7 +48,9 @@
                 class="item-input"
               />
             </el-form-item>
-            <el-form-item label prop="dataValue">
+            <el-form-item 
+              label 
+              prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
                 :clearable="false"
@@ -48,8 +63,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -63,12 +84,21 @@
               type="success"
               @click="addInvoice"
             >新增开票</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="合同编号:">
                   <span>{{ scope.row.contract_number }}</span>
                 </el-form-item>
@@ -132,7 +162,11 @@
           >
             <template slot-scope="scope">{{ scope.row.applicant_name }}</template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="status" label="审批状态" min-width="80">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="status" 
+            label="审批状态" 
+            min-width="80">
             <template slot-scope="scope">{{ scope.row.status }}</template>
           </el-table-column>
           <el-table-column
@@ -153,7 +187,9 @@
           >
             <template slot-scope="scope">{{ scope.row.created_at }}</template>
           </el-table-column>
-          <el-table-column label="操作" min-width="280">
+          <el-table-column 
+            label="操作" 
+            min-width="280">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.status === '驳回' && scope.row.handler === applicant"
@@ -178,7 +214,10 @@
                 type="warning"
                 @click="receiveInvoice(scope.row)"
               >认领票据</el-button>
-              <el-button size="mini" type="info" @click="detailInvoice(scope.row)">详情</el-button>
+              <el-button 
+                size="mini" 
+                type="info" 
+                @click="detailInvoice(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -218,7 +257,9 @@ import {
   handleDateTransform,
   getInvoiceList,
   Cookies,
-  getAuditingCount
+  getAuditingCount,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -373,6 +414,47 @@ export default {
     this.getInvoiceList();
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        name: this.searchForm.name,
+        status: this.searchForm.status,
+        contract_number: this.searchForm.contract_number,
+        start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        end_date: handleDateTransform(this.searchForm.dataValue[1])
+      };
+      if (!this.searchForm.name) {
+        delete args.name;
+      }
+      if (!this.searchForm.status) {
+        delete args.status;
+      }
+      if (this.searchForm.contract_number === "") {
+        delete args.contract_number;
+      }
+      if (!this.searchForm.dataValue[0]) {
+        delete args.start_date;
+      }
+      if (!this.searchForm.dataValue[1]) {
+        delete args.end_date;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.INVOICE_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     getAuditingCount() {
       getAuditingCount(this)
         .then(res => {
@@ -448,29 +530,7 @@ export default {
     },
     getInvoiceList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        name: this.searchForm.name,
-        status: this.searchForm.status,
-        contract_number: this.searchForm.contract_number,
-        start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        end_date: handleDateTransform(this.searchForm.dataValue[1])
-      };
-      if (!this.searchForm.name) {
-        delete args.name;
-      }
-      if (!this.searchForm.status) {
-        delete args.status;
-      }
-      if (this.searchForm.contract_number === "") {
-        delete args.contract_number;
-      }
-      if (!this.searchForm.dataValue[0]) {
-        delete args.start_date;
-      }
-      if (!this.searchForm.dataValue[1]) {
-        delete args.end_date;
-      }
+      let args = this.setArgs()
       getInvoiceList(this, args)
         .then(res => {
           this.tableData = res.data;

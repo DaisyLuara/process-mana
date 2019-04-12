@@ -8,9 +8,17 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="status">
-              <el-form-item label prop="title">
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
+            class="search-content">
+            <el-form-item 
+              label 
+              prop="status">
+              <el-form-item 
+                label 
+                prop="title">
                 <el-input
                   v-model="searchForm.title"
                   clearable
@@ -33,8 +41,14 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="status">
-              <el-select v-model="searchForm.status" placeholder="请选择状态" filterable clearable>
+            <el-form-item 
+              label 
+              prop="status">
+              <el-select 
+                v-model="searchForm.status" 
+                placeholder="请选择状态" 
+                filterable 
+                clearable>
                 <el-option
                   v-for="item in statusList"
                   :key="item.id"
@@ -43,7 +57,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="receiver_id">
+            <el-form-item 
+              label 
+              prop="receiver_id">
               <el-select
                 v-model="searchForm.receiver_id"
                 :loading="searchLoading"
@@ -59,7 +75,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="dataValue">
+            <el-form-item 
+              label 
+              prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
                 :clearable="false"
@@ -72,8 +90,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -87,12 +111,21 @@
               type="success"
               @click="addDemand"
             >新增申请</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
                 </el-form-item>
@@ -117,8 +150,16 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
-          <el-table-column :show-overflow-tooltip="true" prop="title" label="项目标的" min-width="100"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="id" 
+            label="ID" 
+            min-width="80"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="title" 
+            label="项目标的" 
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="applicant_name"
@@ -131,7 +172,11 @@
             label="接单人"
             min-width="80"
           />
-          <el-table-column :show-overflow-tooltip="true" prop="status" label="状态" min-width="80">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="status" 
+            label="状态" 
+            min-width="80">
             <template
               slot-scope="scope"
             >{{ scope.row.status===0 ? '未接单' : scope.row.status===1 ? '已完成' : scope.row.status===2 ? '已接单' : '修改中' }}</template>
@@ -152,7 +197,9 @@
           >
             <template slot-scope="scope">{{ scope.row.receiver_time }}</template>
           </el-table-column>
-          <el-table-column label="操作" min-width="200">
+          <el-table-column 
+            label="操作" 
+            min-width="200">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.applicant_id === applicant && scope.row.status === 0"
@@ -172,7 +219,10 @@
                 type="warning"
                 @click="detailDemand(scope.row)"
               >接单</el-button>
-              <el-button size="mini" type="info" @click="detailDemand(scope.row)">详情</el-button>
+              <el-button 
+                size="mini" 
+                type="info" 
+                @click="detailDemand(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -209,7 +259,9 @@ import {
   handleDateTransform,
   confirmDemand,
   Cookies,
-  getSearchDemandPeople
+  getSearchDemandPeople,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -371,6 +423,51 @@ export default {
     this.roles = user_info.roles.data;
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        title: this.searchForm.title,
+        status: this.searchForm.status,
+        applicant_id: this.searchForm.applicant_id,
+        receiver_id: this.searchForm.receiver_id,
+        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
+      };
+      if (!this.searchForm.title) {
+        delete args.title;
+      }
+      if (this.searchForm.status === "") {
+        delete args.status;
+      }
+      if (!this.searchForm.applicant_id) {
+        delete args.applicant_id;
+      }
+      if (!this.searchForm.receiver_id) {
+        delete args.receiver_id;
+      }
+      if (!this.searchForm.dataValue[0]) {
+        delete args.create_start_date;
+      }
+      if (!this.searchForm.dataValue[1]) {
+        delete args.create_end_date;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.DEMAND_APPLY_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     getSearchDemandPeople(permissionString, type) {
       this.searchLoading = true;
       let args = {
@@ -427,33 +524,7 @@ export default {
     },
     getDemandList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        title: this.searchForm.title,
-        status: this.searchForm.status,
-        applicant_id: this.searchForm.applicant_id,
-        receiver_id: this.searchForm.receiver_id,
-        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
-      };
-      if (!this.searchForm.title) {
-        delete args.title;
-      }
-      if (this.searchForm.status === "") {
-        delete args.status;
-      }
-      if (!this.searchForm.applicant_id) {
-        delete args.applicant_id;
-      }
-      if (!this.searchForm.receiver_id) {
-        delete args.receiver_id;
-      }
-      if (!this.searchForm.dataValue[0]) {
-        delete args.create_start_date;
-      }
-      if (!this.searchForm.dataValue[1]) {
-        delete args.create_end_date;
-      }
+      let args = this.setArgs();
       getDemandList(this, args)
         .then(res => {
           this.tableData = res.data;

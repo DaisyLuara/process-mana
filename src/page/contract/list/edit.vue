@@ -1,50 +1,87 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">编辑合同</div>
-      <el-form ref="contractForm" :model="contractForm" :rules="rules" label-width="120px">
+      <el-form 
+        ref="contractForm" 
+        :model="contractForm" 
+        :rules="rules" 
+        label-width="120px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="公司名称:" prop="company_name">{{ contractForm.company_name }}</el-form-item>
+            <el-form-item 
+              label="公司名称:" 
+              prop="company_name">{{ contractForm.company_name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人:" prop="applicant_name">{{ contractForm.applicant_name }}</el-form-item>
+            <el-form-item 
+              label="申请人:" 
+              prop="applicant_name">{{ contractForm.applicant_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同名称:" prop="name">{{ contractForm.name }}</el-form-item>
+            <el-form-item 
+              label="合同名称:" 
+              prop="name">{{ contractForm.name }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同类型:" prop="type_name">{{ contractForm.type_name }}</el-form-item>
+            <el-form-item 
+              label="合同类型:" 
+              prop="type_name">{{ contractForm.type_name }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同内容:" prop="content">
-              <div v-for="item in fileList" :key="item.id">
+            <el-form-item 
+              label="合同内容:" 
+              prop="content">
+              <div 
+                v-for="item in fileList" 
+                :key="item.id">
                 {{ item.name }}
-                <span class="download" @click="handlePreview(item)">下载</span>
+                <span 
+                  class="download" 
+                  @click="handlePreview(item)">下载</span>
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="12" v-if="contractForm.type_name === '收款合同'">
-            <el-form-item label="合同总额:" prop="amount">{{ contractForm.amount }}</el-form-item>
+          <el-col 
+            v-if="contractForm.type_name === '收款合同'" 
+            :span="12">
+            <el-form-item 
+              label="合同总额:" 
+              prop="amount">{{ contractForm.amount }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同编号:" prop="contract_number">{{ contractForm.contract_number }}</el-form-item>
+            <el-form-item 
+              label="合同编号:" 
+              prop="contract_number">{{ contractForm.contract_number }}</el-form-item>
           </el-col>
-          <el-col v-if="contractForm.type_name === '收款合同'" :span="12">
-            <el-form-item label="预估收款日期:" prop="receive_date">{{ contractForm.receive_date }}</el-form-item>
+          <el-col 
+            v-if="contractForm.type_name === '收款合同'" 
+            :span="12">
+            <el-form-item 
+              label="预估收款日期:" 
+              prop="receive_date">{{ contractForm.receive_date }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12" v-if="contractForm.legal_message">
-            <el-form-item label="法务意见:" prop="legal_message">{{ contractForm.legal_message }}</el-form-item>
+          <el-col 
+            v-if="contractForm.legal_message" 
+            :span="12">
+            <el-form-item 
+              label="法务意见:" 
+              prop="legal_message">{{ contractForm.legal_message }}</el-form-item>
           </el-col>
-          <el-col v-if="contractForm.legal_ma_message" :span="12">
+          <el-col 
+            v-if="contractForm.legal_ma_message" 
+            :span="12">
             <el-form-item
               label="法务主管意见:"
               prop="legal_ma_message"
@@ -52,11 +89,17 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12" v-if="contractForm.bd_ma_message">
-            <el-form-item label="bd主管意见:" prop="bd_ma_message">{{ contractForm.bd_ma_message }}</el-form-item>
+          <el-col 
+            v-if="contractForm.bd_ma_message" 
+            :span="12">
+            <el-form-item 
+              label="bd主管意见:" 
+              prop="bd_ma_message">{{ contractForm.bd_ma_message }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="备注" prop="remark">{{ contractForm.remark }}</el-form-item>
+            <el-form-item 
+              label="备注" 
+              prop="remark">{{ contractForm.remark }}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -98,27 +141,41 @@
         </el-table>
         <el-row v-if="contractForm.kind === '服务' && contractForm.type_name === '收款合同'">
           <el-col :span="12">
-            <el-form-item label="服务对象:" prop="serve_target">{{ contractForm.serve_target }}</el-form-item>
+            <el-form-item 
+              label="服务对象:" 
+              prop="serve_target">{{ contractForm.serve_target }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预充值:" prop="recharge">{{ contractForm.recharge }}</el-form-item>
+            <el-form-item 
+              label="预充值:" 
+              prop="recharge">{{ contractForm.recharge }}</el-form-item>
           </el-col>
         </el-row>
         <el-row v-if="projectNumFlag">
           <el-col :span="12">
-            <el-form-item label="定制节目数" prop="special_num">
-              <el-input-number v-model="contractForm.special_num" :min="0"/>
+            <el-form-item 
+              label="定制节目数" 
+              prop="special_num">
+              <el-input-number 
+                v-model="contractForm.special_num" 
+                :min="0"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="通用节目数" prop="common_num">
-              <el-input-number v-model="contractForm.common_num" :min="0"/>
+            <el-form-item 
+              label="通用节目数" 
+              prop="common_num">
+              <el-input-number 
+                v-model="contractForm.common_num" 
+                :min="0"/>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-form-item>
-          <el-button type="primary" @click="submit('contractForm')">保存</el-button>
+          <el-button 
+            type="primary" 
+            @click="submit('contractForm')">保存</el-button>
           <el-button @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>

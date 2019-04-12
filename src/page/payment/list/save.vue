@@ -52,8 +52,8 @@
               prop="amount" >
               <el-input 
                 v-model="paymentForm.amount" 
-                placeholder="请填写申请金额（大写)" 
-                :maxlength="50"
+                :maxlength="50" 
+                placeholder="请填写申请金额（大写)"
                 class="item-input"/>
             </el-form-item>
           </el-col>
@@ -76,9 +76,9 @@
               prop="reason" >
               <el-input 
                 v-model="paymentForm.reason" 
-                placeholder="请填写申请事由" 
-                :maxlength="200"
+                :maxlength="200" 
                 :autosize="{ minRows: 2, maxRows: 4}"
+                placeholder="请填写申请事由"
                 type="textarea"
                 class="item-input"/>
             </el-form-item>

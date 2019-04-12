@@ -8,9 +8,17 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="status">
-              <el-form-item label prop="demand_application_id">
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
+            class="search-content">
+            <el-form-item 
+              label 
+              prop="status">
+              <el-form-item 
+                label 
+                prop="demand_application_id">
                 <el-select
                   v-model="searchForm.demand_application_id"
                   :loading="searchLoading"
@@ -41,8 +49,14 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="status">
-              <el-select v-model="searchForm.status" placeholder="请选择平台意见" filterable clearable>
+            <el-form-item 
+              label 
+              prop="status">
+              <el-select 
+                v-model="searchForm.status" 
+                placeholder="请选择平台意见" 
+                filterable 
+                clearable>
                 <el-option
                   v-for="item in statusList"
                   :key="item.id"
@@ -51,7 +65,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="dataValue">
+            <el-form-item 
+              label 
+              prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
                 :clearable="false"
@@ -64,8 +80,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -79,12 +101,21 @@
               type="success"
               @click="addModify"
             >新增修改</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
                 </el-form-item>
@@ -112,7 +143,11 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="id" label="ID" min-width="80"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="id" 
+            label="ID" 
+            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="demand_application_name"
@@ -141,7 +176,11 @@
             label="反馈人"
             min-width="100"
           />
-          <el-table-column :show-overflow-tooltip="true" prop="status" label="平台意见" min-width="80">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="status" 
+            label="平台意见" 
+            min-width="80">
             <template
               slot-scope="scope"
             >{{ scope.row.status===0 ? '待处理' : scope.row.status===1 ? '已审核' : '已驳回' }}</template>
@@ -159,7 +198,9 @@
             min-width="80"
           />
 
-          <el-table-column label="操作" min-width="200">
+          <el-table-column 
+            label="操作" 
+            min-width="200">
             <template slot-scope="scope">
               <el-button
                 v-if="scope.row.applicant_id === applicant && scope.row.has_feedback === 0"
@@ -179,7 +220,10 @@
                 type="warning"
                 @click="detailModify(scope.row)"
               >反馈</el-button>
-              <el-button size="mini" type="info" @click="detailModify(scope.row)">详情</el-button>
+              <el-button 
+                size="mini" 
+                type="info" 
+                @click="detailModify(scope.row)">详情</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -194,10 +238,17 @@
         </div>
       </div>
     </div>
-    <el-dialog title="平台意见" :visible.sync="dialogFormVisible" :show-close="false">
+    <el-dialog 
+      :visible.sync="dialogFormVisible" 
+      :show-close="false" 
+      title="平台意见">
       <el-form :model="reviewFrom">
-        <el-form-item label="审批状态" label-width="100px">
-          <el-radio-group v-model="reviewFrom.review" @change="reviewHandle">
+        <el-form-item 
+          label="审批状态" 
+          label-width="100px">
+          <el-radio-group 
+            v-model="reviewFrom.review" 
+            @change="reviewHandle">
             <el-radio :label="0">驳回</el-radio>
             <el-radio :label="1">通过</el-radio>
           </el-radio-group>
@@ -217,9 +268,13 @@
           />
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="submit">确 定</el-button>
+        <el-button 
+          type="primary" 
+          @click="submit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -247,7 +302,9 @@ import {
   handleDateTransform,
   reviewDemand,
   Cookies,
-  getSearchDemandApplication
+  getSearchDemandApplication,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -416,6 +473,47 @@ export default {
     this.roles = user_info.roles.data;
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        demand_application_id: this.searchForm.demand_application_id,
+        status: this.searchForm.status,
+        has_feedback: this.searchForm.has_feedback,
+        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
+      };
+      if (this.searchForm.status === "") {
+        delete args.status;
+      }
+      if (this.searchForm.has_feedback === "") {
+        delete args.has_feedback;
+      }
+      if (!this.searchForm.demand_application_id) {
+        delete args.demand_application_id;
+      }
+      if (!this.searchForm.dataValue[0]) {
+        delete args.create_start_date;
+      }
+      if (!this.searchForm.dataValue[1]) {
+        delete args.create_end_date;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.DEMAND_MODIFY_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     // 反馈时间是否超过12小时
     timeRange: data => {
       let nowDate = new Date().getTime();
@@ -491,29 +589,7 @@ export default {
 
     getDemandModifyList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        demand_application_id: this.searchForm.demand_application_id,
-        status: this.searchForm.status,
-        has_feedback: this.searchForm.has_feedback,
-        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
-      };
-      if (this.searchForm.status === "") {
-        delete args.status;
-      }
-      if (this.searchForm.has_feedback === "") {
-        delete args.has_feedback;
-      }
-      if (!this.searchForm.demand_application_id) {
-        delete args.demand_application_id;
-      }
-      if (!this.searchForm.dataValue[0]) {
-        delete args.create_start_date;
-      }
-      if (!this.searchForm.dataValue[1]) {
-        delete args.create_end_date;
-      }
+      let args = this.setArgs();
       getDemandModifyList(this, args)
         .then(res => {
           this.tableData = res.data;

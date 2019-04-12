@@ -1,11 +1,20 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
       <div class="pane-title">新增合同</div>
-      <el-form ref="contractForm" :model="contractForm" :rules="rules" label-width="120px">
+      <el-form 
+        ref="contractForm" 
+        :model="contractForm" 
+        :rules="rules" 
+        label-width="120px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="公司名称" prop="company_id">
+            <el-form-item 
+              label="公司名称" 
+              prop="company_id">
               <el-select
                 v-model="contractForm.company_id"
                 :loading="searchLoading"
@@ -23,7 +32,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="申请人" prop="applicant_name">
+            <el-form-item 
+              label="申请人" 
+              prop="applicant_name">
               <el-input
                 v-model="contractForm.applicant_name"
                 :disabled="true"
@@ -35,7 +46,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同名称" prop="name">
+            <el-form-item 
+              label="合同名称" 
+              prop="name">
               <el-input
                 v-model="contractForm.name"
                 :maxlength="50"
@@ -45,8 +58,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同类型" prop="type">
-              <el-radio-group v-model="contractForm.type" @change="contractTypeHandle">
+            <el-form-item 
+              label="合同类型" 
+              prop="type">
+              <el-radio-group 
+                v-model="contractForm.type" 
+                @change="contractTypeHandle">
                 <el-radio :label="0">收款合同</el-radio>
                 <el-radio :label="1">付款合同</el-radio>
                 <el-radio :label="2">其他合同</el-radio>
@@ -56,7 +73,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同内容" prop="ids">
+            <el-form-item 
+              label="合同内容" 
+              prop="ids">
               <el-upload
                 ref="upload"
                 :action="SERVER_URL + '/api/media'"
@@ -70,7 +89,9 @@
                 :file-list="fileList"
                 class="upload-demo"
               >
-                <el-button size="small" type="primary">点击上传</el-button>
+                <el-button 
+                  size="small" 
+                  type="primary">点击上传</el-button>
                 <div
                   slot="tip"
                   style="display:inline-block"
@@ -85,7 +106,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="contractForm.type === 0" label="合同总额" prop="amount">
+            <el-form-item 
+              v-if="contractForm.type === 0" 
+              label="合同总额" 
+              prop="amount">
               <el-input
                 v-model="contractForm.amount"
                 :maxlength="7"
@@ -96,8 +120,12 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col v-if="contractForm.type === 0" :span="12">
-            <el-form-item label="预估收款日期" prop="receive_date">
+          <el-col 
+            v-if="contractForm.type === 0" 
+            :span="12">
+            <el-form-item 
+              label="预估收款日期" 
+              prop="receive_date">
               <el-date-picker
                 v-model="contractForm.receive_date"
                 type="dates"
@@ -122,8 +150,13 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item v-if="contractForm.type === 0" label="合同种类" prop="kind">
-              <el-radio-group v-model="contractForm.kind" @change="contractKindHandle">
+            <el-form-item 
+              v-if="contractForm.type === 0" 
+              label="合同种类" 
+              prop="kind">
+              <el-radio-group 
+                v-model="contractForm.kind" 
+                @change="contractKindHandle">
                 <el-radio :label="1">铺屏</el-radio>
                 <el-radio :label="2">销售</el-radio>
                 <el-radio :label="3">租赁</el-radio>
@@ -139,7 +172,10 @@
             style="margin-bottom: 20px;"
             @click="productAdd"
           >新增硬件信息</el-button>
-          <el-table :data="productTableData" border style="width: 100%;margin-bottom: 20px;">
+          <el-table 
+            :data="productTableData" 
+            border 
+            style="width: 100%;margin-bottom: 20px;">
             <el-table-column
               prop="model"
               label="产品名称"
@@ -196,10 +232,14 @@
               header-align="center"
             >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.product_stock" placeholder="请输入产品数量"/>
+                <el-input 
+                  v-model="scope.row.product_stock" 
+                  placeholder="请输入产品数量"/>
               </template>
             </el-table-column>
-            <el-table-column label="操作" min-width="100">
+            <el-table-column 
+              label="操作" 
+              min-width="100">
               <template slot-scope="scope">
                 <el-button
                   size="mini"
@@ -213,7 +253,9 @@
         </el-row>
         <el-row v-if="serviceFlag">
           <el-col :span="12">
-            <el-form-item label="服务对象" prop="serve_target">
+            <el-form-item 
+              label="服务对象" 
+              prop="serve_target">
               <el-radio-group v-model="contractForm.serve_target">
                 <el-radio :label="1">商户</el-radio>
                 <el-radio :label="2">商场</el-radio>
@@ -221,7 +263,9 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="预充值" prop="recharge">
+            <el-form-item 
+              label="预充值" 
+              prop="recharge">
               <el-radio-group v-model="contractForm.recharge">
                 <el-radio :label="0">否</el-radio>
                 <el-radio :label="1">是</el-radio>
@@ -231,17 +275,28 @@
         </el-row>
         <el-row v-if="projectNumFlag">
           <el-col :span="12">
-            <el-form-item label="定制节目数" prop="special_num">
-              <el-input-number v-model="contractForm.special_num" :min="0"/>
+            <el-form-item 
+              label="定制节目数" 
+              prop="special_num">
+              <el-input-number 
+                v-model="contractForm.special_num" 
+                :min="0"/>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="通用节目数" prop="common_num">
-              <el-input-number v-model="contractForm.common_num" :min="0" :max="max"/>
+            <el-form-item 
+              label="通用节目数" 
+              prop="common_num">
+              <el-input-number 
+                v-model="contractForm.common_num" 
+                :min="0" 
+                :max="max"/>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="备注" prop="remark">
+        <el-form-item 
+          label="备注" 
+          prop="remark">
           <el-input
             v-model="contractForm.remark"
             :autosize="{ minRows: 2, maxRows: 4}"
@@ -251,7 +306,9 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submit('contractForm')">保存</el-button>
+          <el-button 
+            type="primary" 
+            @click="submit('contractForm')">保存</el-button>
           <el-button @click="historyBack">返回</el-button>
         </el-form-item>
       </el-form>

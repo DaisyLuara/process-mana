@@ -61,6 +61,12 @@
             class="label">
             总数:{{ pagination.total }} 
           </span>
+          <div>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
+          </div>
         </div>
         <el-table 
           :data="tableData" 
@@ -69,19 +75,17 @@
             type="expand">
             <template 
               slot-scope="scope">
-               <el-table
+              <el-table
                 :data="scope.row.receiveDate.data"
                 style="width: 100%">
                 <el-table-column
                   prop="receive_date"
                   label="预估收款日期"
-                  min-width="120">
-                </el-table-column>
+                  min-width="120"/>
                 <el-table-column
                   prop="receive_status"
                   label="收款状态"
-                  min-width="120">
-                </el-table-column>
+                  min-width="120"/>
                 <el-table-column
                   prop="invoiceReceipt"
                   label="收款金额"
@@ -95,7 +99,7 @@
                   label="付款公司"
                   min-width="120">
                   <template slot-scope="scope">
-                    <span>{{ scope.row.invoiceReceipt !== undefined  ? scope.row.invoiceReceipt.receipt_company : ''}}</span>
+                    <span>{{ scope.row.invoiceReceipt !== undefined ? scope.row.invoiceReceipt.receipt_company : '' }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -113,26 +117,22 @@
             :show-overflow-tooltip="true"
             prop="contract_number"
             label="合同编号"
-            min-width="80">
-          </el-table-column>
+            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="company_name"
             label="公司名称"
-            min-width="100">
-          </el-table-column>
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="name"
             label="合同名称"
-            min-width="80">
-          </el-table-column>
+            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="applicant_name"
             label="申请人"
-            min-width="80">
-          </el-table-column>
+            min-width="80"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="amount"
@@ -167,7 +167,11 @@ import {
   Select,
   Option
 } from 'element-ui'
-import { getRemindContractList, Cookies } from 'service'
+import { 
+  getRemindContractList,
+  Cookies,
+  downloadUrl,
+  getExportDownload } from 'service'
 
 export default {
   components: {
@@ -219,8 +223,7 @@ export default {
     this.getRemindContractList()
   },
   methods: {
-    getRemindContractList() {
-      this.setting.loading = true
+    setArgs(){
       let args = {
         include: 'receiveDate.invoiceReceipt',
         page: this.pagination.currentPage,
@@ -237,6 +240,27 @@ export default {
       if (this.searchForm.contract_number === '') {
         delete args.contract_number
       }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.include;
+      delete args.page;
+      return getExportDownload(this,downloadUrl.REMIND_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getRemindContractList() {
+      this.setting.loading = true
+      let args = this.setArgs();
       getRemindContractList(this, args)
         .then(res => {
           this.tableData = res.data

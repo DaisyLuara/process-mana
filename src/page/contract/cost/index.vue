@@ -8,14 +8,29 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true">
-            <el-form-item label prop="contract_name">
-              <el-input v-model="searchForm.contract_name" placeholder="请输入合同名称" clearable/>
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true">
+            <el-form-item 
+              label 
+              prop="contract_name">
+              <el-input 
+                v-model="searchForm.contract_name" 
+                placeholder="请输入合同名称" 
+                clearable/>
             </el-form-item>
-            <el-form-item label prop="contract_number">
-              <el-input v-model="searchForm.contract_number" placeholder="请输入合同编号" clearable/>
+            <el-form-item 
+              label 
+              prop="contract_number">
+              <el-input 
+                v-model="searchForm.contract_number" 
+                placeholder="请输入合同编号" 
+                clearable/>
             </el-form-item>
-            <el-form-item label prop="dataValue">
+            <el-form-item 
+              label 
+              prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
                 :clearable="false"
@@ -28,8 +43,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -37,13 +58,25 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button size="small" type="success" @click="addCost">新增成本</el-button>
+            <el-button 
+              size="small" 
+              type="success" 
+              @click="addCost">新增成本</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="合同编号:">
                   <span>{{ scope.row.contract_number }}</span>
                 </el-form-item>
@@ -110,10 +143,17 @@
             label="修改时间"
             min-width="80"
           />
-          <el-table-column label="操作" min-width="180">
+          <el-table-column 
+            label="操作" 
+            min-width="180">
             <template slot-scope="scope">
-              <el-button size="mini" @click="detailCost(scope.row)">详情</el-button>
-              <el-button size="mini" type="warning" @click="editCost(scope.row)">编辑</el-button>
+              <el-button 
+                size="mini" 
+                @click="detailCost(scope.row)">详情</el-button>
+              <el-button 
+                size="mini" 
+                type="warning" 
+                @click="editCost(scope.row)">编辑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -151,7 +191,9 @@ import {
   handleDateTransform,
   getContract,
   receiptInvoice,
-  getReceiveDate
+  getReceiveDate,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -277,8 +319,7 @@ export default {
     this.getCostList();
   },
   methods: {
-    getCostList() {
-      this.setting.loading = true;
+    setArgs(){
       let args = {
         page: this.pagination.currentPage,
         contract_name: this.searchForm.contract_name,
@@ -298,6 +339,26 @@ export default {
       if (!this.searchForm.dataValue[1]) {
         delete args.end_date;
       }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.COST_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getCostList() {
+      this.setting.loading = true;
+      let args = this.setArgs();
       getCostList(this, args)
         .then(res => {
           this.tableData = res.data;

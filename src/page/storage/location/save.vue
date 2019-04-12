@@ -1,7 +1,10 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
-      <div class="pane-title">{{locationID ? '修改库位' : '新增库位' }}</div>
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
+      <div class="pane-title">{{ locationID ? '修改库位' : '新增库位' }}</div>
       <el-form
         ref="locationForm"
         :model="locationForm"
@@ -9,17 +12,24 @@
         label-position="left"
         label-width="100px"
       >
-        <el-form-item label="库位名称" prop="name">
+        <el-form-item 
+          label="库位名称" 
+          prop="name">
           <el-input
             v-model="locationForm.name"
+            :maxlength="30"
             placeholder="请输入库位名称"
             clearable
-            :maxlength="30"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="所属仓库" prop="warehouse_id">
-          <el-select v-model="locationForm.warehouse_id" placeholder="请选择所属仓库" clearable>
+        <el-form-item 
+          label="所属仓库" 
+          prop="warehouse_id">
+          <el-select 
+            v-model="locationForm.warehouse_id" 
+            placeholder="请选择所属仓库" 
+            clearable>
             <el-option
               v-for="item in storageList"
               :key="item.id"
@@ -29,7 +39,9 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submit('locationForm')">保存</el-button>
+          <el-button 
+            type="primary" 
+            @click="submit('locationForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>

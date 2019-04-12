@@ -8,12 +8,24 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true">
-            <el-form-item label prop="name">
-              <el-input v-model="searchForm.name" placeholder="付款公司" clearable/>
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true">
+            <el-form-item 
+              label 
+              prop="name">
+              <el-input 
+                v-model="searchForm.name" 
+                placeholder="付款公司" 
+                clearable/>
             </el-form-item>
-            <el-form-item label prop="claim_status">
-              <el-select v-model="searchForm.claim_status" placeholder="认领状态">
+            <el-form-item 
+              label 
+              prop="claim_status">
+              <el-select 
+                v-model="searchForm.claim_status" 
+                placeholder="认领状态">
                 <el-option
                   v-for="item in statusReceiptList"
                   :key="item.id"
@@ -22,7 +34,9 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label prop="dataValue">
+            <el-form-item 
+              label 
+              prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
                 :clearable="false"
@@ -35,8 +49,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -44,13 +64,26 @@
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
           <div>
-            <el-button v-if="finance" size="small" type="success" @click="addReceipt">新增收款</el-button>
+            <el-button 
+              v-if="finance" 
+              size="small" 
+              type="success" 
+              @click="addReceipt">新增收款</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="付款公司:">
                   <span>{{ scope.row.receipt_company }}</span>
                 </el-form-item>
@@ -70,10 +103,10 @@
                   label="预估收款时间:"
                 >{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.receive_date : '' }}</el-form-item>
                 <el-form-item label="合同编号:">
-                  <span>{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : ''}}</span>
+                  <span>{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : '' }}</span>
                 </el-form-item>
                 <el-form-item label="所属人:">
-                  <span>{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.applicant_name : ''}}</span>
+                  <span>{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.applicant_name : '' }}</span>
                 </el-form-item>
               </el-form>
             </template>
@@ -126,17 +159,21 @@
           >
             <template
               slot-scope="scope"
-            >{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : ''}}</template>
+            >{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.contract_number : '' }}</template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="BD" label="所属人" min-width="80">
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="BD" 
+            label="所属人" 
+            min-width="80">
             <template
               slot-scope="scope"
-            >{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.applicant_name : ''}}</template>
+            >{{ scope.row.receiveDate !== undefined ? scope.row.receiveDate.contract.applicant_name : '' }}</template>
           </el-table-column>
           <el-table-column
+            v-if="finance || legalAffairs || legalAffairsManager || operation"
             label="操作"
             min-width="200"
-            v-if="finance || legalAffairs || legalAffairsManager || operation"
           >
             <template slot-scope="scope">
               <el-button
@@ -165,8 +202,13 @@
         </div>
       </div>
     </div>
-    <el-dialog title="认领收款" :visible.sync="dialogFormVisible">
-      <el-form :model="claimReceiptForm" label-position="right" label-width="100px">
+    <el-dialog 
+      :visible.sync="dialogFormVisible" 
+      title="认领收款">
+      <el-form 
+        :model="claimReceiptForm" 
+        label-position="right" 
+        label-width="100px">
         <el-form-item label="合同编号">
           <el-select
             v-model="claimReceiptForm.contract_id"
@@ -203,9 +245,13 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <div slot="footer" class="dialog-footer">
+      <div 
+        slot="footer" 
+        class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="receiptInvoice">确 定</el-button>
+        <el-button 
+          type="primary" 
+          @click="receiptInvoice">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -232,8 +278,9 @@ import {
   handleDateTransform,
   getContract,
   receiptInvoice,
-  getReceiveDate
-} from "service";
+  getReceiveDate,
+  downloadUrl,
+  getExportDownload } from 'service'
 
 export default {
   components: {
@@ -370,6 +417,45 @@ export default {
     this.getReceiptList();
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        include: "receiveDate.contract",
+        name: this.searchForm.name,
+        claim_status: this.searchForm.claim_status,
+        start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        end_date: handleDateTransform(this.searchForm.dataValue[1])
+      };
+      if (!this.searchForm.name) {
+        delete args.name;
+      }
+      if (this.searchForm.claim_status === "") {
+        delete args.claim_status;
+      }
+      if (!this.searchForm.dataValue[0]) {
+        delete args.start_date;
+      }
+      if (!this.searchForm.dataValue[1]) {
+        delete args.end_date;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.include;
+      delete args.page;
+      return getExportDownload(this,downloadUrl.RECEIPT_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     getContract(query) {
       this.searchLoading = true;
       let args = {
@@ -420,26 +506,7 @@ export default {
     },
     getReceiptList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        include: "receiveDate.contract",
-        name: this.searchForm.name,
-        claim_status: this.searchForm.claim_status,
-        start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        end_date: handleDateTransform(this.searchForm.dataValue[1])
-      };
-      if (!this.searchForm.name) {
-        delete args.name;
-      }
-      if (this.searchForm.claim_status === "") {
-        delete args.claim_status;
-      }
-      if (!this.searchForm.dataValue[0]) {
-        delete args.start_date;
-      }
-      if (!this.searchForm.dataValue[1]) {
-        delete args.end_date;
-      }
+      let args = this.setArgs();
       getReceiptList(this, args)
         .then(res => {
           this.tableData = res.data;

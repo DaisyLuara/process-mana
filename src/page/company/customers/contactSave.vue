@@ -1,26 +1,43 @@
 <template>
   <div class="add-customer-wrap">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText">
       <div class="customer-title">{{ $route.name }}</div>
-      <el-form ref="contactForm" :model="contactForm" :rules="rules" label-width="100px">
-        <el-form-item label="联系人名称" prop="contact.name">
-          <el-input v-model="contactForm.contact.name" :maxlength="50" class="customer-form-input"/>
+      <el-form 
+        ref="contactForm" 
+        :model="contactForm" 
+        :rules="rules" 
+        label-width="100px">
+        <el-form-item 
+          label="联系人名称" 
+          prop="contact.name">
+          <el-input 
+            v-model="contactForm.contact.name" 
+            :maxlength="50" 
+            class="customer-form-input"/>
         </el-form-item>
-        <el-form-item label="联系人职务" prop="contact.position">
+        <el-form-item 
+          label="联系人职务" 
+          prop="contact.position">
           <el-input
             v-model="contactForm.contact.position"
             :maxlength="50"
             class="customer-form-input"
           />
         </el-form-item>
-        <el-form-item label="手机号码" prop="contact.phone">
+        <el-form-item 
+          label="手机号码" 
+          prop="contact.phone">
           <el-input
             v-model="contactForm.contact.phone"
             :maxlength="11"
             class="customer-form-input"
           />
         </el-form-item>
-        <el-form-item label="座机电话" prop="contact.telephone">
+        <el-form-item 
+          label="座机电话" 
+          prop="contact.telephone">
           <el-input
             v-model="contactForm.contact.telephone"
             :maxlength="20"
@@ -28,7 +45,9 @@
           />
           <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
         </el-form-item>
-        <el-form-item label="密码" prop="contact.password">
+        <el-form-item 
+          label="密码" 
+          prop="contact.password">
           <el-input
             v-model="contactForm.contact.password"
             :maxlength="30"
@@ -36,7 +55,9 @@
             class="customer-form-input"
           />
         </el-form-item>
-        <el-form-item label="角色" prop="contact.role_id">
+        <el-form-item 
+          label="角色" 
+          prop="contact.role_id">
           <el-radio-group v-model="contactForm.contact.role_id">
             <el-radio
               v-for="role in allRoles"
@@ -54,7 +75,9 @@
             size="small"
             @click="onSubmit('contactForm')"
           >保存</el-button>
-          <el-button size="small" @click="resetForm('contactForm')">取消</el-button>
+          <el-button 
+            size="small" 
+            @click="resetForm('contactForm')">取消</el-button>
         </el-form-item>
       </el-form>
     </div>

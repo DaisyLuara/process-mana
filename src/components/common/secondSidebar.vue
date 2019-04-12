@@ -1,7 +1,12 @@
 <template>
   <div class="second-sidebar">
-    <el-menu :default-active="currPath" router>
-      <el-menu-item v-for="item in items" :key="item.path" :index="getPath(item)">
+    <el-menu 
+      :default-active="currPath" 
+      router>
+      <el-menu-item 
+        v-for="item in items" 
+        :key="item.path" 
+        :index="getPath(item)">
         {{ item.meta.title }}
         <span
           v-if="item.meta.title === '消息管理' && noticeCount > 0"
@@ -18,7 +23,7 @@
         <span
           v-if="item.meta.title === '付款管理' && paymentCount > 0"
           style="color: #03A9F4;"
-        >({{ paymentCount > 99 ? '99+' : paymentCount}})</span>
+        >({{ paymentCount > 99 ? '99+' : paymentCount }})</span>
       </el-menu-item>
     </el-menu>
   </div>

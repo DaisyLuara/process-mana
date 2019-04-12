@@ -1,7 +1,10 @@
 <template>
   <div class="item-wrap-template">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText" class="pane">
-      <div class="pane-title">{{productID ? (purchasing ? '修改产品': '查看产品') : '新增产品' }}</div>
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText" 
+      class="pane">
+      <div class="pane-title">{{ productID ? (purchasing ? '修改产品': '查看产品') : '新增产品' }}</div>
       <el-form
         ref="productForm"
         :model="productForm"
@@ -9,16 +12,20 @@
         label-position="left"
         label-width="130px"
       >
-        <el-form-item label="SKU" prop="sku">
+        <el-form-item 
+          label="SKU" 
+          prop="sku">
           <el-input
             v-model="productForm.sku"
+            :maxlength="100"
             placeholder="请输入SKU"
             clearable
-            :maxlength="100"
             class="item-input"
           />
         </el-form-item>
-        <el-form-item label="产品名称" prop="name">
+        <el-form-item 
+          label="产品名称" 
+          prop="name">
           <el-select
             v-model="productForm.name"
             :loading="searchLoading"
@@ -33,7 +40,9 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="产品颜色" prop="color">
+        <el-form-item 
+          label="产品颜色" 
+          prop="color">
           <el-select
             v-model="productForm.color"
             :loading="searchLoading"
@@ -48,7 +57,9 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="供应商" prop="supplier">
+        <el-form-item 
+          label="供应商" 
+          prop="supplier">
           <el-select
             v-model="productForm.supplier"
             :loading="searchLoading"
@@ -64,7 +75,10 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button v-if="purchasing" type="primary" @click="submit('productForm')">保存</el-button>
+          <el-button 
+            v-if="purchasing" 
+            type="primary" 
+            @click="submit('productForm')">保存</el-button>
           <el-button @click="back">返回</el-button>
         </el-form-item>
       </el-form>

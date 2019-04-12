@@ -8,8 +8,14 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form ref="searchForm" :model="searchForm" :inline="true" class="search-content">
-            <el-form-item label prop="name">
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
+            class="search-content">
+            <el-form-item 
+              label 
+              prop="name">
               <el-input
                 v-model="searchForm.name"
                 clearable
@@ -18,8 +24,14 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button type="primary" size="small" @click="search('searchForm')">搜索</el-button>
-              <el-button type="default" size="small" @click="resetSearch('searchForm')">重置</el-button>
+              <el-button 
+                type="primary" 
+                size="small" 
+                @click="search('searchForm')">搜索</el-button>
+              <el-button 
+                type="default" 
+                size="small" 
+                @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -33,12 +45,21 @@
               type="success"
               @click="addPayee"
             >新增收款人</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
-        <el-table :data="tableData" style="width: 100%">
+        <el-table 
+          :data="tableData" 
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form label-position="left" inline class="demo-table-expand">
+              <el-form 
+                label-position="left" 
+                inline 
+                class="demo-table-expand">
                 <el-form-item label="收款人:">
                   <span>{{ scope.row.name }}</span>
                 </el-form-item>
@@ -51,7 +72,11 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column :show-overflow-tooltip="true" prop="name" label="收款人" min-width="100"/>
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="name" 
+            label="收款人" 
+            min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
             prop="account_number"
@@ -64,7 +89,9 @@
             label="收款人开户行"
             min-width="180"
           />
-          <el-table-column label="操作" min-width="200">
+          <el-table-column 
+            label="操作" 
+            min-width="200">
             <template slot-scope="scope">
               <el-button
                 v-if="bd || bdManager || legalAffairs || legalAffairsManager"
@@ -105,7 +132,9 @@ import {
   handleDateTransform,
   receivePayment,
   deletePayment,
-  Cookies
+  Cookies,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -168,8 +197,7 @@ export default {
     this.roles = user_info.roles.data;
   },
   methods: {
-    getPayeeList() {
-      this.setting.loading = true;
+    setArgs(){
       let args = {
         page: this.pagination.currentPage,
         name: this.searchForm.name
@@ -177,6 +205,26 @@ export default {
       if (!this.searchForm.name) {
         delete args.name;
       }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.PAYEE_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getPayeeList() {
+      this.setting.loading = true;
+      let args = this.setArgs();
       getPayeeList(this, args)
         .then(res => {
           this.tableData = res.data;

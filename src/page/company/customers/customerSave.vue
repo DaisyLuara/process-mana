@@ -1,24 +1,51 @@
 <template>
   <div class="add-customer-wrap">
-    <div v-loading="setting.loading" :element-loading-text="setting.loadingText">
+    <div 
+      v-loading="setting.loading" 
+      :element-loading-text="setting.loadingText">
       <div class="customer-title">{{ customerID ? '编辑公司' : '新增公司' }}</div>
-      <el-form ref="customerForm" :model="customerForm" :rules="rules" label-width="100px">
+      <el-form 
+        ref="customerForm" 
+        :model="customerForm" 
+        :rules="rules" 
+        label-width="100px">
         <el-collapse v-model="activeNames">
-          <el-collapse-item title="基础信息 Basic Information" name="1">
-            <el-form-item label="公司名称" prop="name">
-              <el-input v-model="customerForm.name" :maxlength="50" class="customer-form-input"/>
+          <el-collapse-item 
+            title="基础信息 Basic Information" 
+            name="1">
+            <el-form-item 
+              label="公司名称" 
+              prop="name">
+              <el-input 
+                v-model="customerForm.name" 
+                :maxlength="50" 
+                class="customer-form-input"/>
             </el-form-item>
-            <el-form-item label="公司地址" prop="address">
-              <el-input v-model="customerForm.address" :maxlength="60" class="customer-form-input"/>
+            <el-form-item 
+              label="公司地址" 
+              prop="address">
+              <el-input 
+                v-model="customerForm.address" 
+                :maxlength="60" 
+                class="customer-form-input"/>
             </el-form-item>
-            <el-form-item label="公司属性" prop="category">
-              <el-radio-group v-model="customerForm.category" @change="categoryHandle">
+            <el-form-item 
+              label="公司属性" 
+              prop="category">
+              <el-radio-group 
+                v-model="customerForm.category" 
+                @change="categoryHandle">
                 <el-radio :label="0">客户</el-radio>
                 <el-radio :label="1">供应商</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item v-if="contactFlag" label="母公司" prop="parent_id">
-              <el-select v-model="customerForm.parent_id" placeholder="请选择母公司">
+            <el-form-item 
+              v-if="contactFlag" 
+              label="母公司" 
+              prop="parent_id">
+              <el-select 
+                v-model="customerForm.parent_id" 
+                placeholder="请选择母公司">
                 <el-option
                   v-for="item in parentCompanyList"
                   :key="item.id"
@@ -27,37 +54,54 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="公司详情" prop="description">
+            <el-form-item 
+              label="公司详情" 
+              prop="description">
               <el-input
-                type="textarea"
                 v-model="customerForm.description"
                 :maxlength="1000"
+                type="textarea"
                 class="customer-form-input"
               />
             </el-form-item>
-            <el-form-item label="公司logo" prop="logo_media_id">
+            <el-form-item 
+              label="公司logo" 
+              prop="logo_media_id">
               <el-upload
-                class="avatar-uploader"
                 :action="SERVER_URL + '/api/media'"
                 :data="{type: 'image'}"
                 :headers="formHeader"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
                 :before-upload="beforeAvatarUpload"
+                class="avatar-uploader"
               >
-                <img v-if="logoUrl" :src="logoUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                <img 
+                  v-if="logoUrl" 
+                  :src="logoUrl" 
+                  class="avatar">
+                <i 
+                  v-else 
+                  class="el-icon-plus avatar-uploader-icon"/>
               </el-upload>
             </el-form-item>
-            <el-form-item label="公司简称" prop="internal_name">
+            <el-form-item 
+              label="公司简称" 
+              prop="internal_name">
               <el-input
                 v-model="customerForm.internal_name"
                 :maxlength="150"
                 class="customer-form-input"
               />
             </el-form-item>
-            <el-form-item v-if="contactFlag" label="所属人" prop="bd_user_id">
-              <el-select v-model="customerForm.bd_user_id" placeholder="请选择所属人" filterable>
+            <el-form-item 
+              v-if="contactFlag" 
+              label="所属人" 
+              prop="bd_user_id">
+              <el-select 
+                v-model="customerForm.bd_user_id" 
+                placeholder="请选择所属人" 
+                filterable>
                 <el-option
                   v-for="item in userList"
                   :key="item.id"
@@ -66,8 +110,13 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item v-if="statusFlag" label="状态" prop="selectedStatus">
-              <el-select v-model="customerForm.selectedStatus" placeholder="请选择状态">
+            <el-form-item 
+              v-if="statusFlag" 
+              label="状态" 
+              prop="selectedStatus">
+              <el-select 
+                v-model="customerForm.selectedStatus" 
+                placeholder="请选择状态">
                 <el-option
                   v-for="item in statusOption"
                   :key="item.value"
@@ -77,26 +126,40 @@
               </el-select>
             </el-form-item>
           </el-collapse-item>
-          <el-collapse-item v-if="!customerID&&contactFlag" title="联系人信息 Contacts" name="2">
+          <el-collapse-item 
+            v-if="!customerID&&contactFlag" 
+            title="联系人信息 Contacts" 
+            name="2">
             <div>
-              <el-form-item label="联系人名称" prop="customer_name">
+              <el-form-item 
+                label="联系人名称" 
+                prop="customer_name">
                 <el-input
                   v-model="customerForm.customer_name"
                   :maxlength="50"
                   class="customer-form-input"
                 />
               </el-form-item>
-              <el-form-item label="联系人职务" prop="position">
+              <el-form-item 
+                label="联系人职务" 
+                prop="position">
                 <el-input
                   v-model="customerForm.position"
                   :maxlength="50"
                   class="customer-form-input"
                 />
               </el-form-item>
-              <el-form-item label="手机号码" prop="phone">
-                <el-input v-model="customerForm.phone" :maxlength="11" class="customer-form-input"/>
+              <el-form-item 
+                label="手机号码" 
+                prop="phone">
+                <el-input 
+                  v-model="customerForm.phone" 
+                  :maxlength="11" 
+                  class="customer-form-input"/>
               </el-form-item>
-              <el-form-item label="座机电话" prop="telephone">
+              <el-form-item 
+                label="座机电话" 
+                prop="telephone">
                 <el-input
                   v-model="customerForm.telephone"
                   :maxlength="20"
@@ -104,7 +167,9 @@
                 />
                 <div style="color: #999;font-size:14px;">座机电话格式如下:021-65463432、021-65463432-7898</div>
               </el-form-item>
-              <el-form-item label="密码" prop="password">
+              <el-form-item 
+                label="密码" 
+                prop="password">
                 <el-input
                   v-model="customerForm.password"
                   :maxlength="30"
@@ -112,7 +177,9 @@
                   class="customer-form-input"
                 />
               </el-form-item>
-              <el-form-item label="角色" prop="role_id">
+              <el-form-item 
+                label="角色" 
+                prop="role_id">
                 <el-radio-group v-model="customerForm.role_id">
                   <el-radio
                     v-for="role in allRoles"
@@ -133,7 +200,9 @@
             size="small"
             @click="onSubmit('customerForm')"
           >保存</el-button>
-          <el-button size="small" @click="historyBack()">取消</el-button>
+          <el-button 
+            size="small" 
+            @click="historyBack()">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
