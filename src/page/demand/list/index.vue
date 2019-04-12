@@ -214,7 +214,7 @@
                 @click="confirmDemand(scope.row)"
               >确认完成</el-button>
               <el-button
-                v-if="(projectManager || designer || legalAffairsManager) && scope.row.status === 0"
+                v-if="((projectManager || designer) && scope.row.status ===0) || (legalAffairsManager && scope.row.status !==1)"
                 size="mini"
                 type="warning"
                 @click="detailDemand(scope.row)"
