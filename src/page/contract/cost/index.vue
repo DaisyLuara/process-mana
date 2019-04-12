@@ -344,7 +344,7 @@ export default {
     download(){
       let args = this.setArgs();
       delete args.page;
-      return getExportDownload(this,downloadUrl.REMIND_EXPORT_API, args)
+      return getExportDownload(this,downloadUrl.COST_EXPORT_API, args)
         .then(response => {
           const a = document.createElement("a");
           a.href = response;
