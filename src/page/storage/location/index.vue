@@ -44,6 +44,10 @@
               type="success" 
               size="small" 
               @click="addLocation">新增库位</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
         <el-table 
@@ -105,7 +109,7 @@ import {
   FormItem,
   MessageBox
 } from "element-ui";
-import { getLocationList, Cookies } from "service";
+import { getLocationList, Cookies,downloadUrl,getExportDownload } from "service";
 
 export default {
   components: {
@@ -149,6 +153,31 @@ export default {
     this.getLocationList();
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        name: this.searchForm.name
+      };
+      if (!this.searchForm.name) {
+        delete args.name;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.LOCATION_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     addLocation() {
       this.$router.push({
         path: "/storage/location/add"
@@ -169,14 +198,7 @@ export default {
     },
     getLocationList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        name: this.searchForm.name
-      };
-      if (!this.searchForm.name) {
-        delete args.name;
-      }
-
+      let args = this.setArgs();
       getLocationList(this, args)
         .then(res => {
           this.tableData = res.data;

@@ -80,6 +80,10 @@
             class="label">
             总数:{{ pagination.total }} 
           </span>
+          <el-button
+            size="small"
+            @click="download"
+          >下载</el-button>
         </div>
         <el-table 
           :data="tableData" 
@@ -229,7 +233,8 @@ import {
   Col,
   DatePicker
 } from 'element-ui'
-import { handleDateTransform, invoicetHistory } from 'service'
+import { handleDateTransform, invoicetHistory ,downloadUrl,
+  getExportDownload} from 'service'
 
 export default {
   components: {
@@ -348,8 +353,7 @@ export default {
     this.invoicetHistory()
   },
   methods: {
-    invoicetHistory() {
-      this.setting.loading = true
+    setArgs(){
       let args = {
         page: this.pagination.currentPage,
         name: this.searchForm.name,
@@ -373,6 +377,26 @@ export default {
       if (!this.searchForm.dataValue[1]) {
         delete args.end_date
       }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.INVOICE_HISTROY_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    invoicetHistory() {
+      this.setting.loading = true
+      let args = this.setArgs();
       invoicetHistory(this, args)
         .then(res => {
           this.tableData = res.data

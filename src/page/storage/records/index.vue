@@ -88,6 +88,10 @@
               type="success" 
               size="small" 
               @click="addRecords">新增调拨记录</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
         <el-table 
@@ -196,7 +200,9 @@ import {
   getRecordsList,
   Cookies,
   getSearchLocation,
-  getSearchSku
+  getSearchSku,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -250,6 +256,40 @@ export default {
     this.getSearchSku();
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        id: this.searchForm.sku,
+        out_location: this.searchForm.out_location,
+        in_location: this.searchForm.in_location
+      };
+
+      if (this.searchForm.sku === "") {
+        delete args.id;
+      }
+      if (this.searchForm.out_location === "") {
+        delete args.out_location;
+      }
+      if (this.searchForm.in_location === "") {
+        delete args.in_location;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.RECORD_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     addRecords() {
       this.$router.push({
         path: "/storage/records/add"
@@ -293,22 +333,7 @@ export default {
     },
     getRecordsList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        id: this.searchForm.sku,
-        out_location: this.searchForm.out_location,
-        in_location: this.searchForm.in_location
-      };
-
-      if (this.searchForm.sku === "") {
-        delete args.id;
-      }
-      if (this.searchForm.out_location === "") {
-        delete args.out_location;
-      }
-      if (this.searchForm.in_location === "") {
-        delete args.in_location;
-      }
+      let args = this.setArgs();
       getRecordsList(this, args)
         .then(res => {
           this.tableData = res.data;

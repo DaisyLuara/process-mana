@@ -111,6 +111,10 @@
               type="success"
               @click="addDemand"
             >新增申请</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
         <el-table 
@@ -255,7 +259,9 @@ import {
   handleDateTransform,
   confirmDemand,
   Cookies,
-  getSearchDemandPeople
+  getSearchDemandPeople,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -417,6 +423,51 @@ export default {
     this.roles = user_info.roles.data;
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        title: this.searchForm.title,
+        status: this.searchForm.status,
+        applicant_id: this.searchForm.applicant_id,
+        receiver_id: this.searchForm.receiver_id,
+        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
+        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
+      };
+      if (!this.searchForm.title) {
+        delete args.title;
+      }
+      if (this.searchForm.status === "") {
+        delete args.status;
+      }
+      if (!this.searchForm.applicant_id) {
+        delete args.applicant_id;
+      }
+      if (!this.searchForm.receiver_id) {
+        delete args.receiver_id;
+      }
+      if (!this.searchForm.dataValue[0]) {
+        delete args.create_start_date;
+      }
+      if (!this.searchForm.dataValue[1]) {
+        delete args.create_end_date;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.DEMAND_APPLY_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     getSearchDemandPeople(permissionString, type) {
       this.searchLoading = true;
       let args = {
@@ -473,33 +524,7 @@ export default {
     },
     getDemandList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        title: this.searchForm.title,
-        status: this.searchForm.status,
-        applicant_id: this.searchForm.applicant_id,
-        receiver_id: this.searchForm.receiver_id,
-        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
-      };
-      if (!this.searchForm.title) {
-        delete args.title;
-      }
-      if (this.searchForm.status === "") {
-        delete args.status;
-      }
-      if (!this.searchForm.applicant_id) {
-        delete args.applicant_id;
-      }
-      if (!this.searchForm.receiver_id) {
-        delete args.receiver_id;
-      }
-      if (!this.searchForm.dataValue[0]) {
-        delete args.create_start_date;
-      }
-      if (!this.searchForm.dataValue[1]) {
-        delete args.create_end_date;
-      }
+      let args = this.setArgs();
       getDemandList(this, args)
         .then(res => {
           this.tableData = res.data;

@@ -70,6 +70,10 @@
               type="success" 
               size="small" 
               @click="addProduct">新增产品</el-button>
+            <el-button
+              size="small"
+              @click="download"
+            >下载</el-button>
           </div>
         </div>
         <el-table 
@@ -139,7 +143,9 @@ import {
   getProductList,
   Cookies,
   getSearchSupplier,
-  getSearchSku
+  getSearchSku,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -192,6 +198,35 @@ export default {
     this.getSearchSku();
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        id: this.searchForm.sku,
+        supplier: this.searchForm.supplier
+      };
+      if (this.searchForm.sku === "") {
+        delete args.id;
+      }
+      if (this.searchForm.supplier === "") {
+        delete args.supplier;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.PRODUCT_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     getSearchSku() {
       this.searchLoading = true;
       getSearchSku(this)
@@ -239,18 +274,7 @@ export default {
     },
     getProductList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        id: this.searchForm.sku,
-        supplier: this.searchForm.supplier
-      };
-      if (this.searchForm.sku === "") {
-        delete args.id;
-      }
-      if (this.searchForm.supplier === "") {
-        delete args.supplier;
-      }
-
+      let args = this.setArgs();
       getProductList(this, args)
         .then(res => {
           this.tableData = res.data;

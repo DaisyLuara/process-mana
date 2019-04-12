@@ -82,6 +82,10 @@
         <!-- 明细列表 -->
         <div class="total-wrap">
           <span class="label">总数:{{ pagination.total }}</span>
+          <el-button
+            size="small"
+            @click="download"
+          >下载</el-button>
         </div>
         <el-table 
           :data="tableData" 
@@ -169,7 +173,9 @@ import {
   getStorageDetailList,
   getSearchSku,
   getSearchLocation,
-  getSearchStorageList
+  getSearchStorageList,
+  downloadUrl,
+  getExportDownload
 } from "service";
 
 export default {
@@ -215,6 +221,39 @@ export default {
     this.getSearchStorageList();
   },
   methods: {
+    setArgs(){
+      let args = {
+        page: this.pagination.currentPage,
+        id: this.searchForm.sku,
+        warehouse: this.searchForm.warehouse,
+        location: this.searchForm.location
+      };
+      if (this.searchForm.sku === "") {
+        delete args.id;
+      }
+      if (!this.searchForm.warehouse) {
+        delete args.warehouse;
+      }
+      if (!this.searchForm.location) {
+        delete args.location;
+      }
+      return args
+    },
+    download(){
+      let args = this.setArgs();
+      delete args.page;
+      return getExportDownload(this,downloadUrl.LOCATION_PRODUCT_EXPORT_API, args)
+        .then(response => {
+          const a = document.createElement("a");
+          a.href = response;
+          a.download = "download";
+          a.click();
+          window.URL.revokeObjectURL(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     getSearchStorageList() {
       this.searchLoading = true;
       getSearchStorageList(this)
@@ -262,21 +301,7 @@ export default {
     },
     getStorageDetailList() {
       this.setting.loading = true;
-      let args = {
-        page: this.pagination.currentPage,
-        id: this.searchForm.sku,
-        warehouse: this.searchForm.warehouse,
-        location: this.searchForm.location
-      };
-      if (this.searchForm.sku === "") {
-        delete args.id;
-      }
-      if (!this.searchForm.warehouse) {
-        delete args.warehouse;
-      }
-      if (!this.searchForm.location) {
-        delete args.location;
-      }
+      let args = this.setArgs();
       getStorageDetailList(this, args)
         .then(res => {
           this.tableData = res.data;
