@@ -198,7 +198,7 @@
         slot="footer"
         class="dialog-footer"
       >
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="handleClose">取 消</el-button>
         <el-button
           type="primary"
           @click="addReceiveDate"
@@ -379,6 +379,8 @@ export default {
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(_ => {
+          this.add_date = null
+          this.dialogVisible = false
           done();
         })
         .catch(_ => { });
