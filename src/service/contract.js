@@ -147,6 +147,23 @@ const mofifyContract = (context, contractId, params) => {
       })
   })
 }
+//新增收款日期
+const addReceiveDate = (context, contractId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .post(
+        HOST + CONTRACT_REMIND_API + '/' + contractId + '/receive_date',
+        params
+      )
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 export {
   getContractList,
   saveContract,
@@ -158,5 +175,6 @@ export {
   getRemindContractList,
   contractHistory,
   rejectContract,
-  mofifyContract
+  mofifyContract,
+  addReceiveDate
 }
