@@ -400,8 +400,18 @@ export default {
       }
       addReceiveDate(this, this.contractId, args).then(res => {
         this.dialogVisible = false
+        this.$message({
+          showClose: true,
+          message: '日期添加成功',
+          type: 'sucess'
+        });
+        this.getRemindContractList()
       }).catch(err => {
-        console.log(err)
+        this.$message({
+          showClose: true,
+          message: '日期添加失败',
+          type: 'err'
+        });
       })
     }
   }
