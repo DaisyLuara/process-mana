@@ -153,7 +153,7 @@
             min-width="80"
           />
           <el-table-column
-            v-if="doadd"
+            v-if="legalAffairsManager"
             :show-overflow-tooltip="true"
             label="操作"
             min-width="80"
@@ -261,7 +261,6 @@ export default {
       add_date: null,
       contractId: null,
       dialogVisible: false,
-      doadd: false,
       searchLoading: false,
       pagination: {
         total: 0,
@@ -284,11 +283,20 @@ export default {
     }
   },
   created() {
-    let user_info = JSON.parse(Cookies.get('user_info'))
     this.getRemindContractList()
+    let user_info = JSON.parse(Cookies.get("user_info"));
+    this.applicant = user_info.id;
+    this.role = user_info.roles.data;
   },
   mounted() {
-    this.checkPermission()
+  },
+  computed: {
+    // 法务主管
+    legalAffairsManager: function () {
+      return this.role.find(r => {
+        return r.name === "legal-affairs-manager";
+      });
+    },
   },
   methods: {
     setArgs() {
@@ -363,18 +371,6 @@ export default {
     },
     checkPermission() {
       let permissions = JSON.parse(localStorage.getItem('permissions'))
-      let contract = null
-      for (let key in permissions) {
-        if (permissions[key].name === 'contract') {
-          contract = permissions[key]
-        }
-      }
-      for (let key in contract) {
-        if (contract[key].name === 'contract.collection.create') {
-          this.doadd = true
-
-        }
-      }
     },
     handleClose(done) {
       this.$confirm('确认关闭？')

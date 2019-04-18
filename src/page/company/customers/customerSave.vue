@@ -304,6 +304,9 @@ export default {
       ],
       customerID: "",
       rules: {
+        logo_media_id:[
+          { message: "logo不能为空", trigger: "submit", required: true }
+        ],
         internal_name: [
           { message: "请输入公司简称", trigger: "submit", required: true }
         ],
