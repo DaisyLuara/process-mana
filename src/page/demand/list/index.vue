@@ -139,7 +139,7 @@
                   <span>{{ scope.row.receiver_name }}</span>
                 </el-form-item>
                 <el-form-item label="状态:">
-                  <span>{{ scope.row.status===0 ? '未接单' : scope.row.status===1 ? '已完成' : scope.row.status===2 ? '已接单' : '修改中' }}</span>
+                  <span>{{ scope.row.status_text }}</span>
                 </el-form-item>
                 <el-form-item label="申请时间:">
                   <span>{{ scope.row.created_at }}</span>
@@ -179,7 +179,7 @@
             min-width="80">
             <template
               slot-scope="scope"
-            >{{ scope.row.status===0 ? '未接单' : scope.row.status===1 ? '已完成' : scope.row.status===2 ? '已接单' : '修改中' }}</template>
+            >{{ scope.row.status_text }}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"

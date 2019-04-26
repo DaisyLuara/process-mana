@@ -1,19 +1,19 @@
 <template>
   <div class="item-wrap-template">
-    <div 
-      v-loading="setting.loading" 
-      :element-loading-text="setting.loadingText" 
+    <div
+      v-loading="setting.loading"
+      :element-loading-text="setting.loadingText"
       class="pane">
       <div class="pane-title">{{ demandID ? '编辑申请' : '新增申请' }}</div>
-      <el-form 
-        ref="demandApplyForm" 
-        :model="demandApplyForm" 
-        :rules="rules" 
+      <el-form
+        ref="demandApplyForm"
+        :model="demandApplyForm"
+        :rules="rules"
         label-width="130px">
         <el-row>
           <el-col :span="12">
-            <el-form-item 
-              label="项目标的" 
+            <el-form-item
+              label="项目标的"
               prop="title">
               <el-input
                 v-model="demandApplyForm.title"
@@ -24,8 +24,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item 
-              label="申请人" 
+            <el-form-item
+              label="申请人"
               prop="applicant_name">
               <el-input
                 v-model="demandApplyForm.applicant_name"
@@ -38,20 +38,21 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item 
-              label="有无合同" 
+            <el-form-item
+              label="有无合同"
               prop="has_contract">
-              <el-radio-group 
-                v-model="demandApplyForm.has_contract" 
+              <el-radio-group
+                v-model="demandApplyForm.has_contract"
                 @change="contractHandle">
                 <el-radio :label="0">无合同</el-radio>
                 <el-radio :label="1">有合同</el-radio>
+                <el-radio :label="2">待审批</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item 
-              label="合同编号" 
+            <el-form-item
+              label="合同编号"
               prop="contract_ids">
               <el-select
                 v-model="demandApplyForm.contract_ids"
@@ -75,8 +76,8 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item 
-              label="节目数量" 
+            <el-form-item
+              label="节目数量"
               prop="project_num">
               <el-input
                 v-model="demandApplyForm.project_num"
@@ -86,8 +87,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item 
-              label="节目列表" 
+            <el-form-item
+              label="节目列表"
               prop="similar_project_name">
               <el-input
                 v-model="demandApplyForm.similar_project_name"
@@ -102,8 +103,8 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item 
-              label="期望上线日期" 
+            <el-form-item
+              label="期望上线日期"
               prop="expect_online_time">
               <el-date-picker
                 v-model="demandApplyForm.expect_online_time"
@@ -113,8 +114,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item 
-              label="期望接单人" 
+            <el-form-item
+              label="期望接单人"
               prop="expect_receiver_ids">
               <el-select
                 v-model="demandApplyForm.expect_receiver_ids"
@@ -137,8 +138,8 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item 
-              label="投放地点备注" 
+            <el-form-item
+              label="投放地点备注"
               prop="launch_point_remark">
               <el-input
                 v-model="demandApplyForm.launch_point_remark"
@@ -149,9 +150,11 @@
               />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
-            <el-form-item 
-              label="大屏节目需求" 
+            <el-form-item
+              label="大屏节目需求"
               prop="big_screen_demand">
               <el-input
                 v-model="demandApplyForm.big_screen_demand"
@@ -162,11 +165,24 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item
+              label="小屏定制内容"
+              prop="small_screen_demand">
+              <el-input
+                v-model="demandApplyForm.small_screen_demand"
+                :autosize="{ minRows: 2, maxRows: 4}"
+                type="textarea"
+                placeholder="请填写小屏定制内容"
+                class="text-input"
+              />
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item 
-              label="H5节目需求" 
+            <el-form-item
+              label="H5节目需求"
               prop="h5_demand">
               <el-input
                 v-model="demandApplyForm.h5_demand"
@@ -178,8 +194,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item 
-              label="其他定制内容" 
+            <el-form-item
+              label="其他定制内容"
               prop="other_demand">
               <el-input
                 v-model="demandApplyForm.other_demand"
@@ -193,8 +209,8 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item 
-              label="备注" 
+            <el-form-item
+              label="备注"
               prop="applicant_remark">
               <el-input
                 v-model="demandApplyForm.applicant_remark"
@@ -207,8 +223,8 @@
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button 
-            type="primary" 
+          <el-button
+            type="primary"
             @click="submit('demandApplyForm')">保存</el-button>
           <el-button @click="historyBack">返回</el-button>
         </el-form-item>
@@ -281,6 +297,7 @@ export default {
         expect_receiver_ids: [],
         launch_point_remark: "",
         big_screen_demand: "",
+        small_screen_demand: "",
         h5_demand: "",
         other_demand: "",
         applicant_remark: ""
@@ -312,6 +329,9 @@ export default {
         ],
         big_screen_demand: [
           { required: true, message: "大屏节目需求不能为空", trigger: "submit" }
+        ],
+        small_screen_demand: [
+          { required: true, message: "小屏定制内容不能为空", trigger: "submit" }
         ],
         h5_demand: [
           { required: true, message: "H5节目需求不能为空", trigger: "submit" }
@@ -353,6 +373,7 @@ export default {
           this.demandApplyForm.expect_online_time = res.expect_online_time;
           this.demandApplyForm.launch_point_remark = res.launch_point_remark;
           this.demandApplyForm.big_screen_demand = res.big_screen_demand;
+          this.demandApplyForm.small_screen_demand = res.small_screen_demand;
           this.demandApplyForm.h5_demand = res.h5_demand;
           this.demandApplyForm.other_demand = res.other_demand;
           this.demandApplyForm.applicant_remark = res.applicant_remark;
@@ -384,13 +405,13 @@ export default {
         });
     },
     contractHandle(val) {
-      if (val === 0) {
+      if (val === 1) {
+        this.rules.contract_ids[0].required = true;
+        this.contractUse = false;
+      } else {
         this.contract_ids = [];
         this.contractUse = true;
         this.rules.contract_ids[0].required = false;
-      } else {
-        this.rules.contract_ids[0].required = true;
-        this.contractUse = false;
       }
     },
     getSearchDemandPeople() {
