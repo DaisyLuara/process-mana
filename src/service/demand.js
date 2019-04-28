@@ -79,6 +79,21 @@ const receiveDemand = (context, demandId, params) => {
       })
   })
 }
+
+//更新需求申请合同编号
+const saveDemandContract = (context, demandId, params) => {
+  return new Promise(function(resolve, reject) {
+    context.$http
+      .put(HOST + DEMAND_API + '/' + demandId + '/updateContract', params)
+      .then(response => {
+        resolve(response.data)
+      })
+      .catch(error => {
+        reject(error)
+      })
+  })
+}
+
 // 需求修改列表
 const getDemandModifyList = (context, params) => {
   return new Promise(function(resolve, reject) {
@@ -167,6 +182,7 @@ export {
   editDemandDetail,
   confirmDemand,
   receiveDemand,
+  saveDemandContract,
   getDemandModifyList,
   feedbackDemand,
   reviewDemand,
