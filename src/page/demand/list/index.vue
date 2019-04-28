@@ -651,9 +651,9 @@ export default {
       this.dialogFormVisible = false;
     },
     submit(formName) {
-      this.setting.loading = true;
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.setting.loading = true;
           let args = this.contractForm;
           saveDemandContract(this, this.contractForm.demand_id,args)
             .then(res => {
@@ -688,7 +688,7 @@ export default {
     padding: 30px;
 
     .el-form-item {
-      margin-bottom: 0;
+      margin-bottom: 30px;
     }
     .item-content-wrap {
       .demo-table-expand {
