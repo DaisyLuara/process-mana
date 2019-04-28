@@ -25,8 +25,8 @@
           <el-col :span="12">
             <el-form-item
               label="有无合同:"
-              prop="has_contract"
-            >{{ demandApplyForm.has_contract === 0 ? '无合同':'有合同' }}</el-form-item>
+              prop="has_contract_text"
+            >{{ demandApplyForm.has_contract_text }}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item
@@ -69,22 +69,30 @@
               prop="launch_point_remark"
             >{{ demandApplyForm.launch_point_remark }}</el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item
               label="大屏节目需求:"
               prop="big_screen_demand"
             >{{ demandApplyForm.big_screen_demand }}</el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item
+              label="小屏定制内容:"
+              prop="big_screen_demand"
+            >{{ demandApplyForm.small_screen_demand }}</el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item 
-              label="H5节目需求:" 
+            <el-form-item
+              label="H5节目需求:"
               prop="h5_demand">{{ demandApplyForm.h5_demand }}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item 
-              label="其他定制内容:" 
+            <el-form-item
+              label="其他定制内容:"
               prop="other_demand">{{ demandApplyForm.other_demand }}</el-form-item>
           </el-col>
         </el-row>
@@ -216,7 +224,7 @@ export default {
       demandApplyForm: {
         title: "",
         applicant_id: "",
-        has_contract: 0,
+        has_contract_text: "",
         contract_no_string: "",
         project_num: 0,
         similar_project_name: "",
@@ -225,6 +233,7 @@ export default {
         expect_receiver_names: [],
         launch_point_remark: "",
         big_screen_demand: "",
+        small_screen_demand: "",
         h5_demand: "",
         other_demand: "",
         applicant_remark: "",
@@ -296,7 +305,7 @@ export default {
           this.demandApplyForm.receiver_remark = res.receiver_remark;
           this.demandApplyForm.title = res.title;
           this.demandApplyForm.applicant_id = res.applicant_id;
-          this.demandApplyForm.has_contract = res.has_contract;
+          this.demandApplyForm.has_contract_text = res.has_contract_text;
           this.demandApplyForm.contract_no_string = res.contract_no_string;
           this.demandApplyForm.project_num = res.project_num;
           this.demandApplyForm.expect_receiver_names =
@@ -306,6 +315,7 @@ export default {
           this.demandApplyForm.expect_online_time = res.expect_online_time;
           this.demandApplyForm.launch_point_remark = res.launch_point_remark;
           this.demandApplyForm.big_screen_demand = res.big_screen_demand;
+          this.demandApplyForm.small_screen_demand = res.small_screen_demand;
           this.demandApplyForm.h5_demand = res.h5_demand;
           this.demandApplyForm.other_demand = res.other_demand;
           this.demandApplyForm.applicant_remark = res.applicant_remark;

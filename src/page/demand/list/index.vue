@@ -8,16 +8,16 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form 
-            ref="searchForm" 
-            :model="searchForm" 
-            :inline="true" 
+          <el-form
+            ref="searchForm"
+            :model="searchForm"
+            :inline="true"
             class="search-content">
-            <el-form-item 
-              label 
+            <el-form-item
+              label
               prop="status">
-              <el-form-item 
-                label 
+              <el-form-item
+                label
                 prop="title">
                 <el-input
                   v-model="searchForm.title"
@@ -41,13 +41,13 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item 
-              label 
+            <el-form-item
+              label
               prop="status">
-              <el-select 
-                v-model="searchForm.status" 
-                placeholder="请选择状态" 
-                filterable 
+              <el-select
+                v-model="searchForm.status"
+                placeholder="请选择状态"
+                filterable
                 clearable>
                 <el-option
                   v-for="item in statusList"
@@ -57,8 +57,8 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item 
-              label 
+            <el-form-item
+              label
               prop="receiver_id">
               <el-select
                 v-model="searchForm.receiver_id"
@@ -75,8 +75,8 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item 
-              label 
+            <el-form-item
+              label
               prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
@@ -90,13 +90,13 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button 
-                type="primary" 
-                size="small" 
+              <el-button
+                type="primary"
+                size="small"
                 @click="search('searchForm')">搜索</el-button>
-              <el-button 
-                type="default" 
-                size="small" 
+              <el-button
+                type="default"
+                size="small"
                 @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -117,14 +117,14 @@
             >下载</el-button>
           </div>
         </div>
-        <el-table 
-          :data="tableData" 
+        <el-table
+          :data="tableData"
           style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form 
-                label-position="left" 
-                inline 
+              <el-form
+                label-position="left"
+                inline
                 class="demo-table-expand">
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
@@ -139,7 +139,7 @@
                   <span>{{ scope.row.receiver_name }}</span>
                 </el-form-item>
                 <el-form-item label="状态:">
-                  <span>{{ scope.row.status===0 ? '未接单' : scope.row.status===1 ? '已完成' : scope.row.status===2 ? '已接单' : '修改中' }}</span>
+                  <span>{{ scope.row.status_text }}</span>
                 </el-form-item>
                 <el-form-item label="申请时间:">
                   <span>{{ scope.row.created_at }}</span>
@@ -150,15 +150,15 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column 
-            :show-overflow-tooltip="true" 
-            prop="id" 
-            label="ID" 
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="id"
+            label="ID"
             min-width="80"/>
-          <el-table-column 
-            :show-overflow-tooltip="true" 
-            prop="title" 
-            label="项目标的" 
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="title"
+            label="项目标的"
             min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -172,14 +172,14 @@
             label="接单人"
             min-width="80"
           />
-          <el-table-column 
-            :show-overflow-tooltip="true" 
-            prop="status" 
-            label="状态" 
+          <el-table-column
+            :show-overflow-tooltip="true"
+            prop="status"
+            label="状态"
             min-width="80">
             <template
               slot-scope="scope"
-            >{{ scope.row.status===0 ? '未接单' : scope.row.status===1 ? '已完成' : scope.row.status===2 ? '已接单' : '修改中' }}</template>
+            >{{ scope.row.status_text }}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -197,8 +197,8 @@
           >
             <template slot-scope="scope">{{ scope.row.receiver_time }}</template>
           </el-table-column>
-          <el-table-column 
-            label="操作" 
+          <el-table-column
+            label="操作"
             min-width="200">
             <template slot-scope="scope">
               <el-button
@@ -207,6 +207,12 @@
                 type="primary"
                 @click="editDemand(scope.row)"
               >编辑</el-button>
+              <el-button
+                v-if="scope.row.applicant_id === applicant && scope.row.status !== 0 && scope.row.has_contract === 2 "
+                size="mini"
+                type="primary"
+                @click="addContract(scope.row)"
+              >合同修改</el-button>
               <el-button
                 v-if="(scope.row.status === 2 || scope.row.status === 3) && scope.row.applicant_id === applicant"
                 size="mini"
@@ -219,9 +225,9 @@
                 type="warning"
                 @click="detailDemand(scope.row)"
               >接单</el-button>
-              <el-button 
-                size="mini" 
-                type="info" 
+              <el-button
+                size="mini"
+                type="info"
                 @click="detailDemand(scope.row)">详情</el-button>
             </template>
           </el-table-column>
@@ -236,6 +242,51 @@
           />
         </div>
       </div>
+
+      <el-dialog
+        :loading="setting.loading"
+        :visible.sync="dialogFormVisible"
+        :close-on-click-modal="false"
+        :show-close="false">
+        <el-form
+          ref="contractForm"
+          :model="contractForm"
+          label-position="left"
+          label-width="80px"
+        >
+          <el-form-item
+            :rules="[{ required: true, message: '请选择合同编号', trigger: 'submit' }]"
+            label="合同编号"
+            prop="contract_ids">
+            <el-select
+              v-model="contractForm.contract_ids"
+              :loading="searchLoading"
+              :multiple-limit="1"
+              multiple
+              placeholder="请选择合同编号"
+              filterable
+              clearable
+            >
+              <el-option
+                v-for="item in contractList"
+                :key="item.id"
+                :label="item.contract_number"
+                :value="item.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label-position="right">
+            <el-button
+              size="small"
+              @click="cancel">取 消</el-button>
+            <el-button
+              size="small"
+              type="primary"
+              @click="submit('contractForm')">确 定</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
     </div>
   </div>
 </template>
@@ -243,6 +294,7 @@
 <script>
 import {
   Button,
+  Dialog,
   Input,
   Table,
   TableColumn,
@@ -261,12 +313,15 @@ import {
   Cookies,
   getSearchDemandPeople,
   downloadUrl,
-  getExportDownload
+  getExportDownload,
+  getContract,
+  saveDemandContract
 } from "service";
 
 export default {
   components: {
     "el-table": Table,
+    "el-dialog": Dialog,
     "el-table-column": TableColumn,
     "el-button": Button,
     "el-input": Input,
@@ -286,6 +341,12 @@ export default {
         status: "",
         receiver_id: null
       },
+      dialogFormVisible: false,
+      contractForm:{
+        demand_id:null,
+        contract_ids:[],
+      },
+      contractList: [],
       roles: {},
       applicantList: [],
       receiverList: [],
@@ -418,6 +479,7 @@ export default {
     this.getDemandList();
     this.getSearchDemandPeople("demand.application.receive", "receive");
     this.getSearchDemandPeople("demand.application.create", "create");
+    this.getContract();
     let user_info = JSON.parse(Cookies.get("user_info"));
     this.applicant = user_info.id;
     this.roles = user_info.roles.data;
@@ -562,7 +624,57 @@ export default {
       this.$refs[formName].resetFields();
       this.pagination.currentPage = 1;
       this.getDemandList();
-    }
+    },
+
+    getContract() {
+      this.searchLoading = true;
+      getContract(this)
+        .then(res => {
+          this.contractList = res.data;
+          this.searchLoading = false;
+        })
+        .catch(err => {
+          this.searchLoading = false;
+
+          this.$message({
+            type: "success",
+            message: err.response.data.message
+          });
+        });
+    },
+    addContract(data) {
+      this.dialogFormVisible = true;
+      this.contractForm.demand_id = data.id;
+    },
+    cancel() {
+      this.contractForm.contract_ids = [];
+      this.dialogFormVisible = false;
+    },
+    submit(formName) {
+      this.setting.loading = true;
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let args = this.contractForm;
+          saveDemandContract(this, this.contractForm.demand_id,args)
+            .then(res => {
+              this.$message({
+                message: "提交成功",
+                type: "success"
+              });
+              this.dialogFormVisible = false;
+              this.getDemandList();
+            })
+            .catch(err => {
+              this.setting.loading = false;
+              this.$message({
+                message: err.response.data.message,
+                type: "warning"
+              });
+            });
+        }
+      });
+    },
+
   }
 };
 </script>
