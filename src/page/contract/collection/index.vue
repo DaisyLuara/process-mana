@@ -180,10 +180,10 @@
     </div>
     <!-- 新增收款日期 -->
     <el-dialog
-      title="收款日期"
       :visible.sync="dialogVisible"
-      width="30%"
       :before-close="handleClose"
+      title="收款日期"
+      width="30%"
       center
     >
       <div class="block date-center">
@@ -191,8 +191,7 @@
           v-model="add_date"
           type="date"
           placeholder="选择日期"
-        >
-        </el-date-picker>
+        />
       </div>
       <div
         slot="footer"
@@ -282,14 +281,6 @@ export default {
       ]
     }
   },
-  created() {
-    this.getRemindContractList()
-    let user_info = JSON.parse(Cookies.get("user_info"));
-    this.applicant = user_info.id;
-    this.role = user_info.roles.data;
-  },
-  mounted() {
-  },
   computed: {
     // 法务主管
     legalAffairsManager: function () {
@@ -297,6 +288,14 @@ export default {
         return r.name === "legal-affairs-manager";
       });
     },
+  },
+  created() {
+    this.getRemindContractList()
+    let user_info = JSON.parse(Cookies.get("user_info"));
+    this.applicant = user_info.id;
+    this.role = user_info.roles.data;
+  },
+  mounted() {
   },
   methods: {
     setArgs() {
