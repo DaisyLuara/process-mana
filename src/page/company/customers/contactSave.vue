@@ -57,15 +57,14 @@
         </el-form-item>
         <el-form-item 
           label="角色" 
-          prop="contact.role_id">
-          <el-radio-group v-model="contactForm.contact.role_id">
+          prop="role_id">
+          <el-radio-group v-model="contactForm.role_id">
             <el-radio
               v-for="role in allRoles"
-              :data="role"
               :key="role.id"
               :label="role.id"
               class="role-radio"
-            >{{ role.display_name }}</el-radio>
+            >{{ role.display_name }} </el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item>
@@ -123,8 +122,8 @@ export default {
       },
       allRoles: [],
       contactForm: {
+        role_id: null,
         contact: {
-          role_id: null,
           name: "",
           phone: "",
           position: "",
@@ -169,7 +168,7 @@ export default {
         "contact.name": [
           { message: "请输入联系人名称", trigger: "submit", required: true }
         ],
-        "contact.role_id": [
+        "role_id": [
           { message: "请选择角色", trigger: "submit", required: true }
         ],
         "contact.position": [
@@ -196,7 +195,7 @@ export default {
       loading: false
     };
   },
-  created: function() {
+  created() {
     this.contactID = this.$route.query.uid;
     this.pid = this.$route.query.pid;
     this.contactName = this.$route.query.name;
@@ -235,7 +234,7 @@ export default {
             position: this.contactForm.contact.position,
             password: this.contactForm.contact.password,
             telephone: this.contactForm.contact.telephone,
-            role_id: this.contactForm.contact.role_id
+            role_id: this.contactForm.role_id
           };
           if (this.contactForm.contact.password === "") {
             delete args.password;
@@ -278,7 +277,7 @@ export default {
             this.contactForm.contact = result;
             if (result.roles) {
               if (result.roles.data.length > 0) {
-                this.contactForm.contact.role_id = result.roles.data[0].id;
+                this.contactForm.role_id = result.roles.data[0].id;
               }
             }
             this.setting.loading = false;
