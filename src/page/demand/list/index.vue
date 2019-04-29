@@ -8,16 +8,16 @@
       <div class="item-content-wrap">
         <!-- 搜索 -->
         <div class="search-wrap">
-          <el-form
-            ref="searchForm"
-            :model="searchForm"
-            :inline="true"
+          <el-form 
+            ref="searchForm" 
+            :model="searchForm" 
+            :inline="true" 
             class="search-content">
-            <el-form-item
-              label
+            <el-form-item 
+              label 
               prop="status">
-              <el-form-item
-                label
+              <el-form-item 
+                label 
                 prop="title">
                 <el-input
                   v-model="searchForm.title"
@@ -41,13 +41,13 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item
-              label
+            <el-form-item 
+              label 
               prop="status">
-              <el-select
-                v-model="searchForm.status"
-                placeholder="请选择状态"
-                filterable
+              <el-select 
+                v-model="searchForm.status" 
+                placeholder="请选择状态" 
+                filterable 
                 clearable>
                 <el-option
                   v-for="item in statusList"
@@ -57,8 +57,8 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item
-              label
+            <el-form-item 
+              label 
               prop="receiver_id">
               <el-select
                 v-model="searchForm.receiver_id"
@@ -75,8 +75,8 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item
-              label
+            <el-form-item 
+              label 
               prop="dataValue">
               <el-date-picker
                 v-model="searchForm.dataValue"
@@ -90,13 +90,13 @@
               />
             </el-form-item>
             <el-form-item label>
-              <el-button
-                type="primary"
-                size="small"
+              <el-button 
+                type="primary" 
+                size="small" 
                 @click="search('searchForm')">搜索</el-button>
-              <el-button
-                type="default"
-                size="small"
+              <el-button 
+                type="default" 
+                size="small" 
                 @click="resetSearch('searchForm')">重置</el-button>
             </el-form-item>
           </el-form>
@@ -111,20 +111,19 @@
               type="success"
               @click="addDemand"
             >新增申请</el-button>
-            <el-button
-              size="small"
-              @click="download"
-            >下载</el-button>
+            <el-button 
+              size="small" 
+              @click="download">下载</el-button>
           </div>
         </div>
-        <el-table
-          :data="tableData"
+        <el-table 
+          :data="tableData" 
           style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
-              <el-form
-                label-position="left"
-                inline
+              <el-form 
+                label-position="left" 
+                inline 
                 class="demo-table-expand">
                 <el-form-item label="ID:">
                   <span>{{ scope.row.id }}</span>
@@ -150,15 +149,15 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="id"
-            label="ID"
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="id" 
+            label="ID" 
             min-width="80"/>
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="title"
-            label="项目标的"
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="title" 
+            label="项目标的" 
             min-width="100"/>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -172,14 +171,12 @@
             label="接单人"
             min-width="80"
           />
-          <el-table-column
-            :show-overflow-tooltip="true"
-            prop="status"
-            label="状态"
+          <el-table-column 
+            :show-overflow-tooltip="true" 
+            prop="status" 
+            label="状态" 
             min-width="80">
-            <template
-              slot-scope="scope"
-            >{{ scope.row.status_text }}</template>
+            <template slot-scope="scope">{{ scope.row.status_text }}</template>
           </el-table-column>
           <el-table-column
             :show-overflow-tooltip="true"
@@ -197,8 +194,8 @@
           >
             <template slot-scope="scope">{{ scope.row.receiver_time }}</template>
           </el-table-column>
-          <el-table-column
-            label="操作"
+          <el-table-column 
+            label="操作" 
             min-width="200">
             <template slot-scope="scope">
               <el-button
@@ -225,9 +222,9 @@
                 type="warning"
                 @click="detailDemand(scope.row)"
               >接单</el-button>
-              <el-button
-                size="mini"
-                type="info"
+              <el-button 
+                size="mini" 
+                type="info" 
                 @click="detailDemand(scope.row)">详情</el-button>
             </template>
           </el-table-column>
@@ -247,17 +244,18 @@
         :loading="setting.loading"
         :visible.sync="dialogFormVisible"
         :close-on-click-modal="false"
-        :show-close="false">
-        <el-form
-          ref="contractForm"
-          :model="contractForm"
-          label-position="left"
-          label-width="80px"
-        >
+        :show-close="false"
+      >
+        <el-form 
+          ref="contractForm" 
+          :model="contractForm" 
+          label-position="left" 
+          label-width="80px">
           <el-form-item
             :rules="[{ required: true, message: '请选择合同编号', trigger: 'submit' }]"
             label="合同编号"
-            prop="contract_ids">
+            prop="contract_ids"
+          >
             <el-select
               v-model="contractForm.contract_ids"
               :loading="searchLoading"
@@ -276,17 +274,16 @@
             </el-select>
           </el-form-item>
           <el-form-item label-position="right">
-            <el-button
-              size="small"
+            <el-button 
+              size="small" 
               @click="cancel">取 消</el-button>
-            <el-button
-              size="small"
-              type="primary"
+            <el-button 
+              size="small" 
+              type="primary" 
               @click="submit('contractForm')">确 定</el-button>
           </el-form-item>
         </el-form>
       </el-dialog>
-
     </div>
   </div>
 </template>
@@ -342,9 +339,9 @@ export default {
         receiver_id: null
       },
       dialogFormVisible: false,
-      contractForm:{
-        demand_id:null,
-        contract_ids:[],
+      contractForm: {
+        demand_id: null,
+        contract_ids: []
       },
       contractList: [],
       roles: {},
@@ -485,40 +482,48 @@ export default {
     this.roles = user_info.roles.data;
   },
   methods: {
-    setArgs(){
+    setArgs() {
+      let { currentPage } = this.pagination;
+      let {
+        title,
+        status,
+        applicant_id,
+        receiver_id,
+        dataValue
+      } = this.searchForm;
       let args = {
-        page: this.pagination.currentPage,
-        title: this.searchForm.title,
-        status: this.searchForm.status,
-        applicant_id: this.searchForm.applicant_id,
-        receiver_id: this.searchForm.receiver_id,
-        create_start_date: handleDateTransform(this.searchForm.dataValue[0]),
-        create_end_date: handleDateTransform(this.searchForm.dataValue[1])
+        page: currentPage,
+        title: title,
+        status: status,
+        applicant_id: applicant_id,
+        receiver_id: receiver_id,
+        create_start_date: handleDateTransform(dataValue[0]),
+        create_end_date: handleDateTransform(dataValue[1])
       };
-      if (!this.searchForm.title) {
+      if (!title) {
         delete args.title;
       }
-      if (this.searchForm.status === "") {
+      if (status === "") {
         delete args.status;
       }
-      if (!this.searchForm.applicant_id) {
+      if (!applicant_id) {
         delete args.applicant_id;
       }
-      if (!this.searchForm.receiver_id) {
+      if (!receiver_id) {
         delete args.receiver_id;
       }
-      if (!this.searchForm.dataValue[0]) {
+      if (!dataValue[0]) {
         delete args.create_start_date;
       }
-      if (!this.searchForm.dataValue[1]) {
+      if (!dataValue[1]) {
         delete args.create_end_date;
       }
-      return args
+      return args;
     },
-    download(){
+    download() {
       let args = this.setArgs();
       delete args.page;
-      return getExportDownload(this,downloadUrl.DEMAND_APPLY_EXPORT_API, args)
+      return getExportDownload(this, downloadUrl.DEMAND_APPLY_EXPORT_API, args)
         .then(response => {
           const a = document.createElement("a");
           a.href = response;
@@ -655,7 +660,7 @@ export default {
         if (valid) {
           this.setting.loading = true;
           let args = this.contractForm;
-          saveDemandContract(this, this.contractForm.demand_id,args)
+          saveDemandContract(this, this.contractForm.demand_id, args)
             .then(res => {
               this.$message({
                 message: "提交成功",
@@ -673,8 +678,7 @@ export default {
             });
         }
       });
-    },
-
+    }
   }
 };
 </script>
