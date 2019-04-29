@@ -118,7 +118,7 @@
         </el-row>
         <el-form-item>
           <el-button
-            v-if="((projectManager || designer) && scope.row.status ===0) || (legalAffairsManager && scope.row.status !==1)"
+            v-if="((projectManager || designer) && status ===0) || (legalAffairsManager && status !==1)"
             type="warning"
             @click="receiveDemand"
           >接单</el-button>
